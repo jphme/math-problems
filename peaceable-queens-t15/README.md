@@ -1,87 +1,76 @@
-# Peaceable queens on the 15×15 torus: $t(15)=20$
+# Peaceable queens on the 15×15 and 16×16 tori: $t(15)=20$ and $t(16)=32$
 
-Paper + the programs that decide the upper bound.
+Paper + the programs that decide the upper bounds.
 
-**Theorem.** On the $15\times15$ toroidal chessboard, 20 black and 20 white queens can be placed
+**Theorem 1.** On the $15\times15$ toroidal chessboard, 20 black and 20 white queens can be placed
 with no black queen attacking a white queen, and 21 black and 21 white queens cannot. That is,
 $t(15)=20$.
 
-This is the first previously unknown term of [OEIS A279405](https://oeis.org/A279405), whose exact
-values were known only through $n=14$. Clinch, Drescher, Huynh and Saffidine
-([arXiv:2406.06974](https://arxiv.org/abs/2406.06974)) had bracketed it to $[20,28]$.
+**Theorem 2.** On the $16\times16$ toroidal chessboard, 32 black and 32 white queens can be placed
+with no black queen attacking a white queen, and 33 black and 33 white queens cannot. That is,
+$t(16)=32$.
 
-The lower bound is an explicit placement. The upper bound is computer-assisted: a queen placement is
-replaced by a colouring of the 60 toroidal lines, elementary counting identities restrict the four
-line-set cardinalities to 247 profiles up to a symmetry group of order 14,400, and each profile is
-decided exactly by a finite search in which every pruning step is a necessary condition — so the
-search is exhaustive, not heuristic. It examined 6,074,753,568 cases and found no $21+21$ placement.
+These are the first two previously unknown terms of [OEIS A279405](https://oeis.org/A279405), whose
+exact values were known only through $n=14$. Clinch, Drescher, Huynh and Saffidine
+([arXiv:2406.06974](https://arxiv.org/abs/2406.06974)) had bracketed them to $[20,28]$ and
+$[32,35]$; both lower bounds are theirs (for $n=16$, the $(4,4)$-plaid construction).
+
+Both upper bounds are computer-assisted on a common plan: a queen placement is replaced by a
+colouring of the $4n$ toroidal lines, elementary counting identities restrict the line-set
+cardinalities to finitely many size profiles up to symmetry, and each profile is decided exactly by
+a finite search in which every pruning step is a necessary condition — exhaustive, not heuristic.
+For $n=15$: 247 canonical profiles, 6,074,753,568 cases. For $n=16$ the diagonal and antidiagonal
+sizes must be refined by parity (on an even torus a diagonal and an antidiagonal meet in two cells
+or in none): 342 canonical profiles, 677 oriented jobs, 13,163,028,768 cases. No larger placement
+exists in either search.
+
+**Verification is not equally strong on the two sides**, and the paper says so: for $n=15$ two
+independently written enumerators with different symmetry quotients and different completion
+algorithms agree on all 247 profiles; for $n=16$ the two recorded programs share everything outside
+the completion kernel, and a genuinely independent second enumerator is the main open hardening
+item. See Section 11 of the paper.
 
 ## Contents
 
 | File | Description |
 |------|-------------|
-| [`peace15.pdf`](peace15.pdf) | The paper (11 pages) |
-| [`peace15.tex`](peace15.tex) | LaTeX source (amsart) |
-| [`peace15-arxiv.tar.gz`](peace15-arxiv.tar.gz) | arXiv submission bundle |
-| [`anc/peace15_solver.cpp`](anc/peace15_solver.cpp) | The proof solver: decides all 247 canonical profiles (C++17 + OpenMP) |
-| [`anc/profile_enum.cpp`](anc/profile_enum.cpp) | A second, independently written enumerator — different symmetry quotient, different completion algorithm (C++20) |
-| [`anc/peace15_audit.py`](anc/peace15_audit.py) | Independent audit: worklist regeneration, Burnside check of all 43 orbit counts, certificate arithmetic, witness re-count |
-| [`anc/WORKLIST-2026-07-25.tsv`](anc/WORKLIST-2026-07-25.tsv) | The 247 canonical size profiles |
-| [`anc/peace15_certificate.tsv`](anc/peace15_certificate.tsv), [`anc/peace15_certificate_run2.tsv`](anc/peace15_certificate_run2.tsv) | Per-profile certificates of two recorded runs |
+| [`peace1516.pdf`](peace1516.pdf) | The paper (20 pages) |
+| [`peace1516.tex`](peace1516.tex) | LaTeX source (amsart) |
+| [`peace1516-arxiv.tar.gz`](peace1516-arxiv.tar.gz) | arXiv submission bundle |
+| [`anc/peace15_solver.cpp`](anc/peace15_solver.cpp) | $n=15$ proof solver: decides all 247 canonical profiles (C++17 + OpenMP) |
+| [`anc/profile_enum.cpp`](anc/profile_enum.cpp) | $n=15$ second, independently written enumerator — different quotient, different completion algorithm (C++20) |
+| [`anc/peace15_audit.py`](anc/peace15_audit.py) | $n=15$ independent audit: worklist regeneration, Burnside check of all 43 orbit counts, certificate arithmetic, witness re-count |
+| [`anc/WORKLIST-2026-07-25.tsv`](anc/WORKLIST-2026-07-25.tsv) | The 247 canonical $n=15$ profiles |
+| [`anc/peace15_certificate.tsv`](anc/peace15_certificate.tsv), [`anc/peace15_certificate_run2.tsv`](anc/peace15_certificate_run2.tsv) | $n=15$ per-profile certificates, two recorded runs |
+| [`anc/peace16_solver.cpp`](anc/peace16_solver.cpp) | $n=16$ solver, optimized completion kernel (C++20 + OpenMP) |
+| [`anc/peace16_solver_bruteforce.cpp`](anc/peace16_solver_bruteforce.cpp) | $n=16$ solver, brute-force completion kernel (differs only in the kernel — see the verification caveat) |
+| [`anc/peace16_audit.py`](anc/peace16_audit.py) | $n=16$ independent audit: profile regeneration, 14 Burnside orbit counts, two-lift incidence map, witness, certificate cross-check |
+| [`anc/peace16_certificate.tsv`](anc/peace16_certificate.tsv), [`anc/peace16_certificate_bruteforce.tsv`](anc/peace16_certificate_bruteforce.tsv) | $n=16$ per-job certificates of both kernels |
 | [`anc/README.txt`](anc/README.txt) | Full build/run instructions and what each check does and does not establish |
 
 ## Reproduce
 
 ```bash
 cd anc
+# n = 15
 g++ -O3 -march=native -fopenmp -DNDEBUG -std=c++17 peace15_solver.cpp -o peace15_solver
-OMP_NUM_THREADS=5 ./peace15_solver --worklist WORKLIST-2026-07-25.tsv --output peace15_certificate.tsv
+OMP_NUM_THREADS=5 ./peace15_solver --worklist WORKLIST-2026-07-25.tsv --output peace15_certificate_new.tsv
 python3 peace15_audit.py
+# n = 16
+g++ -O3 -march=native -fopenmp -std=c++20 peace16_solver.cpp -o peace16_solver
+OMP_NUM_THREADS=5 ./peace16_solver --output peace16_certificate_new.tsv
+g++ -O3 -march=native -fopenmp -std=c++20 peace16_solver_bruteforce.cpp -o peace16_bf
+OMP_NUM_THREADS=5 ./peace16_bf --output peace16_certificate_bf_new.tsv
+python3 peace16_audit.py
 ```
 
-The solver ends in `ALL_UNSAT A_checked=6074753568`, the audit script in `AUDIT_OK`. The recorded
-five-thread run took about 60 seconds; runtime is not part of the proof. The second enumerator:
+Expected: `ALL_UNSAT` from each solver, `AUDIT_OK` from each audit. Each full sweep takes about a
+minute on five threads (the $n=16$ sweeps run in well under a minute on Apple Silicon even
+single-threaded).
 
-```bash
-clang++ -O3 -std=c++20 -DNDEBUG -Wall -Wextra -Wpedantic profile_enum.cpp -o profile_enum
-./profile_enum --self-test --random 100000
-./profile_enum --batch --worklist WORKLIST-2026-07-25.tsv --results results.jsonl --log logs
-```
+## Provenance
 
-It reports UNSAT for all 247 profiles over 6,241,793,402 completions — a different case count,
-because it uses a different symmetry quotient. About 200 seconds single-threaded.
-
-Both programs begin with gates that abort on failure (brute-force comparison of the subset kernel
-against direct enumeration on 20,000 resp. 100,000 pseudorandom instances, known pair-orbit counts,
-regeneration of the profile list). The certificate TSVs are audit logs, not standalone
-machine-checkable proof objects: the refutation is the program together with the reductions proved
-in the paper, and re-running the program is what re-establishes it.
-
-## AI disclosure
-
-The reduction programme was developed inside an AI-assisted research repository in which Anthropic
-Claude agents ran the computations; the exact completion algorithm originates in a consultation with
-a large-language-model collaborator acting as a mathematician (one error in that reply was found and
-corrected). The final proof document, `peace15_solver.cpp` and `peace15_audit.py` were produced by
-OpenAI GPT-5.6 Pro on 2026-07-25. The verification — the second enumerator, the line-by-line solver
-audit, the rebuild and rerun on a different toolchain, the sanitizer builds, the re-derivation of
-every identity, the witness checks — was carried out by Claude agents.
-
-Agreement between two AI-written implementations is a deliberately engineered error filter, but it
-is not independent verification in the scholarly sense. Readers who wish to check the theorem should
-re-run the ancillary programs or, better, write a third implementation from Sections 4–6 of the
-paper. See the "Use of AI tools" section for the full disclosure. The author reviewed the manuscript
-and takes full responsibility for its content.
-
-## Citation
-
-arXiv link will be added once the submission is announced. Until then:
-
-```bibtex
-@misc{harries2026peace15,
-  author = {Harries, Jan Philipp},
-  title  = {Peaceable queens on the $15\times15$ torus: the exact value $t(15)=20$},
-  year   = {2026},
-  url    = {https://github.com/jphme/math-problems/tree/main/peaceable-queens-t15}
-}
-```
+Produced with substantial use of AI systems; the paper's final section discloses the roles
+precisely (reduction programme and verification by Anthropic Claude agents; final proof documents,
+solvers and audits by OpenAI GPT-5.6 Pro). The author reviewed the manuscript and takes full
+responsibility for its content.
