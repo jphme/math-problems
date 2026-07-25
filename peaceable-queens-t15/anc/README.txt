@@ -56,6 +56,20 @@ peace16_certificate.tsv       Per-job certificate, optimized kernel.
 peace16_certificate_bruteforce.tsv
                               Per-job certificate, brute-force kernel.
 
+Witness checks and integrity
+----------------------------
+check_witness15.py            From-scratch pairwise check of the 20+20
+                              witness: recomputes the homogeneous cells from
+                              the line sets, matches the cell lists in the
+                              paper, and checks all 400 black-white pairs
+                              against all four attack relations directly.
+check_witness16.py            The same for the 32+32 witness: 36/32
+                              homogeneous cells, all 36x32 pairs checked
+                              directly.
+SHA256SUMS                    SHA-256 digests of every other file in this
+                              directory. Verify with:  shasum -a 256 -c
+                              SHA256SUMS   (or sha256sum -c).
+
 README.txt                    This file.
 
 
@@ -149,6 +163,57 @@ The recorded five-thread runs took about 78 seconds each. Runtime is not
 part of either proof. Both audit scripts read the certificates from their
 own directory, so run them after the solvers have written those files (or
 against the shipped copies).
+
+
+Build flags, determinism, environments
+--------------------------------------
+The commands above reproduce the recorded runs, which used -march=native
+(and, for n=15, -DNDEBUG). Both flags are optional speed measures: no
+proof-relevant check in any program is implemented via assert (the only
+assertion is an internal size-ordering invariant), all gates being explicit
+runtime tests that abort the program in every build. A portable
+verification build simply omits the two flags.
+
+The randomized self-tests are deterministic: std::mt19937_64 with fixed
+seed 0x4d595df4d0f33173 (n=15 solver, 20,000 instances; profile_enum uses
+its own fixed-seed generator, 100,000 instances) and 0x16e0ddc0ffee (each
+n=16 solver, 20,000 instances).
+
+Recorded five-thread runs: GCC + OpenMP, x86-64 (AMD EPYC) container.
+Independent local reruns (serial, and full-sweep ASan+UBSan builds with
+zero diagnostics): Apple clang 21, arm64 (Apple Silicon), macOS. All
+non-timing certificate columns agree across these environments.
+
+
+Certificate column schema
+-------------------------
+peace15_certificate*.tsv - one row per canonical profile; '#' lines are
+comments (header and final totals). Columns:
+  profile         canonical profile "s0,s1,s2,s3"
+  S               s0+s1+s2+s3
+  fixed           which pair was fixed: RC or DA (Section 5, Stage 1)
+  r, c            sizes of the fixed pair, r <= c
+  d, a            sizes of the completion families; the family of size a
+                  is the one enumerated in Stage 2
+  relative_sign   1 if the relative-sign quotient was admissible (d = a)
+  pair_orbits     number of fixed-pair orbit representatives
+  pair_hash_fnv64 FNV-1a 64-bit hash of the representative list, in hex
+                  (binds the certificate to the exact representative set)
+  A_per_orbit     C(15, a)
+  A_checked       pair_orbits * A_per_orbit (Stage-2 subsets examined)
+  triple_pass     survivors of the two scalar Stage-2 conditions
+  dfs_calls       survivors of the Stage-3 root bounds (searches entered)
+  dfs_nodes       branch nodes in those searches
+  result          UNSAT (or SAT, never observed; a SAT row would be
+                  followed by a '# WITNESS ...' line)
+  seconds         wall time for the profile (not part of the proof)
+
+peace16_certificate*.tsv - one row per oriented job; same conventions.
+Columns: canonical profile, oriented profile "r,c,d0,d1,a0,a1", S, r, c,
+d0, d1, a0, a1, sign flag, pair_orbits, A_count = C(8,a0)*C(8,a1),
+A_checked = pair_orbits * A_count, triple_pass (scalar-prefilter
+survivors), calls (root-bound survivors entering the search; 0 in the
+recorded runs), nodes, result, seconds.
 
 
 What is checked, and what that means

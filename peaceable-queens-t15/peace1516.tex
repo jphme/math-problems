@@ -44,14 +44,14 @@
 \begin{document}
 
 \begin{abstract}
-Let $t(n)$ denote the largest $m$ such that $m$ black and $m$ white queens can be placed on the $n\times n$ toroidal chessboard with no black queen attacking a white queen. We prove that $t(15)=20$ and $t(16)=32$, determining the first two previously unknown terms of this sequence (OEIS A279405), whose exact values were known only through $n=14$. Both lower bounds are explicit placements; the one for $n=16$ is the $(4,4)$-plaid of Clinch, Drescher, Huynh and Saffidine. Both upper bounds are computer-assisted exhaustive proofs on a common plan: a queen placement is replaced by a colouring of the $4n$ toroidal lines, elementary counting identities restrict the line-set cardinalities to finitely many \emph{size profiles} up to symmetry, and each profile is decided exactly by a finite search whose every pruning step is a necessary condition. For $n=15$ a profile is the quadruple of line-set sizes; there are $247$ of them up to a symmetry group of order $14{,}400$, and the search examined $6{,}074{,}753{,}568$ cases. For $n=16$ the diagonal and antidiagonal sizes must be refined by parity, because on an even torus a diagonal and an antidiagonal meet in two cells or in none; there are $342$ canonical six-part profiles giving $677$ oriented search jobs, and the search examined $13{,}163{,}028{,}768$ cases. No larger placement was found in either search. The two values sharpen the parity contrast of the toroidal problem: $t(16)$ equals $16^2/8$ exactly, whereas $t(15)$ falls well short of $15^2/8$.
+Let $t(n)$ denote the largest $m$ such that $m$ black and $m$ white queens can be placed on the $n\times n$ toroidal chessboard with no black queen attacking a white queen. We prove that $t(15)=20$ and $t(16)=32$, determining the first two previously unknown terms of this sequence (OEIS A279405), whose exact values were known only through $n=14$. Both lower bounds are explicit placements; the one for $n=16$ is the $(4,4)$-plaid of Clinch, Drescher, Huynh and Saffidine. Both upper bounds are computer-assisted exhaustive proofs on a common plan: a queen placement is replaced by a colouring of the $4n$ toroidal lines, elementary counting identities restrict the line-set cardinalities to finitely many \emph{size profiles} up to symmetry, and each profile is decided exactly by a finite search whose every pruning step is a necessary condition. For $n=15$ a profile is the quadruple of line-set sizes; there are $247$ of them modulo the induced dihedral action on the four line families and, in the top stratum, colour complementation --- an action induced by an affine board-symmetry group of order $14{,}400$ --- and the search examined $6{,}074{,}753{,}568$ cases. For $n=16$ the diagonal and antidiagonal sizes must be refined by parity, because on an even torus a diagonal and an antidiagonal meet in two cells or in none; there are $342$ canonical six-part profiles giving $677$ oriented search jobs, and the search examined $13{,}163{,}028{,}768$ cases. No larger placement was found in either search. The two values sharpen the parity contrast of the toroidal problem: $t(16)$ equals $16^2/8$ exactly, whereas $t(15)$ falls well short of $15^2/8$.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}\label{sec:intro}
 
-A \emph{peaceable} pair of queen armies is a placement of $m$ black and $m$ white queens on a chessboard such that no black queen attacks a white queen; queens of the same colour may attack each other freely. The problem of maximizing $m$ goes back to Ainley \cite{Ainley77} and was popularized through the OEIS sequence A250000 for the ordinary $n\times n$ board. On the \emph{toroidal} board the four lines through a cell wrap around, which makes the problem homogeneous: the symmetry group acts transitively on cells, and the combinatorics becomes arithmetic in $\Zn$. The toroidal maxima form OEIS sequence A279405 \cite{OEIS279405}.
+A \emph{peaceable} pair of queen armies is a placement of $m$ black and $m$ white queens on a chessboard such that no black queen attacks a white queen; queens of the same colour may attack each other freely. The problem of maximizing $m$ goes back to Ainley \cite{Ainley77} and was popularized through the OEIS sequence A250000 \cite{OEIS250000} for the ordinary $n\times n$ board. On the \emph{toroidal} board the four lines through a cell wrap around, which makes the problem homogeneous: the symmetry group acts transitively on cells, and the combinatorics becomes arithmetic in $\Zn$. The toroidal maxima form OEIS sequence A279405 \cite{OEIS279405}.
 
 \begin{table}[h]
 \centering
@@ -63,7 +63,7 @@ $n^2/8$  & 8.0 & 10.1 & 12.5 & 15.1 & 18.0 & 21.1 & 24.5 & 28.1 & 32.0\\
 \bottomrule
 \end{tabular}
 \medskip
-\caption{The upper end of A279405. The values through $n=14$ are those recorded in \cite{OEIS279405}; $a(13)=16$ and $a(14)=25$ were contributed by Jaideep Padhi in June 2026. The values at $n=15$ and $n=16$ are Theorems~\ref{thm:main15} and~\ref{thm:main16}.}\label{tab:oeis}
+\caption{The upper end of A279405. The values through $n=14$ are those recorded in \cite{OEIS279405}; $t(13)=16$ and $t(14)=25$ were contributed by Jaideep Padhi in June 2026. The values at $n=15$ and $n=16$ are Theorems~\ref{thm:main15} and~\ref{thm:main16}.}\label{tab:oeis}
 \end{table}
 
 Table~\ref{tab:oeis} shows the characteristic parity split of the toroidal problem: for even $n$ the known values sit at or near $n^2/8$ and at $n=14$ exceed it, whereas for odd $n$ they fall well short of it, hovering nearer $n^2/11$. Clinch, Drescher, Huynh and Saffidine \cite{CDHS24} made this contrast precise in the asymptotic regime, proving $t(n)\le 0.125\,n^2$ for odd $n$ \cite[Theorem~1.4]{CDHS24} against $t(n)\ge 0.1339\,n^2$ for all sufficiently large even $n$ \cite[Theorem~1.1]{CDHS24}, the latter by an explicit family of constructions they call \emph{plaids}. Their best published upper bound for the even torus is $t(n)\le 0.1402\,n^2$ for all even $n$ \cite[Theorem~1.2]{CDHS24}, the numerical optimum of the associated non-linear program being $0.140132\ldots$ \cite[\S4.2]{CDHS24}.
@@ -141,7 +141,7 @@ Replacing $(R,C,D,A)$ by $(R^{c},C^{c},D^{c},A^{c})$ exchanges $\Bl$ and $\Wh$, 
 \end{proof}
 
 \begin{remark}\label{rem:notequal}
-Lemma~\ref{lem:budget} is an inequality and must be kept as one. It is tempting to argue that one may add lines to the black side until $S=2n$; this is false, because a line added to $R$ is removed from $R^{c}$ and can destroy $|\Wh|\ge m$. The witness of Proposition~\ref{prop:lower15} illustrates the point: its black side has $S=28$ and its white side $S=32$, and neither is $30$. Accordingly both searches below cover the whole admissible range of $S$, not merely the top stratum. For $n=16$ the point is even more visible: the necessary conditions of Section~\ref{sec:profiles16} admit no profile at all with $S\in\{30,31,32\}$.
+Lemma~\ref{lem:budget} is used only as an inequality. We do not normalize to $S=2n$: no lemma asserting that a feasible configuration can always be modified into one with $S=2n$ is proved or used here, and none is obviously true, because feasibility is not monotone under transferring a line from the white side to the black side --- a line added to $R$ is removed from $R^{c}$ and can destroy $|\Wh|\ge m$. (It can also fail to: the witness of Proposition~\ref{prop:lower15}, with black-side $S=28$, happens to extend to a configuration with $S=30$ and $|\Bl|=|\Wh|=20$ by adding row $2$ and column $11$, so individual examples decide nothing either way.) Accordingly both searches below conservatively cover the whole admissible range of $S$, not merely the top stratum. For $n=16$ the necessary conditions of Section~\ref{sec:profiles16} turn out to admit no profile at all with $S\in\{30,31,32\}$.
 \end{remark}
 
 \begin{lemma}[Incidence]\label{lem:incidence}
@@ -286,7 +286,11 @@ Let $\Gamma$ be the group of affine bijections of $G$ that permute the four line
 \text{reflection } \nu(r,c)&=(r,-c): && R\mapsto R,\ C\mapsto -C,\ D\leftrightarrow A;\\
 \text{halving } \psi(r,c)&=(r+c,\ r-c): && \{R,C\}\leftrightarrow\{D,A\} .
 \end{align*}
-For $\psi$ one checks directly that a level set of the new row coordinate is an old antidiagonal, of the new column coordinate an old diagonal, of the new diagonal an old column and of the new antidiagonal an old row; $\psi$ is bijective because $\det\binom{1\ \ 1}{1\ -1}=-2$ is a unit modulo $15$. The image is not all of $\mathrm{Sym}_4$: the four line directions $\infty,0,1,-1$ of $\mathbb{P}^1(\Zf)$ have harmonic cross-ratio, and the family action is the corresponding dihedral group of order $8$. The induced action on size profiles is the permutation action of this $D_4$ on ordered quadruples.
+For $\psi$ one checks directly that a level set of the new row coordinate is an old antidiagonal, of the new column coordinate an old diagonal, of the new diagonal an old column and of the new antidiagonal an old row; $\psi$ is bijective because $\det\begin{pmatrix}1&1\\1&-1\end{pmatrix}=-2$ is a unit modulo $15$. Composing $\tau$, $\nu$ and $\psi$ yields, in one-line notation listing the images of $(R,C,D,A)$, exactly the eight family permutations
+\[
+RCDA,\quad RCAD,\quad CRDA,\quad CRAD,\quad DARC,\quad DACR,\quad ADRC,\quad ADCR,
+\]
+which one verifies by direct substitution to be closed under composition: they form the dihedral group of order $8$ preserving the partition $\{\{R,C\},\{D,A\}\}$, and no composition of the three generators produces a permutation splitting that partition. Conversely, every family-preserving linear map agrees with one of eight representatives --- one above each induced permutation --- up to composition with a common unit scaling $(r,c)\mapsto(ur,uc)$, and $|(\Zf)^{\times}|=8$, which accounts for all $8\cdot 8=64$ linear maps found by the exhaustive matrix enumeration. The induced action on size profiles is the permutation action of this $D_4$ on ordered quadruples.
 
 \begin{proposition}\label{prop:247}
 Let $(R,C,D,A)$ be a configuration in $\Zf$ with $|\Bl|\ge 21$, $|\Wh|\ge 21$ and $S\le 30$. Then its size profile is equivalent, under the $D_4$ action together with complementation $s_i\mapsto 15-s_i$ in the case $S=30$, to one of exactly $247$ canonical profiles, distributed by $S$ as in Table~\ref{tab:strata15}.
@@ -316,7 +320,7 @@ Fix a canonical profile. By the $D_4$ symmetry we may choose either $(R,C)$ or $
 
 \subsection*{Stage 1: representatives of the fixed pair}
 
-Fix the pair $(R,C)$ up to the subgroup of $\Gamma$ that preserves the ordered profile. This subgroup is generated by:
+Fix the pair $(R,C)$ up to a subgroup $H\le\Gamma$ of the stabilizer of the ordered profile that also preserves the chosen fixed-pair/completion decomposition. It is generated by:
 \begin{itemize}
 \item independent translations $(R,C)\mapsto(R+\alpha,\ C+\beta)$, which change $D$ and $A$ only by translations ($225$ elements);
 \item common unit scaling $(R,C)\mapsto(uR,\ uC)$ for $u\in(\Zf)^{\times}$, which scales $D$ and $A$ by the same $u$ ($8$ elements);
@@ -325,7 +329,17 @@ Fix the pair $(R,C)$ up to the subgroup of $\Gamma$ that preserves the ordered p
 \end{itemize}
 The last restriction is the one soundness point that is easy to get wrong. Since $\nu$ exchanges the diagonal and antidiagonal families, an ordered profile with $d\ne a$ is not mapped to itself, and quotienting by $\nu$ would then identify configurations belonging to different ordered profiles --- legitimate only if both orientations are enumerated. We use $\nu$ only when $d=a$, where it is a genuine automorphism of the ordered profile. An earlier cost model in this project applied $\nu$ unconditionally; correcting it raised the workload of the independent enumerator from $4{,}876{,}723{,}839$ to $6{,}241{,}793{,}402$ completions.
 
-The resulting group has order $225\cdot 8=1800$, doubled for each of the two admissible extra generators, hence $1800$, $3600$ or $7200$. Representatives are produced by first reducing each set to its cyclic-translation necklace and then quotienting by the residual unit, transpose and sign actions. Only $43$ distinct triples $(r,c,\text{group})$ occur across the $247$ profiles, and every one of the resulting orbit counts was verified independently by Burnside's lemma (Section~\ref{sec:verification}).
+$H$ need not be the full stabilizer of the ordered profile inside $\Gamma$: when all four sizes are equal, for instance, $\psi$ stabilizes the ordered profile but exchanges the fixed pair with the completion pair, and it is deliberately not in $H$. Quotienting by a subgroup is always sound --- it can only produce more representatives than a larger group would, never miss an orbit --- so omitted symmetries cost work, not correctness. The quotient is justified by the following transfer lemma.
+
+\begin{lemma}[Orbit transfer]\label{lem:transfer15}
+Let $(R,C)$ and $(R',C')$ lie in the same $H$-orbit. Then for each pair of prescribed completion sizes $(d,a)$, a completion $(D,A)$ of $(R,C)$ with $|\Bl|\ge 21$, $|\Wh|\ge 21$ and $|D|=d$, $|A|=a$ exists if and only if the corresponding completion of $(R',C')$ exists.
+\end{lemma}
+
+\begin{proof}
+An element of $H$ with $(R,C)=h(R',C')$ is induced by an affine board symmetry $\gamma\in\Gamma$. If $(R',C',D',A')$ is a configuration, then $\gamma$ carries it to a configuration with fixed pair $(R,C)$ and the same $|\Bl|$ and $|\Wh|$, and by the admissibility conditions above ($\tau$ only when $r=c$, $\nu$ only when $d=a$) the completion sizes are preserved. Apply this to a feasible completion in either direction.
+\end{proof}
+
+By Lemma~\ref{lem:transfer15} it suffices that the enumerated set of pairs intersect every $H$-orbit of pairs of the prescribed sizes; nothing more is required for soundness. The group has order $225\cdot 8=1800$, doubled for each of the two admissible extra generators, hence $1800$, $3600$ or $7200$. The implementation produces its pair set by reducing each coordinate to its cyclic-translation necklace and then sweeping all necklace pairs: each pair not previously marked is emitted as a representative, and all images of an emitted pair under the residual unit, transpose and sign actions are marked. A pair is skipped only when marked, i.e.\ only when an explicit $h\in H$ mapping an emitted representative to it has been exhibited, so the emitted set meets every orbit. That it is moreover an exact transversal --- one representative per orbit --- is not needed for soundness but is verified anyway: only $43$ distinct triples $(r,c,\text{group})$ occur across the $247$ profiles, and for each of them the cardinality of the emitted set equals the orbit count computed independently by Burnside's lemma (Section~\ref{sec:verification}).
 
 Choosing the fixed pair is a free optimization: for each profile both choices are costed as (number of pair representatives) $\times$ (number of subsets of the smaller completion family) and the cheaper one is taken. Likewise, within the completion families, the family with fewer subsets is the one enumerated in Stage~2, which is legitimate because $\nu$ exchanges the two completion families globally, so the ordered profiles $(r,c,d,a)$ and $(r,c,a,d)$ are simultaneously feasible or infeasible.
 
@@ -358,29 +372,41 @@ Hence a diagonal set $D$ of the prescribed size $d$ completes the configuration 
 \qquad\text{and}\qquad
 \sum_{x\in D}q_x\ \le\ Q_0-21 .
 \end{equation}
-This is an exact $15$-item, fixed-cardinality, two-constraint subset problem, with nonnegative integer weights $p_x,q_x\le 15$. Before it is posed, the necessary conditions $\sum_x p_x\ge 21$ and $Q_0\ge 21$ are tested and cheaply discard most candidates $A$.
+This is an exact $15$-item, fixed-cardinality, two-constraint subset problem, with nonnegative integer weights $p_x,q_x\le 15$. Before it is posed, two scalar necessary conditions --- $\sum_x p_x\ge 21$ and $Q_0\ge 21$, both depending on $A$ alone --- are tested and cheaply discard most candidates $A$.
 
-\subsection*{Stage 3: exact decision of \eqref{eq:subset15}}
+\subsection*{Stage 3: exact completion decision}
 
-Problem \eqref{eq:subset15} is decided by a depth-first search over the $15$ items, each included or excluded, with the following bounds precomputed by suffix dynamic programming: for every position $x$ and every remaining cardinality $k$, the largest attainable sum of $k$ of the weights $p_x,\dots,p_{14}$, and the smallest attainable sum of $k$ of the weights $q_x,\dots,q_{14}$.
+Problem \eqref{eq:subset15} is decided in two layers, both of which reject only by necessary conditions. First, two cardinality-aware root bounds: let $\mu$ be the sum of the $d$ largest of the weights $p_x$ and let $\lambda$ be the sum of the $d$ smallest of the weights $q_x$. Every $d$-element set $D$ satisfies $\sum_{x\in D}p_x\le\mu$ and $\sum_{x\in D}q_x\ge\lambda$, so if $\mu<21$ or $\lambda>Q_0-21$ the instance is infeasible and is rejected without further work; this layer is where the bulk of the scalar-prefilter survivors die (Table~\ref{tab:stats15}). Second, for the instances that pass both root bounds, a depth-first search over the $15$ items, each included or excluded, with the following bounds precomputed by suffix dynamic programming: for every position $x$ and every remaining cardinality $k$, the largest attainable sum of $k$ of the weights $p_x,\dots,p_{14}$, and the smallest attainable sum of $k$ of the weights $q_x,\dots,q_{14}$.
 
 \begin{lemma}\label{lem:exhaustive15}
-The search of Stage~3 answers \eqref{eq:subset15} correctly.
+The two-layer decision of Stage~3 answers \eqref{eq:subset15} correctly.
 \end{lemma}
 
 \begin{proof}
-A node is abandoned only when one of the following holds: the number of remaining items is smaller than the cardinality still required; the accumulated $q$-sum already exceeds $Q_0-21$; the accumulated $p$-sum plus the maximal attainable remaining $p$-sum with the required cardinality is below $21$; or the accumulated $q$-sum plus the minimal attainable remaining $q$-sum with the required cardinality exceeds $Q_0-21$. Each is a necessary condition for a feasible completion within the subtree, so no feasible $D$ is discarded. Conversely the search reports success only at a node where the required cardinality is reached and the $p$-constraint is met, or at a node where the $p$-constraint is already met and the minimal remaining $q$-sum with the required cardinality keeps the $q$-constraint satisfiable; in the latter case an explicit feasible $D$ exists, since $p$-sums only increase as further items are added. In both cases a feasible $D$ exists. As the search is otherwise a complete binary recursion over the $15$ items, it is exhaustive.
+The root bounds reject only infeasible instances, as just argued. In the search, a node is abandoned only when one of the following holds: the number of remaining items is smaller than the cardinality still required; the accumulated $q$-sum already exceeds $Q_0-21$; the accumulated $p$-sum plus the maximal attainable remaining $p$-sum with the required cardinality is below $21$; or the accumulated $q$-sum plus the minimal attainable remaining $q$-sum with the required cardinality exceeds $Q_0-21$. Each is a necessary condition for a feasible completion within the subtree, so no feasible $D$ is discarded. Conversely the search reports success only at a node where the required cardinality is reached and the $p$-constraint is met, or at a node where the $p$-constraint is already met and the minimal remaining $q$-sum with the required cardinality keeps the $q$-constraint satisfiable; in the latter case an explicit feasible $D$ exists, since $p$-sums only increase as further items are added. In both cases a feasible $D$ exists. As the search is otherwise a complete binary recursion over the $15$ items, it is exhaustive.
 \end{proof}
 
 Item order affects only speed, not correctness; the implementation sorts items by a ratio heuristic. Consequently the three stages together decide, for a given profile, whether \emph{any} configuration with that ordered size profile has $|\Bl|\ge 21$ and $|\Wh|\ge 21$, and the answer transfers to the whole $D_4$ orbit and, in the stratum $S=30$, to the complementary profile as well.
 
 \section{The search and its outcome for $n=15$}\label{sec:result15}
 
+The following lemma assembles the chain of Sections~\ref{sec:reduction}--\ref{sec:completion15} into a single soundness statement for the computation.
+
+\begin{lemma}[End-to-end exhaustiveness, $n=15$]\label{lem:endtoend15}
+If a configuration in $\Zf$ with $|\Bl|\ge 21$ and $|\Wh|\ge 21$ exists, then the search of Section~\ref{sec:completion15}, executed on all $247$ canonical profiles, reports a feasible completion for at least one of them.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:budget} such a configuration exists with $S\le 30$. Its size profile satisfies the pair and triple conditions (Lemmas~\ref{lem:pairs15} and~\ref{lem:triples}), so by Proposition~\ref{prop:247} some element $\gamma$ of the $D_4$ action --- composed, possibly, with complementation when $S=30$ --- carries the configuration to one whose ordered profile is a canonical worklist profile; $\gamma$ preserves feasibility. Within that profile's search, a further symmetry (the choice of fixed pair, Lemma~\ref{lem:transfer15}, and if applicable the Stage-2 relabelling of the completion families) carries the configuration to one whose fixed pair is an enumerated representative. Its Stage-2 set is among the exhaustively enumerated subsets of the prescribed size, and it passes the scalar conditions of Stage~2, which are necessary. Its remaining line set satisfies \eqref{eq:subset15}, so the instance passes the root bounds and, by Lemma~\ref{lem:exhaustive15}, the Stage-3 decision reports it feasible.
+\end{proof}
+
 \begin{proposition}\label{prop:unsat15}
 For every one of the $247$ canonical profiles of Proposition~\ref{prop:247}, no configuration in $\Zf$ with that profile has $|\Bl|\ge 21$ and $|\Wh|\ge 21$.
 \end{proposition}
 
-The proof is the exhaustive execution of Section~\ref{sec:completion15} on all $247$ profiles. The run statistics are given in Table~\ref{tab:stats15}; a per-profile certificate recording, for each profile, the fixed pair, the orbit count, a hash of the representative list, and the case counts, is included among the ancillary files.
+\begin{proof}
+The search of Section~\ref{sec:completion15} was executed on all $247$ profiles by \texttt{peace15\_solver.cpp} (SHA-256 digest in Section~\ref{sec:repro}) and reported no feasible completion anywhere; by Lemma~\ref{lem:endtoend15} this establishes the claim. The run statistics are given in Table~\ref{tab:stats15}; a per-profile certificate recording, for each profile, the fixed pair, the orbit count, a hash of the representative list, and the case counts, is included among the ancillary files, and the run was independently repeated as described in Section~\ref{sec:ver15}.
+\end{proof}
 
 \begin{table}[h]
 \centering
@@ -388,15 +414,15 @@ The proof is the exhaustive execution of Section~\ref{sec:completion15} on all $
 \toprule
 canonical profiles                 & $247$ \\
 distinct fixed-pair orbit types    & $43$ \\
-antidiagonal subsets examined      & $6{,}074{,}753{,}568$ \\
-survivors of the necessary-condition prefilter & $2{,}329{,}772{,}941$ \\
-calls to the exact subset decision & $26{,}948{,}453$ \\
-branch nodes in those calls        & $246{,}476{,}279$ \\
+Stage-2 completion subsets examined & $6{,}074{,}753{,}568$ \\
+survivors of the scalar prefilter of Stage~2 & $2{,}329{,}772{,}941$ \\
+survivors of the root bounds of Stage~3 (searches entered) & $26{,}948{,}453$ \\
+branch nodes in those searches     & $246{,}476{,}279$ \\
 profiles admitting a $21+21$ configuration & $0$ \\
 \bottomrule
 \end{tabular}
 \medskip
-\caption{Statistics of the exhaustive run for $n=15$. The number of antidiagonal subsets examined equals $\sum_{\text{profiles}} (\text{orbit count})\cdot\binom{15}{a}$, which is checked row by row by the audit script.}\label{tab:stats15}
+\caption{Statistics of the exhaustive run for $n=15$, one line per pruning layer: of the $6{,}074{,}753{,}568$ enumerated Stage-2 subsets, $2{,}329{,}772{,}941$ pass the two scalar conditions of Stage~2, of which $26{,}948{,}453$ pass the two cardinality-aware root bounds of Stage~3 and enter the depth-first search; every layer rejects by necessary conditions only. The number of Stage-2 subsets examined equals $\sum_{\text{profiles}} (\text{orbit count})\cdot\binom{15}{a}$, which is checked row by row by the audit script.}\label{tab:stats15}
 \end{table}
 
 \begin{proof}[Proof of Theorem~\ref{thm:main15}]
@@ -519,7 +545,7 @@ Three involutions act on profiles, each induced by an affine symmetry of the boa
 \nu(r,c)&=(r,-c): && R\mapsto R,\ C\mapsto -C,\quad D\leftrightarrow A;\\
 \sigma(r,c)&=(r+1,c): && R\mapsto R+1,\ C\mapsto C,\quad D\mapsto D+1,\ A\mapsto A+1 .
 \end{align*}
-Negation and translation by an even amount preserve the parity of a line label, so $\tau$ acts on profiles by $r\leftrightarrow c$ and $\nu$ by $(d_0,d_1)\leftrightarrow(a_0,a_1)$. Translation by an odd amount in one coordinate shifts both the diagonal and the antidiagonal label by an odd amount, so $\sigma$ acts by the \emph{simultaneous} exchange $d_0\leftrightarrow d_1$, $a_0\leftrightarrow a_1$. Unlike the odd case there is no halving map: $2$ is not a unit modulo $16$, the matrix $\binom{1\ \ 1}{1\ -1}$ has determinant $-2$ and is not invertible over $\Zs$, and indeed the two pairs of families are not interchangeable, since a row and a column always meet in one cell while a diagonal and an antidiagonal meet in two or in none. The group generated by the three profile involutions has order at most $8$.
+Negation and translation by an even amount preserve the parity of a line label, so $\tau$ acts on profiles by $r\leftrightarrow c$ and $\nu$ by $(d_0,d_1)\leftrightarrow(a_0,a_1)$. Translation by an odd amount in one coordinate shifts both the diagonal and the antidiagonal label by an odd amount, so $\sigma$ acts by the \emph{simultaneous} exchange $d_0\leftrightarrow d_1$, $a_0\leftrightarrow a_1$. Unlike the odd case there is no halving map: $2$ is not a unit modulo $16$, the matrix $\begin{pmatrix}1&1\\1&-1\end{pmatrix}$ has determinant $-2$ and is not invertible over $\Zs$, and indeed the two pairs of families are not interchangeable, since a row and a column always meet in one cell while a diagonal and an antidiagonal meet in two or in none. The group generated by the three profile involutions has order at most $8$.
 
 \begin{proposition}\label{prop:342}
 Let $(R,C,D,A)$ be a configuration in $\Zs$ with $|\Bl|\ge 33$, $|\Wh|\ge 33$ and $S\le 32$. Then its profile is one of exactly $1{,}898$ ordered six-tuples satisfying \eqref{eq:pair16}, \eqref{eq:pair16c}, \eqref{eq:triple16a}, \eqref{eq:triple16b} and $S\le 32$, falling into exactly $342$ classes under the group generated by $\tau,\nu,\sigma$, distributed by $S$ as in Table~\ref{tab:strata16}.
@@ -566,7 +592,7 @@ The group has order $256\cdot 8=2048$, doubled for each admissible extra generat
 
 Translations require the same care as the relative sign, and for the same reason. A translation with $\alpha-\beta$ odd sends $D\mapsto D+(\alpha-\beta)$ and $A\mapsto A+(\alpha+\beta)$ with both shifts odd, hence flips the two parity splits simultaneously: it maps the ordered profile $(r,c,d_0,d_1,a_0,a_1)$ to $(r,c,d_1,d_0,a_1,a_0)$, a different ordered profile in general. Quotienting the row--column pair by \emph{all} $256$ translations is therefore sound only if both parity orientations of every canonical profile are searched. They are: each canonical profile is expanded into the set $\{p,\sigma p\}$ of oriented profiles, which has two elements unless $p$ is $\sigma$-invariant. Across the $342$ canonical profiles this produces $677$ oriented jobs ($335$ profiles contribute two and $7$ contribute one).
 
-Within one oriented job, the diagonal and antidiagonal families may still be exchanged, because $\nu$ does so globally, so the ordered profiles $(r,c,d_0,d_1,a_0,a_1)$ and $(r,c,a_0,a_1,d_0,d_1)$ are simultaneously feasible or infeasible; the implementation puts the family with the smaller number of admissible masks in the role of $A$, which is the family enumerated in Stage~2. Only $14$ distinct triples $(r,c,\text{sign admissible})$ occur across the $677$ jobs, and all $14$ orbit counts were verified independently by Burnside's lemma (Section~\ref{sec:verification}).
+Within one oriented job, the diagonal and antidiagonal families may still be exchanged, because $\nu$ does so globally, so the ordered profiles $(r,c,d_0,d_1,a_0,a_1)$ and $(r,c,a_0,a_1,d_0,d_1)$ are simultaneously feasible or infeasible; the implementation puts the family with the smaller number of admissible masks in the role of $A$, which is the family enumerated in Stage~2. The transfer argument of Lemma~\ref{lem:transfer15} applies verbatim to the group above, with its admissibility conditions ($\tau$ only when $r=c$, $\nu$ only when $(d_0,d_1)=(a_0,a_1)$): soundness requires only that the enumerated pairs meet every orbit, and the emitted set is produced by the same necklace sweep with explicit orbit marking as in the odd case. Only $14$ distinct triples $(r,c,\text{sign admissible})$ occur across the $677$ jobs, and for each of them the cardinality of the emitted set equals the orbit count computed independently by Burnside's lemma (Section~\ref{sec:verification}).
 
 \subsection*{Stage 2: the completion as a parity-constrained subset problem}
 
@@ -593,7 +619,7 @@ so that $|\Bl(R,C,D,A)|=\sum_{x\in D}p_x$ and $|\Wh(R,C,D,A)|=Q_0-\sum_{x\in D}q
 \end{equation}
 Before \eqref{eq:subset16} is posed, the necessary conditions $\sum_x p_x\ge 33$ and $Q_0\ge 33$ are tested; they discard all but a vanishing fraction of the candidates $A$ (Table~\ref{tab:stats16}).
 
-\subsection*{Stage 3: exact decision of \eqref{eq:subset16}}
+\subsection*{Stage 3: exact completion decision}
 
 Problem \eqref{eq:subset16} is a $16$-item, two-constraint subset problem with a prescribed cardinality \emph{in each parity class}. It is decided in two ways, and both were run over the whole search (Section~\ref{sec:verification}).
 
@@ -611,11 +637,21 @@ Consequently the three stages together decide, for a given oriented profile, whe
 
 \section{The search and its outcome for $n=16$}\label{sec:result16}
 
+\begin{lemma}[End-to-end exhaustiveness, $n=16$]\label{lem:endtoend16}
+If a configuration in $\Zs$ with $|\Bl|\ge 33$ and $|\Wh|\ge 33$ exists, then the search of Section~\ref{sec:completion16}, executed on all $677$ oriented jobs, reports a feasible completion for at least one of them.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:budget} such a configuration exists with $S\le 32$. Its parity-refined profile satisfies the conditions of Lemmas~\ref{lem:pairs16} and~\ref{lem:triple16}, so by Proposition~\ref{prop:342} some element of $\langle\tau,\nu,\sigma\rangle$ carries it to a configuration whose ordered profile is one of the $677$ oriented profiles searched; each generator is induced by a board symmetry and preserves feasibility. Within that job, a symmetry of the Stage-1 group (with the transfer argument of Lemma~\ref{lem:transfer15}) and, if applicable, the Stage-2 relabelling by $\nu$ carry the configuration to one whose row--column pair is an enumerated representative. Its antidiagonal set is among the exhaustively enumerated admissible masks, and it passes the two scalar conditions of Stage~2, which are necessary. Its diagonal set satisfies \eqref{eq:subset16}, so by Lemma~\ref{lem:exhaustive16} --- or trivially by the brute-force kernel --- the Stage-3 decision reports it feasible.
+\end{proof}
+
 \begin{proposition}\label{prop:unsat16}
 For every one of the $677$ oriented profiles derived from the $342$ canonical profiles of Proposition~\ref{prop:342}, no configuration in $\Zs$ with that profile has $|\Bl|\ge 33$ and $|\Wh|\ge 33$.
 \end{proposition}
 
-The proof is the exhaustive execution of Section~\ref{sec:completion16} on all $677$ jobs. The run statistics are given in Table~\ref{tab:stats16}; a per-job certificate recording the oriented profile, the pair-orbit count, the number of admissible antidiagonal masks and the case counts is included among the ancillary files, for each of the two completion kernels.
+\begin{proof}
+The search of Section~\ref{sec:completion16} was executed twice on all $677$ jobs, by \texttt{peace16\_solver.cpp} and its brute-force variant (SHA-256 digests in Section~\ref{sec:repro}), and reported no feasible completion anywhere; by Lemma~\ref{lem:endtoend16} this establishes the claim. The run statistics are given in Table~\ref{tab:stats16}; a per-job certificate recording the oriented profile, the pair-orbit count, the number of admissible antidiagonal masks and the case counts is included among the ancillary files, for each of the two completion kernels.
+\end{proof}
 
 \begin{table}[h]
 \centering
@@ -624,15 +660,15 @@ The proof is the exhaustive execution of Section~\ref{sec:completion16} on all $
 canonical profiles                          & $342$ \\
 oriented profile jobs                       & $677$ \\
 distinct row--column pair orbit types       & $14$ \\
-antidiagonal subsets examined               & $13{,}163{,}028{,}768$ \\
-survivors of the necessary-condition prefilter & $17{,}834$ \\
-calls to the exact completion decision      & $17{,}834$ \\
-branch nodes in those calls                 & $0$ \\
+Stage-2 completion subsets examined         & $13{,}163{,}028{,}768$ \\
+survivors of the scalar prefilter of Stage~2 & $17{,}834$ \\
+survivors of the root bounds of Stage~3 (searches entered) & $0$ \\
+branch nodes in the depth-first search      & $0$ \\
 jobs admitting a $33+33$ configuration      & $0$ \\
 \bottomrule
 \end{tabular}
 \medskip
-\caption{Statistics of the exhaustive run for $n=16$. The number of antidiagonal subsets examined equals $\sum_{\text{jobs}}(\text{pair-orbit count})\cdot\binom{8}{a_0}\binom{8}{a_1}$, which is checked row by row by the audit script. The branch-node count is $0$ because the parity-aware extremal bound of Lemma~\ref{lem:exhaustive16} already refuted each of the $17{,}834$ surviving instances, so the depth-first search was never entered; the same $17{,}834$ instances were also refuted by direct enumeration of all admissible masks.}\label{tab:stats16}
+\caption{Statistics of the exhaustive run for $n=16$, one line per pruning layer as in Table~\ref{tab:stats15}. The number of Stage-2 subsets examined equals $\sum_{\text{jobs}}(\text{pair-orbit count})\cdot\binom{8}{a_0}\binom{8}{a_1}$, which is checked row by row by the audit script. The parity-aware root bound of Lemma~\ref{lem:exhaustive16} already refuted each of the $17{,}834$ scalar-prefilter survivors, so the depth-first search was never entered; the same $17{,}834$ instances were also refuted by direct enumeration of all admissible masks by the brute-force kernel.}\label{tab:stats16}
 \end{table}
 
 The collapse from $1.3\cdot10^{10}$ candidates to $17{,}834$ is caused entirely by the two necessary conditions $\sum_x p_x\ge 33$ and $Q_0\ge 33$ of Stage~2; both are conditions on the antidiagonal set alone, and on the even torus they are severe.
@@ -649,7 +685,7 @@ An exhaustive computation is only as good as the evidence that it is exhaustive 
 
 \emph{Startup gates.} Each solver begins with gates that abort the run on failure rather than proceeding: a randomized comparison of its exact completion decision against direct enumeration of all admissible masks, a check of known orbit counts, and a regeneration of the profile list from the necessary conditions.
 
-\emph{Memory safety.} AddressSanitizer and UndefinedBehaviorSanitizer builds of both proof solvers pass all startup self-tests.
+\emph{Memory safety.} AddressSanitizer and UndefinedBehaviorSanitizer builds of both proof solvers pass all startup self-tests; beyond that, an ASan+UBSan build of each proof solver re-ran its \emph{complete} sweep --- all $247$ profiles for $n=15$ ($232$~s single-threaded) and all $677$ jobs for $n=16$ ($244$~s) --- with zero sanitizer diagnostics and certificates identical to the recorded runs in every non-timing column.
 
 \emph{Independent audit scripts.} A Python audit script for each case, sharing no code with the solvers, re-derives the profile list, recomputes every fixed-pair orbit count from Burnside's lemma --- counting, for each group element, the subsets of each cardinality invariant under the induced affine permutation of $\Zn$, via the cycle structure --- checks the per-row and total case arithmetic of the certificates, and re-counts the lower-bound witness. Both print \texttt{AUDIT\_OK}.
 
@@ -665,15 +701,15 @@ The two enumerators mentioned below --- the \emph{proof solver} and the \emph{in
 
 \emph{Repeated runs on different toolchains.} The proof solver was run three times: twice as recorded by its author (five threads, $60.4$~s; three threads, $74.0$~s) and once by us from a fresh build with a different compiler and no OpenMP (single-threaded, $101.7$~s). All $247$ rows of the certificate agree in every column except the per-profile timing.
 
-\emph{Brute-force gates on the completion kernel.} At startup the proof solver compares its Stage~3 decision against direct enumeration of all $\binom{15}{k}$ subsets on $20{,}000$ deterministic pseudorandom instances with randomized weights and cardinalities, and aborts on any disagreement; the enumerator runs the same style of gate on $100{,}000$ instances. The solver additionally checks three known pair-orbit counts, $11{,}793$, $6{,}892$ and $13{,}654$.
+\emph{Brute-force gates on the completion kernel.} At startup the proof solver compares its Stage~3 decision against direct enumeration of all $\binom{15}{k}$ subsets on $20{,}000$ deterministic pseudorandom instances with randomized weights and cardinalities, and aborts on any disagreement; the enumerator runs the same style of gate on $100{,}000$ instances. The solver additionally checks three known pair-orbit counts before starting: $11{,}793$ for $(r,c)=(7,7)$ under the order-$3600$ group (transpose, no relative sign), $6{,}892$ for $(7,7)$ under the order-$7200$ group (transpose and relative sign), and $13{,}654$ for $(7,8)$ with the relative sign; the first two had been derived independently earlier in the project, by Burnside's lemma.
 
 \emph{Burnside audit.} The audit script (\texttt{peace15\_audit.py}) recomputes all $43$ fixed-pair orbit counts from Burnside's lemma and compares them with the counts recorded in the certificate. It also verifies that each certificate row satisfies $\text{cases}=\text{orbits}\times\binom{15}{a}$, verifies the column total $6{,}074{,}753{,}568$, and re-counts the witness of Proposition~\ref{prop:lower15} as $20$ black-homogeneous and $22$ white-homogeneous cells.
 
-\emph{The witness.} The $20+20$ placement of Proposition~\ref{prop:lower15} was checked by four independently written scripts, including a from-scratch check that verifies all $400$ black--white pairs against all four attack relations directly, rather than through the line-set formulation.
+\emph{The witness.} The $20+20$ placement of Proposition~\ref{prop:lower15} was checked by four independently written scripts, including a from-scratch check that verifies all $400$ black--white pairs against all four attack relations directly, rather than through the line-set formulation. That check is included among the ancillary files as \texttt{check\_witness15.py}; the other three (the audit script's recount, and two checks in the project repository) are described here for completeness.
 
 \emph{Source audit.} The proof solver was read line by line against the mathematics of Section~\ref{sec:completion15}, with particular attention to the three places where an unsound shortcut would be invisible in the output: the admissibility conditions for the transpose and relative-sign quotients, the necessary-condition character of every pruning rule, and the reconstruction path that would turn a reported feasible instance into an explicit quadruple verified cell by cell.
 
-\emph{Independent partial evidence.} A SAT-based cube-and-conquer campaign on a $3{,}244$-variable encoding of the $21+21$ question, later superseded and never finished, produced roughly $28{,}900$ DRAT-certified cube refutations checked by \texttt{drat-trim} in default backward mode, with no satisfiable cube anywhere. It proves nothing on its own but is consistent with Theorem~\ref{thm:main15}. A per-profile certified-CNF pilot refuted $(5,5,5,5)$ with a checked $9.2$~MB DRAT proof but timed out on $(6,8,7,7)$ under two solvers; this is why an exhaustive enumeration, and not a proof-logging pipeline, carries the upper bound.
+\emph{Independent partial evidence.} A SAT-based cube-and-conquer campaign on a $3{,}244$-variable encoding of the $21+21$ question, later superseded and never finished, produced roughly $28{,}900$ DRAT-certified cube refutations checked by \texttt{drat-trim} in default backward mode; none of the processed cubes was satisfiable, though the cube partition was never completed. It proves nothing on its own but is consistent with Theorem~\ref{thm:main15}. A per-profile certified-CNF pilot refuted $(5,5,5,5)$ with a checked $9.2$~MB DRAT proof but timed out on $(6,8,7,7)$ under two solvers; this is why an exhaustive enumeration, and not a proof-logging pipeline, carries the upper bound.
 
 \subsection{The case $n=16$}\label{sec:ver16}
 
@@ -692,7 +728,7 @@ completion; all $677$ rows of both regenerated certificates agree with the
 recorded five-thread runs in every non-timing column. The startup gates of
 the preceding paragraph were exercised by these reruns.
 
-\emph{The witness.} The $32+32$ placement of Proposition~\ref{prop:lower16} was verified independently of the line-set formulation by checking all $32\cdot 32=1024$ black--white pairs against all four attack relations directly, and separately by reconstructing the $(4,4)$-plaid from the definition in \cite[\S3]{CDHS24} and confirming that it coincides cell for cell with \eqref{eq:witness16} after the relabelling $i\mapsto i-1$.
+\emph{The witness.} The $32+32$ placement of Proposition~\ref{prop:lower16} was verified independently of the line-set formulation by checking all $32\cdot 32=1024$ black--white pairs against all four attack relations directly (included among the ancillary files as \texttt{check\_witness16.py}), and separately by reconstructing the $(4,4)$-plaid from the definition in \cite[\S3]{CDHS24} and confirming that it coincides cell for cell with \eqref{eq:witness16} after the relabelling $i\mapsto i-1$.
 
 \emph{Source audit.} The proof solver was read against the mathematics of Sections~\ref{sec:profiles16}--\ref{sec:completion16}, with particular attention to the two soundness points peculiar to the even case: that quotienting the row--column pair by all $256$ translations is compensated by searching both parity orientations of every canonical profile, and that the relative-sign quotient is applied only when $(d_0,d_1)=(a_0,a_1)$.
 
@@ -717,15 +753,17 @@ The ancillary files accompanying this note are:
 \texttt{peace16\_certificate.tsv} & per-job certificate, optimized kernel\\
 \texttt{peace16\_certificate\_bruteforce.tsv} & per-job certificate, brute-force kernel\\
 \addlinespace
-\texttt{README.txt} & build and run instructions, expected output\\
+\texttt{check\_witness15.py} & pairwise check of the $20+20$ witness\\
+\texttt{check\_witness16.py} & pairwise check of the $32+32$ witness\\
+\texttt{README.txt} & instructions, certificate schema, expected output\\
+\texttt{SHA256SUMS} & digests of every other ancillary file\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-To rebuild the upper bound for $n=15$:
+To rebuild the upper bound for $n=15$ (portable verification build):
 \begin{verbatim}
-g++ -O3 -march=native -fopenmp -DNDEBUG -std=c++17 \
-    peace15_solver.cpp -o peace15_solver
+g++ -O3 -fopenmp -std=c++17 peace15_solver.cpp -o peace15_solver
 OMP_NUM_THREADS=5 ./peace15_solver \
     --worklist WORKLIST-2026-07-25.tsv \
     --output peace15_certificate.tsv
@@ -733,20 +771,19 @@ python3 peace15_audit.py
 \end{verbatim}
 The solver prints \texttt{SELFTEST\_OK} after its startup gates and \texttt{ALL\_UNSAT} on completion; the audit script prints \texttt{AUDIT\_OK}. The recorded five-thread run took about $60$ seconds. The independent enumerator is built and run by
 \begin{verbatim}
-clang++ -O3 -std=c++20 -DNDEBUG profile_enum.cpp -o profile_enum
+clang++ -O3 -std=c++20 profile_enum.cpp -o profile_enum
 ./profile_enum --self-test --random 100000
 ./profile_enum --batch --worklist WORKLIST-2026-07-25.tsv \
     --results results.jsonl --log logs
 \end{verbatim}
 and takes about $200$ seconds single-threaded.
 
-To rebuild the upper bound for $n=16$:
+To rebuild the upper bound for $n=16$ (portable verification build):
 \begin{verbatim}
-g++ -O3 -march=native -fopenmp -std=c++20 \
-    peace16_solver.cpp -o peace16_solver
+g++ -O3 -fopenmp -std=c++20 peace16_solver.cpp -o peace16_solver
 OMP_NUM_THREADS=5 ./peace16_solver --output peace16_certificate.tsv
 
-g++ -O3 -march=native -fopenmp -std=c++20 \
+g++ -O3 -fopenmp -std=c++20 \
     peace16_solver_bruteforce.cpp -o peace16_solver_bruteforce
 OMP_NUM_THREADS=5 ./peace16_solver_bruteforce \
     --output peace16_certificate_bruteforce.tsv
@@ -754,6 +791,8 @@ OMP_NUM_THREADS=5 ./peace16_solver_bruteforce \
 python3 peace16_audit.py
 \end{verbatim}
 Each solver prints \texttt{SELFTEST\_OK} after its startup gates and \texttt{ALL\_UNSAT} on completion; the audit script prints \texttt{AUDIT\_OK} and compares the two certificates column by column. The recorded five-thread runs took about $78$ seconds each. Runtime is not part of either proof. Note that both audit scripts read the certificates from their own directory, so run them after the solvers have written those files, or against the shipped copies.
+
+Three remarks on the build and run environment. First, \texttt{-march=native} and \texttt{-DNDEBUG} may be added for speed and were used in the recorded runs; they are omitted from the portable commands above because neither affects any verification step --- in particular, no proof-relevant check in any of the programs is implemented via \texttt{assert} (the only assertion is an internal size-ordering invariant), all gates being explicit runtime tests that abort the program and are active in every build. Second, the randomized self-tests are deterministic: they use \texttt{std::mt19937\_64} with the fixed seeds \texttt{0x4d595df4d0f33173} ($n=15$, $20{,}000$ instances) and \texttt{0x16e0ddc0ffee} ($n=16$, $20{,}000$ instances per solver), so every rerun tests the same instances. Third, the recorded five-thread runs were produced with GCC/OpenMP in an x86-64 (AMD EPYC) container, and the independent local reruns --- serial, and under AddressSanitizer/UndefinedBehaviorSanitizer --- with Apple \texttt{clang}~21 on an \texttt{arm64} (Apple Silicon) machine running macOS; agreement of all non-timing certificate columns across these environments is part of the evidence of Section~\ref{sec:verification}.
 
 SHA-256 digests of the files that carry the two upper bounds, as recorded:
 \begin{center}\small
