@@ -15,13 +15,14 @@ point of shipping the ancillary code.
 | directory | result | status |
 |---|---|---|
 | [`no19tiling/`](no19tiling/) | **No triangle can be cut into nineteen congruent triangles** — and more generally none can be cut into $p$ congruent triangles for any prime $p>3$ with $p\equiv 3\pmod 4$. The prime case of [Erdős Problem 634](https://www.erdosproblems.com/634). | paper + exact-arithmetic verification script |
-| [`peaceable-queens-t15/`](peaceable-queens-t15/) | **$t(15)=20$** — the largest peaceable pair of queen armies on the $15\times15$ toroidal board. First previously unknown term of [OEIS A279405](https://oeis.org/A279405). | paper + two independent exact enumerators, audit script, certificates |
+| [`peaceable-queens-even-torus/`](peaceable-queens-even-torus/) | **$t(2q)=H(2q)$ for every $q$** — an exact formula for the peaceable queens number of every even toroidal board; even-torus density exactly $(2-\sqrt3)/2$. Plus the odd values $t(15)=20$, $t(17)=28$. Extends and closes the even side of [OEIS A279405](https://oeis.org/A279405). | paper + two exact rational branch certificates, 760-cut certified library, ladder records, two independently written verifiers |
+| [`peaceable-queens-t15/`](peaceable-queens-t15/) | **$t(15)=20$ and $t(16)=32$** — the first two previously unknown terms of [OEIS A279405](https://oeis.org/A279405); companion note with the detailed exhaustive-sweep treatment. | paper + two independent exact enumerators per order, audit scripts, certificates |
 
 ## Checking the results
 
 Each directory has an `anc/README.txt` with the exact build and run commands, what each program
 checks, and — importantly — what it does *not* establish. Nothing needs third-party libraries
-beyond SymPy for the tiling script; the queens programs are plain C++ and Python.
+beyond SymPy for the tiling script and one symbolic queens verifier; the queens programs are plain C++ and Python.
 
 ## Related
 

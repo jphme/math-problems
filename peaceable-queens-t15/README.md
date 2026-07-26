@@ -24,11 +24,13 @@ sizes must be refined by parity (on an even torus a diagonal and an antidiagonal
 or in none): 342 canonical profiles, 677 oriented jobs, 13,163,028,768 cases. No larger placement
 exists in either search.
 
-**Verification is not equally strong on the two sides**, and the paper says so: for $n=15$ two
-independently written enumerators with different symmetry quotients and different completion
-algorithms agree on all 247 profiles; for $n=16$ the two recorded programs share everything outside
-the completion kernel, and a genuinely independent second enumerator is the main open hardening
-item. See Section 11 of the paper.
+**Verification**: for $n=15$ two independently written enumerators with different symmetry
+quotients and different completion algorithms agree on all 247 profiles. For $n=16$ the two
+programs recorded in this paper share everything outside the completion kernel — the paper flags
+this — and that hardening item has since been closed: two genuinely independent general-$n$
+implementations reproduced the full target-33 sweep (677 jobs, 13,163,028,768 cases) exactly. See
+the successor paper in [`../peaceable-queens-even-torus/`](../peaceable-queens-even-torus/), which
+also subsumes $t(16)=32$ under the exact even-order formula $t(2q)=H(2q)$.
 
 ## Contents
 

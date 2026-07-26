@@ -1,0 +1,1052 @@
+\documentclass[11pt]{amsart}
+\ifdefined\XeTeXrevision\else\ifdefined\pdfoutput\pdfoutput=1\fi\fi
+
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{linkblue}{RGB}{25,60,120}
+\usepackage[colorlinks=true,linkcolor=linkblue,citecolor=linkblue,urlcolor=linkblue]{hyperref}
+\hypersetup{
+  pdftitle={Peaceable queens on even toroidal boards: the exact formula t(2q)=H(2q)},
+  pdfauthor={Jan Philipp Harries},
+  pdfsubject={Peaceable queens on toroidal chessboards},
+  pdfkeywords={peaceable queens, toroidal chessboard, exact formula, moment relaxation, exact rational certificate, computer-assisted proof, OEIS A279405}
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Zn}{\Z/n\Z}
+\newcommand{\Bl}{\mathrm{B}}
+\newcommand{\Wh}{\mathrm{W}}
+\newcommand{\OPT}{\operatorname{OPT}_{42}}
+\newcommand{\bs}{\discretionary{}{}{}}
+\newcommand{\hs}[1]{\texttt{#1}}
+
+\title[Peaceable queens on even toroidal boards]{Peaceable queens on even toroidal boards:\\ the exact formula $t(2q)=H(2q)$}
+
+\author{Jan Philipp Harries}
+\thanks{ellamind GmbH, Bremen, Germany. \textit{E-mail address:} \href{mailto:jan@ellamind.com}{jan@ellamind.com}}
+
+\date{July 27, 2026}
+
+\subjclass[2020]{Primary 05B99; Secondary 05C69, 68R05, 05C30, 90C05}
+\keywords{peaceable queens, toroidal chessboard, exact formula, moment relaxation, exact rational certificate, computer-assisted proof, OEIS A279405}
+
+\raggedbottom
+
+\begin{document}
+
+\begin{abstract}
+Let $t(n)$ be the largest $m$ such that $m$ black and $m$ white queens can be placed on the $n\times n$ toroidal chessboard with no black queen attacking a white queen (OEIS A279405). We prove that for every positive integer $q$,
+\[
+t(2q)=H(2q):=\max_{0\le r_0,r_1,c_0,c_1\le q}\ \min\bigl(r_0c_1+r_1c_0,\ (q-r_0)(q-c_0)+(q-r_1)(q-c_1)\bigr).
+\]
+Thus every even order is determined by an explicit four-parameter integer maximum; for instance $t(2000)=535824$. The lower bound is a parity-separated ``plaid'' colouring. The upper bound combines two exact rational branch certificates over a $42$-equation moment relaxation, a four-page exact algebraic finish valid for $q\ge130$, and an exact integer cut-envelope ladder covering $q\le129$. Since $\kappa q^2-(1-1/\sqrt3)q-\tfrac14\le H(2q)\le \kappa q^2$ with $\kappa=4-2\sqrt3$, we obtain $\lim_{n\ \mathrm{even}} t(n)/n^2=(2-\sqrt3)/2=0.133974\ldots$, closing the even-torus gap $[0.1340,0.1402]$ of Clinch, Drescher, Huynh and Saffidine at its lower end: plaid-type constructions are exactly optimal on the even torus. We also record two new odd values, $t(15)=20$ and $t(17)=28$, obtained by exhaustive search. All machine-checkable objects are verified by independently written exact verifiers using rational arithmetic only.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+A \emph{peaceable} pair of queen armies is a placement of $m$ black and $m$ white queens on a chessboard such that no black queen attacks a white queen; queens of the same colour may attack each other freely. Maximizing $m$ is a question of Ainley \cite{Ainley77}, popularized through the OEIS sequence A250000 \cite{OEIS250000} for the ordinary $n\times n$ board, where even the asymptotics remain open: the best construction gives $\tfrac{7}{48}n^2\approx 0.1458\,n^2$ and is conjectured optimal, while the best proved upper bound is $0.1716\,n^2$; both are recorded in \cite{CDHS24}.
+
+On the \emph{toroidal} board the four lines through a cell wrap around. This makes the problem homogeneous --- the symmetry group acts transitively on cells and the combinatorics becomes arithmetic in $\Zn$ --- and it is this homogeneity that we exploit. The toroidal maxima form OEIS sequence A279405 \cite{OEIS279405}, whose exact values were known only through $n=14$ (the last two, $t(13)=16$ and $t(14)=25$, contributed by Jaideep Padhi in June 2026).
+
+Clinch, Drescher, Huynh and Saffidine \cite{CDHS24} located the toroidal problem asymptotically. For odd $n$ they proved $t(n)\le 0.125\,n^2$ \cite[Thm.~1.4]{CDHS24}. For even $n$ they gave an explicit family of constructions, the \emph{plaids}, yielding $t(n)\ge 0.1339\,n^2$ for all sufficiently large even $n$ \cite[Thm.~1.1]{CDHS24}, against the upper bound $t(n)\le 0.1402\,n^2$ \cite[Thm.~1.2]{CDHS24}, the numerical optimum of the associated non-linear programme being $0.140132\ldots$ \cite[\S4.2]{CDHS24}. The even torus was thus bracketed in $[0.1340,0.1402]$, with no indication which end was the truth.
+
+\subsection*{The result}
+
+Our main theorem determines every even order exactly, and in particular settles the bracket at its lower end.
+
+\begin{definition}\label{def:H}
+For a positive integer $q$ put
+\begin{equation}\label{eq:Hdef}
+H(2q)\ :=\ \max_{0\le r_0,r_1,c_0,c_1\le q}\ \min\bigl(\,r_0c_1+r_1c_0,\ (q-r_0)(q-c_0)+(q-r_1)(q-c_1)\,\bigr).
+\end{equation}
+\end{definition}
+
+\begin{theorem}\label{thm:main}
+For every positive integer $q$,
+\[
+t(2q)=H(2q).
+\]
+\end{theorem}
+
+\begin{corollary}\label{cor:asym}
+With $\kappa=4-2\sqrt3$ and $\gamma=1-1/\sqrt3$ one has $\kappa q^2-\gamma q-\tfrac14\le H(2q)\le\kappa q^2$ for every $q$. Hence for even $n$,
+\[
+t(n)=\tfrac{2-\sqrt3}{2}\,n^2+O(n),
+\qquad
+\lim_{n\to\infty,\ n\ \mathrm{even}}\frac{t(n)}{n^2}=\frac{2-\sqrt3}{2}=0.1339745\ldots,
+\]
+and $t(n)\le\bigl\lfloor\tfrac{2-\sqrt3}{2}n^2\bigr\rfloor$ for every even $n$.
+\end{corollary}
+
+\begin{corollary}\label{cor:values}
+Every even value of A279405 is computable from \eqref{eq:Hdef} by direct search of the $(q+1)^4$ grid, and in $O(q^3)$ time by a standard crossing reduction. For example
+\[
+t(16)=32,\quad t(18)=42,\quad t(20)=51,\quad t(40)=210,\quad t(2000)=535824 .
+\]
+\end{corollary}
+
+So on the even torus the plaid mechanism is not merely asymptotically good: a parity-separated plaid is an exact optimum at every even order, and the whole problem collapses to the elementary integer maximum \eqref{eq:Hdef}. We also record, from exhaustive search rather than from the formula, the first two previously unknown odd values.
+
+\begin{theorem}\label{thm:odd}
+$t(15)=20$ and $t(17)=28$.
+\end{theorem}
+
+\subsection*{The even/odd contrast, and why $n^2/8$ is a red herring}
+
+Table~\ref{tab:small} shows the parity split. For odd $n$ the values hover near $n^2/11$; for even $n$ they sit at or above $n^2/8$. The coincidence $t(n)=n^2/8$ at $n=8,12,16$ tempted a conjecture, and it is false: $H(18)=42>41=\lceil 18^2/8\rceil$, and the excess grows, since $(2-\sqrt3)/2>1/8$. The exact statement is that the even torus is governed by $\kappa=4-2\sqrt3$ and not by $1/2$: on the even torus, one \emph{square-parity} class of cells is given entirely to black and the other entirely to white, after which the two armies compete for rows and columns through the bilinear expressions in \eqref{eq:Hdef}. This is Section~\ref{sec:formula}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}l*{11}{r}@{}}
+\toprule
+$n$      & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18\\
+$t(n)$   & 8 & 7 & 12 & 10 & 18 & 16 & 25 & \textbf{20} & \textbf{32} & \textbf{28} & \textbf{42}\\
+$n^2/8$  & 8.0 & 10.1 & 12.5 & 15.1 & 18.0 & 21.1 & 24.5 & 28.1 & 32.0 & 36.1 & 40.5\\
+\bottomrule
+\end{tabular}
+\medskip
+\caption{The upper end of A279405. Values through $n=14$ are those recorded in \cite{OEIS279405}; the boldface values are new here (Theorems~\ref{thm:main} and~\ref{thm:odd}). $t(18)=42>\lceil18^2/8\rceil$ is the first even order at which the $n^2/8$ pattern breaks.}\label{tab:small}
+\end{table}
+
+\subsection*{Shape of the proof}
+
+The lower bound $t(2q)\ge H(2q)$ is an explicit colouring (Proposition~\ref{prop:lower}). Everything else is the upper bound $t(2q)\le H(2q)$, and it has four parts.
+
+\begin{enumerate}
+\item[(i)] \emph{A sound relaxation} (Section~\ref{sec:relax}). Eliminating the queens in favour of a black/white colouring of the $4n$ toroidal lines, a configuration is summarized by eight integer \emph{outer counts} $(r_0,r_1,c_0,c_1,d_0,d_1,a_0,a_1)\in\{0,\dots,q\}^8$ --- the numbers of black lines in each family, split by label parity. Conditioning on the four row/column parity blocks yields $42$ exact linear moment equations in $64$ nonnegative inner variables, whose right-hand sides are $22$ products of outer counts. The optimum $\OPT(x)$ of this linear programme, at the normalized outer profile $x$, dominates $\min(B,W)/q^2$.
+\item[(ii)] \emph{Two exact branch certificates} (Section~\ref{sec:cert}). Inside a canonical symmetry chamber, a rational branch-and-bound tree with exact LP duals at every leaf proves $\OPT(x)\le 527/1000$ for every profile outside one explicit rational neighbourhood $N$ of the plaid point; a second such tree proves that inside $N$, either the same bound holds or the outer counts satisfy four narrow \emph{aggregate core} inequalities. Since $H(2q)\ge\kappa q^2-\gamma q-\frac14$ and $\kappa-\frac{527}{1000}>\frac1{125}$, every profile eliminated by either certificate already has $\min(B,W)<H(2q)$ once $q\ge64$.
+\item[(iii)] \emph{An exact algebraic finish inside the core} (Section~\ref{sec:local}). Only two of the certified support-dual cuts are used. They give $B\le F_B$ and $W\le F_W$ for explicit quadratics in the eight counts, and a short case analysis --- a defect dichotomy, a four-profile switching average in one case, and a single integrality step $b\ge2$ plus an AM--GM bound in the other --- shows $\min(F_B,F_W)\le H(2q)$ whenever $q\ge130$. The threshold is the exact integer comparison $6{,}760{,}000\ge6{,}759{,}003$.
+\item[(iv)] \emph{An exact integer ladder for $q\le129$} (Section~\ref{sec:ladder}), certifying $t(2q)\le H(2q)$ order by order from a library of $760$ exactly certified support-dual cuts.
+\end{enumerate}
+
+Part (iii) is a hand-checkable proof and is written out in full. Parts (i), (ii) and (iv) are finite exact computations; Appendix~\ref{app:verify} states exactly what each verifier checks, with commands and digests.
+
+\subsection*{Methodology, and what is and is not claimed}
+
+This work was produced in a collaboration between AI systems: a reasoning model in the role of mathematician proposed the structures, lemmas and certificates, and a second AI system orchestrated the work, audited every argument, and re-implemented every machine-checkable object from scratch. Section~\ref{sec:ai} discloses this in detail, including the false lemmas that were proposed and refuted along the way (Appendix~\ref{app:extra}); the final proof shape is what survived that process, and the refutations are recorded because they show that the surviving shape is forced.
+
+Two things follow for the reader. First, every object that can be checked mechanically \emph{is} checked mechanically, twice, by programs that share no code: the two branch certificates, the cut library, the algebra of Section~\ref{sec:local}, and the ladder records all carry independent exact verifiers using rational arithmetic only, with no floating point in any decision. Second, the evidence is not uniform, and we say so plainly: the range $q\ge130$ and the range $q\le20$ each have two genuinely independent verifications, whereas the ladder segment $21\le q\le129$ currently rests on one exact certified method (Section~\ref{sec:ladder}). That segment is the one place where a second, conceptually different implementation would strengthen the result, and it is a finite and cheap computation.
+
+\section{The formula and the lower bound}\label{sec:formula}
+
+\subsection{Line colourings}
+
+Throughout, $n\ge2$, all coordinates lie in $\Zn=\{0,1,\dots,n-1\}$, and the board is $G=(\Zn)^2$. Through a cell $(r,c)$ pass four \emph{lines}: row $r$, column $c$, diagonal $d=r-c$ and antidiagonal $a=r+c$, each family indexed by $\Zn$. Two queens attack each other exactly when they share a line. For $R,C,D,A\subseteq\Zn$ put
+\[
+\Bl(R,C,D,A)=\{(r,c)\in G:\ r\in R,\ c\in C,\ r-c\in D,\ r+c\in A\},
+\]
+and $\Wh(R,C,D,A)=\Bl(R^{c},C^{c},D^{c},A^{c})$, complements taken family by family.
+
+\begin{lemma}[Line-colouring equivalence]\label{lem:lines}
+Let $m\ge1$. A peaceable placement of $m$ black and $m$ white queens on the $n\times n$ torus exists if and only if there are $R,C,D,A\subseteq\Zn$ with $|\Bl|\ge m$ and $|\Wh|\ge m$.
+\end{lemma}
+
+\begin{proof}
+($\Rightarrow$) Colour every line carrying a black queen black and every other line white; no line carries queens of both colours, else those two queens attack. Every black queen then lies on four black lines and every white queen on four white lines, and the queens of one colour occupy distinct cells.
+
+($\Leftarrow$) Place black queens on any $m$ cells of $\Bl$ and white queens on any $m$ cells of $\Wh$. The two sets are disjoint, and a black--white attack would need a line lying simultaneously in a black set and in its complement.
+\end{proof}
+
+Consequently $t(n)=\max_{R,C,D,A}\min(|\Bl|,|\Wh|)$, and the queens have disappeared. Complementing all four sets exchanges $\Bl$ and $\Wh$, so $\min(|\Bl|,|\Wh|)$ is invariant under complementation; we use this freely.
+
+\begin{lemma}[Incidence]\label{lem:inc}
+Let $\ell,\ell'$ be lines of two distinct families. If $\{\ell,\ell'\}$ is not a diagonal--antidiagonal pair, they meet in exactly one cell. If $\ell$ is the diagonal $d$ and $\ell'$ the antidiagonal $a$, their common cells solve $2r=a+d$, $2c=a-d$ in $\Zn$: for odd $n$ there is exactly one, and for even $n$ there are exactly two if $d\equiv a\pmod2$ --- namely $(r,c)$ and $(r+\frac n2,c+\frac n2)$ --- and none otherwise.
+\end{lemma}
+
+\begin{proof}
+The first statement is immediate (a row $r$ and a column $c$ meet in $(r,c)$; a row $r$ and a diagonal $d$ in $(r,r-d)$; and so on). For the second, consider $\varphi(r,c)=(r-c,r+c)$ on $G$. Its kernel is $\{(r,c):r=c,\ 2r=0\}$, trivial for odd $n$ and of order $2$ for even $n$, generated by $(\frac n2,\frac n2)$. For even $n$ every nonempty fibre thus has two elements and the image has $n^2/2$ elements; every image point satisfies $d\equiv a\pmod 2$, and there are exactly $n^2/2$ such pairs, so the image is precisely that set.
+\end{proof}
+
+\subsection{The parity-plaid construction}
+
+Now let $n=2q$. By Lemma~\ref{lem:inc} the diagonal and antidiagonal labels of a cell $(r,c)$ satisfy $r-c\equiv r+c\equiv r+c\pmod 2$: both have the parity of $r+c$, the \emph{square parity} of the cell. So giving black all diagonals \emph{and} all antidiagonals of one label parity, and white the other, partitions the board into two square-parity classes, one available to black and one to white, and the two armies then compete only through rows and columns.
+
+Split each of the four families by label parity: for $i\in\{0,1\}$ let $r_i=|\{\rho\in R:\rho\equiv i\}|$, and likewise $c_i,d_i,a_i$; each parity class of $\Z/2q\Z$ has exactly $q$ labels, so all eight counts lie in $\{0,\dots,q\}$.
+
+\begin{proposition}[Parity-plaid]\label{prop:lower}
+Let $q\ge1$ and $0\le r_0,r_1,c_0,c_1\le q$. Choose $R\subseteq\Z/2q\Z$ consisting of any $r_0$ even and any $r_1$ odd labels, $C$ of any $c_0$ even and $c_1$ odd labels, and set $D=A=\{\text{odd labels}\}$. Then
+\[
+|\Bl|=r_0c_1+r_1c_0,
+\qquad
+|\Wh|=(q-r_0)(q-c_0)+(q-r_1)(q-c_1).
+\]
+Consequently $t(2q)\ge H(2q)$.
+\end{proposition}
+
+\begin{proof}
+A cell $(r,c)$ is black-homogeneous iff $r\in R$, $c\in C$ and both $r-c$ and $r+c$ are odd, i.e.\ iff $r\in R$, $c\in C$ and $r,c$ have opposite parities; there are $r_0c_1+r_1c_0$ such cells. It is white-homogeneous iff $r\notin R$, $c\notin C$ and $r+c$ is even, i.e.\ $r,c$ of equal parity; there are $(q-r_0)(q-c_0)+(q-r_1)(q-c_1)$ such cells. Now apply Lemma~\ref{lem:lines} with $m=\min(|\Bl|,|\Wh|)$ and maximize over the four counts.
+\end{proof}
+
+\begin{remark}\label{rem:plaid16}
+At $n=16$ the optimum $H(16)=32$ is attained at $(r_0,r_1,c_0,c_1)=(0,6,6,0)$, giving $|\Bl|=36$ and $|\Wh|=32$. This is exactly the $(4,4)$-plaid of \cite[\S3]{CDHS24} after the relabelling $i\mapsto i-1$ from $\{1,\dots,16\}$ to $\Z/16\Z$, with the two colours exchanged. In general, Proposition~\ref{prop:lower} is a reparametrization of the plaid family of \cite{CDHS24} by the four parity counts; Theorem~\ref{thm:main} says that nothing else on the even torus does better, at any order.
+\end{remark}
+
+\subsection{Values and size of $H$}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}l*{10}{r}@{}}
+\toprule
+$n$      & 2 & 4 & 6 & 8 & 10 & 12 & 14 & 16 & 18 & 20\\
+$H(n)$   & 0 & 2 & 4 & 8 & 12 & 18 & 25 & 32 & 42 & 51\\
+\midrule
+$n$      & 22 & 24 & 26 & 28 & 30 & 32 & 34 & 36 & 38 & 40\\
+$H(n)$   & 64 & 74 & 90 & 101 & 120 & 133 & 153 & 170 & 190 & 210\\
+\bottomrule
+\end{tabular}
+\medskip
+\caption{$H(n)=t(n)$ for even $n\le40$. The values $n\le14$ agree with the terms of A279405 known before this work.}\label{tab:Hvals}
+\end{table}
+
+\begin{lemma}\label{lem:Hupper}
+Let $q>0$ be real and let $r_0,r_1,c_0,c_1\in[0,q]$ be real. Put
+\[
+X=r_0c_1+r_1c_0,\qquad Y=(q-r_0)(q-c_0)+(q-r_1)(q-c_1).
+\]
+Then $\min(X,Y)\le\kappa q^2$, where $\kappa=4-2\sqrt3$. In particular $H(2q)\le\lfloor\kappa q^2\rfloor=\bigl\lfloor\tfrac{2-\sqrt3}{2}(2q)^2\bigr\rfloor$.
+\end{lemma}
+
+\begin{proof}
+Normalize: $\tilde r_i=r_i/q$, $\tilde c_i=c_i/q$, and set
+\[
+\rho=\tilde r_0+\tilde r_1,\quad \chi=\tilde c_0+\tilde c_1,\quad
+\xi=1-\rho,\quad\eta=1-\chi,\quad
+z=(\tilde r_0-\tilde r_1)(\tilde c_0-\tilde c_1).
+\]
+Expanding,
+\begin{equation}\label{eq:XYid}
+\frac{X-Y}{q^2}=\rho+\chi-2-z,
+\qquad
+\frac{X+Y}{q^2}=2-\rho-\chi+\rho\chi=1+\xi\eta ,
+\end{equation}
+and $|z|\le\rho\chi$ because $|\tilde r_0-\tilde r_1|\le\tilde r_0+\tilde r_1=\rho$ and likewise for the columns.
+
+If $\xi\eta\le0$ then $\min(X,Y)\le\frac{X+Y}{2}\le\frac{q^2}{2}<\kappa q^2$.
+
+The map $(r_0,r_1,c_0,c_1)\mapsto(q-r_0,q-r_1,q-c_1,q-c_0)$ preserves the domain, exchanges $X$ and $Y$, and replaces $(\xi,\eta)$ by $(-\xi,-\eta)$. So we may assume $\xi,\eta\ge0$.
+
+Suppose first $X\ge Y$. Then $z\le\rho+\chi-2$ by \eqref{eq:XYid}, and $z\ge-\rho\chi$, so $2-\rho-\chi\le\rho\chi$, i.e.\ $\xi+\eta\le1-\xi-\eta+\xi\eta$, i.e.
+\begin{equation}\label{eq:xieta}
+2\xi+2\eta-\xi\eta\le1 .
+\end{equation}
+Put $w=\sqrt{\xi\eta}\in[0,1]$. By AM--GM, $4w-w^2\le2\xi+2\eta-\xi\eta\le1$, so $w^2-4w+1\ge0$ and hence $w\le2-\sqrt3$. By \eqref{eq:XYid},
+\[
+\min(X,Y)\le\frac{X+Y}{2}=q^2\,\frac{1+w^2}{2}\le q^2\,\frac{1+(2-\sqrt3)^2}{2}=(4-2\sqrt3)q^2 .
+\]
+
+Now suppose $Y\ge X$, so $\min(X,Y)=X$, and assume for contradiction $X>\kappa q^2$. Then $X+Y\ge2X>2\kappa q^2$, so by \eqref{eq:XYid} $\xi\eta>2\kappa-1=(2-\sqrt3)^2$ and $w>2-\sqrt3$. On the other hand $X/q^2=\tilde r_0\tilde c_1+\tilde r_1\tilde c_0$ is bilinear in $(\tilde r_0,\tilde r_1)$ and $(\tilde c_0,\tilde c_1)$ subject to the fixed sums $\rho,\chi$, hence is at most $\rho\chi$ (attained at a vertex), and $\rho\chi=(1-\xi)(1-\eta)\le(1-w)^2$ by AM--GM. Therefore
+\[
+\kappa<\frac{X}{q^2}\le(1-w)^2<\bigl(1-(2-\sqrt3)\bigr)^2=(\sqrt3-1)^2=4-2\sqrt3=\kappa,
+\]
+a contradiction. Finally, $H(2q)$ is an integer maximum of $\min(X,Y)$ over a subset of the domain, so $H(2q)\le\lfloor\kappa q^2\rfloor$.
+\end{proof}
+
+\begin{lemma}\label{lem:Hlower}
+Let $s=\sqrt3-1$, so $\kappa=s^2=4-2\sqrt3$, and let $\gamma=1-1/\sqrt3=s/(1+s)$. Then for every $q\ge1$,
+\[
+H(2q)\ \ge\ \kappa q^2-\gamma q-\tfrac14 .
+\]
+\end{lemma}
+
+\begin{proof}
+For an integer $0\le P\le2q$ take the profile $(r_0,r_1,c_0,c_1)=\bigl(0,\lfloor P/2\rfloor,\lceil P/2\rceil,0\bigr)$. Then
+\[
+X=\Bigl\lfloor\frac{P}{2}\Bigr\rfloor\Bigl\lceil\frac{P}{2}\Bigr\rceil=\Bigl\lfloor\frac{P^2}{4}\Bigr\rfloor,
+\qquad
+Y=q\Bigl(q-\Bigl\lceil\frac P2\Bigr\rceil\Bigr)+\Bigl(q-\Bigl\lfloor\frac P2\Bigr\rfloor\Bigr)q=2q^2-qP,
+\]
+so $H(2q)\ge\min(\lfloor P^2/4\rfloor,\ 2q^2-qP)$. The two branches cross where $P^2/4=2q^2-qP$, i.e.\ at $P=2sq$, with common value $s^2q^2=\kappa q^2$.
+
+Write $2sq=m+\theta$ with $m=\lfloor2sq\rfloor$ and $\theta\in[0,1)$. Taking $P=m\le2sq$ gives $X\ge P^2/4-\frac14=\kappa q^2-sq\theta+\theta^2/4-\frac14\ge\kappa q^2-sq\theta-\frac14$ and $Y=2q^2-qm=\kappa q^2+q\theta\ge\kappa q^2$, so the value is at least $\kappa q^2-sq\theta-\frac14$. Taking $P=m+1\ge2sq$ gives $X\ge P^2/4-\frac14\ge\kappa q^2-\frac14$ and $Y=\kappa q^2-q(1-\theta)$, so the value is at least $\kappa q^2-q(1-\theta)-\frac14$. Hence
+\[
+H(2q)\ \ge\ \kappa q^2-q\min(s\theta,\,1-\theta)-\tfrac14\ \ge\ \kappa q^2-q\max_{0\le\theta<1}\min(s\theta,1-\theta)-\tfrac14 ,
+\]
+and the inner maximum is attained at $s\theta=1-\theta$, with value $s/(1+s)=1-1/\sqrt3=\gamma$.
+\end{proof}
+
+Lemmas~\ref{lem:Hupper} and~\ref{lem:Hlower} give Corollary~\ref{cor:asym} once Theorem~\ref{thm:main} is proved. Numerically $\gamma=0.42264\ldots$, so $H(2q)$ deviates from $\kappa q^2$ by less than $\tfrac12 q+\tfrac14$.
+
+\section{The upper bound: relaxation and canonical chamber}\label{sec:relax}
+
+From here to the end of Section~\ref{sec:local}, $n=2q$ and we prove $t(2q)\le H(2q)$ for $q\ge130$. Fix a configuration $(R,C,D,A)$ with black count $B=|\Bl|$ and white count $W=|\Wh|$, and let
+\[
+(r_0,r_1,c_0,c_1,d_0,d_1,a_0,a_1)\in\{0,\dots,q\}^8
+\]
+be its eight parity-split outer counts, with normalization $x=(r_0,\dots,a_1)/q\in[0,1]^8$.
+
+\subsection{The $42$-equation moment relaxation}
+
+Partition the board into four \emph{row/column parity blocks} $G_{ij}=\{(r,c):r\equiv i,\ c\equiv j\pmod2\}$, each of $q^2$ cells. Inside $G_{ij}$ every cell has square parity $e=i\oplus j$, so its diagonal and antidiagonal labels both have parity $e$; and each of the four line families restricted to the relevant parity class has exactly $q$ labels.
+
+For each block introduce $16$ nonnegative variables
+\[
+p_{ij}(\varepsilon_R,\varepsilon_C,\varepsilon_D,\varepsilon_A),\qquad(\varepsilon_R,\varepsilon_C,\varepsilon_D,\varepsilon_A)\in\{0,1\}^4,
+\]
+intended as $q^{-2}$ times the number of cells of $G_{ij}$ whose row, column, diagonal and antidiagonal are black ($1$) or white ($0$) as indicated. Write $E_{ij}[\cdot]$ for the corresponding expectation. A genuine configuration satisfies the following $42$ equations, in which $e=i\oplus j$.
+
+\begin{lemma}[Soundness of the moment system]\label{lem:moments}
+For every configuration and every block $(i,j)$,
+\begin{gather}
+\textstyle\sum p_{ij}=1;\qquad
+E_{ij}[\varepsilon_R]=\tfrac{r_i}{q},\quad E_{ij}[\varepsilon_C]=\tfrac{c_j}{q},\quad E_{ij}[\varepsilon_D]=\tfrac{d_e}{q},\quad E_{ij}[\varepsilon_A]=\tfrac{a_e}{q};
+\label{eq:mom1}\\[2pt]
+E_{ij}[\varepsilon_R\varepsilon_C]=\tfrac{r_ic_j}{q^2},\quad
+E_{ij}[\varepsilon_R\varepsilon_D]=\tfrac{r_id_e}{q^2},\quad
+E_{ij}[\varepsilon_R\varepsilon_A]=\tfrac{r_ia_e}{q^2},
+\label{eq:mom2}\\[2pt]
+E_{ij}[\varepsilon_C\varepsilon_D]=\tfrac{c_jd_e}{q^2},\quad
+E_{ij}[\varepsilon_C\varepsilon_A]=\tfrac{c_ja_e}{q^2};
+\notag
+\end{gather}
+and, for each square parity $e\in\{0,1\}$, the \emph{aggregate} equation
+\begin{equation}\label{eq:mom3}
+\sum_{i\oplus j=e}E_{ij}[\varepsilon_D\varepsilon_A]=\frac{2\,d_ea_e}{q^2} .
+\end{equation}
+These are $4\cdot10+2=42$ equations, whose right-hand sides involve exactly $22$ distinct products of outer counts. Moreover
+\begin{equation}\label{eq:BW}
+\frac{B}{q^2}=\sum_{i,j}p_{ij}(1,1,1,1),\qquad \frac{W}{q^2}=\sum_{i,j}p_{ij}(0,0,0,0).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The normalization and the four marginals in \eqref{eq:mom1} hold because within $G_{ij}$ each of the four families' relevant parity classes is swept uniformly: for instance the map $G_{ij}\to(\Z_q)$, $(r,c)\mapsto$ (index of $r$ within its parity class), has all fibres of size $q$.
+
+For \eqref{eq:mom2} we need each pair of families other than $\{D,A\}$ to fibre uniformly over $G_{ij}$. Writing $r=2r'+i$, $c=2c'+j$ with $r',c'\in\Z_q$, the pair $(\text{row},\text{column})$ corresponds to $(r',c')$, the pair (row, diagonal) to $(r',r'-c')$, (row, antidiagonal) to $(r',r'+c')$, (column, diagonal) to $(c',r'-c')$ and (column, antidiagonal) to $(c',r'+c')$. Each of these is an invertible linear map $\Z_q^2\to\Z_q^2$ of determinant $\pm1$, hence a bijection; so all $q^2$ label pairs occur exactly once and the corresponding moment factorizes into the product of the two black-line densities.
+
+The pair $\{D,A\}$ does not fibre uniformly within a block: $(r',c')\mapsto(r'-c',r'+c')$ has determinant $2$. But by Lemma~\ref{lem:inc} each pair $(d,a)$ of labels of equal parity $e$ meets in exactly two cells, and these two cells $(r,c)$, $(r+q,c+q)$ lie in the two blocks with $i\oplus j=e$ (in the same block iff $q$ is even, in different blocks otherwise --- in either case in the union). Summing over the two blocks therefore counts each equal-parity label pair exactly twice, giving \eqref{eq:mom3}. Finally \eqref{eq:BW} is the definition.
+\end{proof}
+
+\begin{remark}
+The failure of the $\{D,A\}$ pair to factorize \emph{per block} is not cosmetic: for $4\mid n$ the two lifts of an equal-parity $(d,a)$ pair land in the \emph{same} block, so per-block independence of the diagonal families is false and $2$-adic information survives parity conditioning. Replacing \eqref{eq:mom3} by four per-block equations would be unsound. This is the reason the relaxation has $42$ and not $44$ rows.
+\end{remark}
+
+\begin{definition}\label{def:OPT}
+For $x\in[0,1]^8$ let $\OPT(x)$ be the maximum of $t$ subject to: $p\ge0$; the $42$ equations of Lemma~\ref{lem:moments} with the right-hand sides evaluated at $x$ (that is, $r_i/q$ replaced by $x$-coordinates and each product $r_ic_j/q^2$ by the corresponding product of $x$-coordinates); and $t\le\sum_{ij}p_{ij}(1,1,1,1)$, $t\le\sum_{ij}p_{ij}(0,0,0,0)$.
+\end{definition}
+
+Lemma~\ref{lem:moments} immediately gives the key inequality
+\begin{equation}\label{eq:opt}
+\frac{\min(B,W)}{q^2}\ \le\ \OPT(x)
+\end{equation}
+for every configuration with normalized outer profile $x$.
+
+\subsection{The canonical chamber}
+
+\begin{lemma}[Chamber]\label{lem:chamber}
+Every configuration can be transformed, without changing $\{B,W\}$ or the multiset of homogeneous cell counts, into one whose normalized profile $x$ satisfies
+\begin{equation}\label{eq:chamber}
+r_0\le r_1,\qquad c_0\le c_1,\qquad r_0+r_1\le c_0+c_1,\qquad d_0+d_1\le a_0+a_1,\qquad \sum_{i=1}^{8}x_i\le4 .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Complementing all four line sets exchanges $B$ and $W$ and replaces $\sum x_i$ by $8-\sum x_i$, so the budget can be enforced. Translating the board by one unit in the row direction, $(r,c)\mapsto(r+1,c)$, exchanges the two row parity classes (and simultaneously the two diagonal and the two antidiagonal classes); translating by one unit in the column direction does the same for the columns. Composing the two if necessary, we may sort $r_0\le r_1$ and $c_0\le c_1$. Transposing, $(r,c)\mapsto(c,r)$, exchanges rows with columns and fixes the antidiagonals while negating the diagonals, hence orders the row and column totals. Finally $(r,c)\mapsto(r,-c)$ fixes the row parities, permutes the column labels within their parity classes, and exchanges the diagonal with the antidiagonal family, so it orders $d_0+d_1\le a_0+a_1$. Each of these is an affine bijection of the board mapping lines to lines, so $B$ and $W$ are preserved (or exchanged, in the complementation step).
+\end{proof}
+
+Note that the four inequalities of \eqref{eq:chamber} preserve the sorting achieved by the earlier steps, because a unit translation exchanges $(d_0,d_1)$ with $(d_1,d_0)$ \emph{and} $(a_0,a_1)$ with $(a_1,a_0)$ simultaneously, so it does not disturb the comparison of the two family totals; and the transpose does not affect either total. We therefore assume \eqref{eq:chamber} from now on.
+
+\section{The two branch certificates and the escape comparison}\label{sec:cert}
+
+\subsection{What the certificates are}
+
+For a box $[l,u]\subseteq[0,1]^8$, replace each of the $22$ products $x_ix_j$ occurring in the right-hand sides of the moment equations by a fresh variable $y_{ij}$ constrained by the four McCormick envelope inequalities
+\begin{equation}\label{eq:mccormick}
+\begin{aligned}
+-y_{ij}+l_ix_j+l_jx_i&\le l_il_j, & -y_{ij}+u_ix_j+u_jx_i&\le u_iu_j,\\
+y_{ij}-u_ix_j-l_jx_i&\le-u_il_j, & y_{ij}-l_ix_j-u_jx_i&\le-l_iu_j,
+\end{aligned}
+\end{equation}
+which are exactly the expansions of $(x_i-l_i)(x_j-l_j)\ge0$, $(u_i-x_i)(u_j-x_j)\ge0$, $(u_i-x_i)(x_j-l_j)\ge0$ and $(x_i-l_i)(u_j-x_j)\ge0$. Together with the budget row, the four chamber rows of \eqref{eq:chamber}, and the two rows $t\le B/q^2$, $t\le W/q^2$, this gives a linear programme in the $8+22+64+1=95$ variables $(x,y,p,t)$ with $95$ inequality and $42$ equality rows, whose optimum dominates $\OPT(x)$ for every $x$ in the box.
+
+A \emph{branch certificate} is a rooted binary tree. A split node carries a coordinate index and an exact rational cut, and its two children are the parent box intersected with $x_d\le c$ and with $x_d\ge c$ (the children overlap on the cutting hyperplane, which is harmless and gives an exhaustive cover). A leaf is one of three kinds:
+
+\begin{itemize}
+\item a \emph{McCormick-dual leaf}, carrying an exact rational multiplier vector for the inequality rows (nonpositive) and an unrestricted one for the equality rows, together with the resulting exact rational bound $u$. The verifier reconstructs the partial Lagrangian, checks that the reduced cost of $t$ vanishes and that the reduced costs of all $64$ atom variables are $\le0$ (so that the inner maximum over $p\ge0$ is finite), evaluates the outer and product variables at their better box endpoints, recomputes the bound itself, and checks that it equals the stored $u$ and satisfies the required threshold;
+\item an \emph{exact empty leaf}, carrying one of five reasons (\texttt{rsort}, \texttt{csort}, \texttt{rcsum}, \texttt{dasum}, \texttt{budget}). Each is a purely interval-arithmetic obstruction to the chamber inequalities: e.g.\ \texttt{rsort} asserts $\max(l_{r_1},l_{r_0})>u_{r_1}$, which contradicts $r_0\le r_1$; and \texttt{budget} asserts that the sum of the four group minima forced by the preceding steps exceeds $4$. These are exact rational emptiness tests, never solver infeasibility claims;
+\item a \emph{plaid leaf}, asserting that the box lies wholly inside one of the four rational plaid neighbourhoods. With $s=\sqrt3-1$, the four templates are obtained by choosing a square parity and a row parity; a box qualifies when, coordinate by coordinate, the template-$0$ coordinates have upper endpoint $\le\frac1{10}$, the template-$1$ coordinates have lower endpoint $\ge\frac{19}{20}$, and the two template-$s$ coordinates lie in $[\frac35,\frac78]$.
+\end{itemize}
+
+\begin{definition}\label{def:N}
+The canonical rational plaid neighbourhood is
+\begin{equation}\label{eq:N}
+N:\quad 0\le r_0,c_0,d_1,a_1\le\tfrac1{10},\qquad \tfrac35\le r_1,c_1\le\tfrac78,\qquad \tfrac{19}{20}\le d_0,a_0\le1
+\end{equation}
+(in normalized coordinates). After the chamber restrictions \eqref{eq:chamber}, it is the only one of the four templates that survives.
+\end{definition}
+
+\subsection{The two certificates}
+
+\begin{theorem}[Global localization]\label{thm:cert1}
+For every $x\in[0,1]^8$ satisfying the chamber inequalities \eqref{eq:chamber} and lying outside $N$,
+\[
+\OPT(x)\ \le\ \frac{527}{1000}.
+\]
+\end{theorem}
+
+\begin{theorem}[Local core]\label{thm:cert2}
+For every $x\in N$ satisfying \eqref{eq:chamber}, either $\OPT(x)\le\frac{527}{1000}$, or the unnormalized counts satisfy the four \emph{aggregate core} inequalities
+\begin{equation}\label{eq:core}
+\frac{36}{25}q\ \le\ r_1+c_1\ \le\ \frac{37}{25}q,
+\qquad
+r_0+c_0\le\frac{9}{100}q,
+\qquad
+d_1+a_1\le\frac{9}{200}q,
+\qquad
+(q-d_0)+(q-a_0)\le\frac{1}{25}q .
+\end{equation}
+\end{theorem}
+
+Both theorems are established by exact branch certificates, distributed as the ancillary files \texttt{even\_\bs{}c527\_\bs{}sym\_\bs{}mc.json.gz} and \texttt{even\_\bs{}local\_\bs{}core\_\bs{}mc.json.gz}. Their statistics are:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lrr@{}}
+\toprule
+ & Theorem~\ref{thm:cert1} & Theorem~\ref{thm:cert2}\\
+\midrule
+root box & $[0,1]^8$ & $N$\\
+nodes & $6{,}929$ & $4{,}423$\\
+split nodes & $3{,}464$ & $2{,}211$\\
+McCormick-dual leaves & $3{,}368$ & $1{,}639$\\
+plaid / core leaves & $4$ & $563$\\
+exact empty leaves & $93$ & $10$\\
+maximum depth & $22$ & $29$\\
+largest reconstructed leaf bound & $\tfrac{527}{1000}-1.92\cdot10^{-6}$ & $\tfrac{2329117}{4419584}=\tfrac{527}{1000}-8.53\cdot10^{-7}$\\
+\bottomrule
+\end{tabular}
+\medskip
+\caption{The two branch certificates. The $93$ empty leaves of the first tree split as $1$ \texttt{rsort}, $9$ \texttt{csort}, $19$ \texttt{rcsum}, $21$ \texttt{dasum}, $43$ \texttt{budget}; the $10$ of the second are all \texttt{rcsum}. The four plaid leaves of the first tree all carry the template $(0,s,0,s,1,0,1,0)$, i.e.\ the neighbourhood $N$; the $563$ core leaves of the second all lie wholly inside \eqref{eq:core}. The last row shows that both certificates are tight to about $2\cdot10^{-6}$.}\label{tab:certs}
+\end{table}
+
+\begin{remark}[Verification]\label{rem:certverify}
+Two programs sharing no code check these trees, both using only exact rational arithmetic and neither trusting any stored number it can recompute. The delivered checker \texttt{verify\_\bs{}even\_\bs{}branch\_\bs{}certificate.py} rebuilds the moment system, every McCormick row, every dual, every split and every empty leaf, and ends in \texttt{ALL\_\bs{}EVEN\_\bs{}BRANCH\_\bs{}CERTIFICATES\_\bs{}OK}. The from-scratch verifier \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}independent.py} does not import it or the builders; it \emph{discovers} the $42$ rows by counting incidence fibres on real tori at $n=8,12,16,20$ (keeping a row only when all label tuples are attained with equal multiplicity, which is precisely the factorization statement, and finding by itself that $\{D,A\}$ is the unique ragged pair, thereby deriving the two aggregate rows rather than assuming them), re-validates them as exact identities on $200$ random colourings at $n=12,16,20,28$ ($8{,}400$ equation checks), re-derives the McCormick rows, recomputes every leaf bound from its own partial Lagrangian, and re-proves every emptiness claim by its own interval reasoning. It agrees with the delivered checker on every count in Table~\ref{tab:certs}, and rejects eight deliberately tampered copies of the first certificate. Appendix~\ref{app:verify} gives commands and digests.
+\end{remark}
+
+\subsection{The escape comparison}
+
+\begin{lemma}\label{lem:escape}
+$\kappa-\frac{527}{1000}>\frac1{125}$ and $\gamma<\frac12$. Consequently, for every $q\ge64$,
+\begin{equation}\label{eq:escape}
+H(2q)-\frac{527}{1000}q^2\ >\ \frac{q^2}{125}-\frac q2-\frac14\ >\ 0 .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The inequality $\kappa-\frac{527}{1000}>\frac1{125}$ reads $4-2\sqrt3>\frac{535}{1000}=\frac{107}{200}$, i.e.\ $693>400\sqrt3$, i.e.\ $480249>480000$. The inequality $\gamma<\frac12$ reads $\frac1{\sqrt3}>\frac12$, i.e.\ $2>\sqrt3$. The first inequality of \eqref{eq:escape} is then Lemma~\ref{lem:Hlower} combined with these two comparisons. For the second, note that $q\ge64$ gives
+\[
+\frac{q^2}{125}-\frac q2-\frac14\ \ge\ q\Bigl(\frac{64}{125}-\frac12\Bigr)-\frac14=\frac{3q}{250}-\frac14\ \ge\ \frac{192}{250}-\frac14\ >\ 0 . \qedhere
+\]
+\end{proof}
+
+Combining \eqref{eq:opt} with Theorems~\ref{thm:cert1},~\ref{thm:cert2} and Lemma~\ref{lem:escape}:
+
+\begin{corollary}\label{cor:escape}
+Let $q\ge64$ and let a configuration in the canonical chamber have $\min(B,W)\ge H(2q)$. Then its normalized profile lies in $N$ and its unnormalized counts satisfy the aggregate core inequalities \eqref{eq:core}.
+\end{corollary}
+
+\section{The local finish}\label{sec:local}
+
+Throughout this section $q\ge130$, the configuration lies in the canonical chamber, and the aggregate core \eqref{eq:core} holds. We rename the eight counts to the local coordinates
+\begin{equation}\label{eq:locvars}
+u=r_0,\quad R=r_1,\quad v=c_0,\quad C=c_1,\qquad
+e=d_1,\quad g=q-d_0,\quad f=a_1,\quad h=q-a_0,
+\end{equation}
+so $u,v,e,f,g,h$ are small ``defects'' and $R,C$ are close to $sq$. All eight are integers in $[0,q]$. Put
+\begin{equation}\label{eq:aggregates}
+\begin{aligned}
+\sigma&=R+C, & m&=u+v, & a&=e+f, & b&=g+h,\\
+\alpha&=2q-\sigma-m, & \beta&=\sigma-q, & Q&=2ef+2gh,\\
+X&=uv+RC, & \multicolumn{4}{l}{Y=(q-u)(q-C)+(q-R)(q-v).}
+\end{aligned}
+\end{equation}
+The core \eqref{eq:core} reads
+\begin{equation}\label{eq:core2}
+\tfrac{36}{25}q\le\sigma\le\tfrac{37}{25}q,\qquad m\le\tfrac{9}{100}q,\qquad a\le\tfrac{9}{200}q,\qquad b\le\tfrac1{25}q ,
+\end{equation}
+and the chamber \eqref{eq:chamber} gives, in these coordinates,
+\begin{equation}\label{eq:chamber2}
+u+R\le v+C,\qquad e+h\le f+g,\qquad \sigma+m+a-b\le2q .
+\end{equation}
+
+Two remarks on notation. First, $(X,Y)$ are exactly the two capacities of the $H$-profile $(r_0,r_1,c_0,c_1)=(u,R,C,v)$ in Definition~\ref{def:H}: indeed $r_0c_1+r_1c_0=uv+RC=X$ and $(q-r_0)(q-c_0)+(q-r_1)(q-c_1)=(q-u)(q-C)+(q-R)(q-v)=Y$. Hence
+\begin{equation}\label{eq:XYH}
+\min(X,Y)\ \le\ H(2q).
+\end{equation}
+Second, $\alpha$ and $\beta$ are the two ``slacks'' that the support cuts below will charge against.
+
+\subsection{The two support cuts}
+
+The proof uses exactly two members of an exactly certified library of $760$ support-dual cuts for the moment system (Section~\ref{sec:ladder} and Appendix~\ref{app:verify}); they are entries $609$ and $559$ of that library, transported to the coordinates \eqref{eq:locvars}. A \emph{support dual} is a pair $(\alpha_{\mathrm{cut}},\lambda)$ of exact rationals such that the corresponding combination of the $42$ moment equations dominates $\alpha_{\mathrm{cut}}B+(1-\alpha_{\mathrm{cut}})W$ columnwise on all $64$ atoms; the resulting polynomial inequality then holds for every genuine configuration, with no relaxation and no branching. Cut $609$ has $\alpha_{\mathrm{cut}}=1$ and cut $559$ has $\alpha_{\mathrm{cut}}=0$, so they bound $B$ and $W$ separately:
+
+\begin{lemma}[Cuts $609$ and $559$]\label{lem:cuts}
+For every configuration in the canonical chamber,
+\begin{equation}\label{eq:FB}
+B\ \le\ F_B:=X-\beta b+Q,
+\end{equation}
+\begin{equation}\label{eq:FW}
+W\ \le\ F_W:=Y-\alpha a+Q .
+\end{equation}
+In particular, writing $T:=\min(F_B,F_W)$, we have $\min(B,W)\le T$.
+\end{lemma}
+
+The two exact rational duals are shipped in \texttt{even\_\bs{}finite\_\bs{}support\_\bs{}cuts.json} and are byte-identical to entries $609$ and $559$ of the certified library \texttt{new\_\bs{}dual\_\bs{}cuts.json}; \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py} recomputes both polynomial identities and the columnwise support property. Everything below is elementary algebra from \eqref{eq:core2}, \eqref{eq:chamber2}, \eqref{eq:FB} and \eqref{eq:FW}.
+
+\subsection{Basic estimates and the defect dichotomy}
+
+\begin{lemma}\label{lem:basic}
+Under \eqref{eq:core2},
+\begin{equation}\label{eq:albe}
+\alpha\ \ge\ \tfrac{43}{100}q,\qquad \beta\ \ge\ \tfrac{11}{25}q,\qquad \alpha>a,\qquad\beta>b .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+$\alpha=2q-\sigma-m\ge2q-\frac{37}{25}q-\frac{9}{100}q=\frac{200-148-9}{100}q=\frac{43}{100}q$, and $\beta=\sigma-q\ge\frac{36}{25}q-q=\frac{11}{25}q$. Finally $a\le\frac{9}{200}q<\frac{43}{100}q\le\alpha$ and $b\le\frac1{25}q<\frac{11}{25}q\le\beta$.
+\end{proof}
+
+\begin{lemma}[Defect dichotomy]\label{lem:dichotomy}
+Under \eqref{eq:core2},
+\begin{equation}\label{eq:dicho}
+2Q=4ef+4gh\ \le\ a^2+b^2\ \le\ \alpha a+\beta b,
+\qquad\text{hence}\qquad
+Q\le\max(\alpha a,\ \beta b).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+$4ef\le(e+f)^2=a^2$ and $4gh\le(g+h)^2=b^2$. By Lemma~\ref{lem:basic}, $a^2\le\alpha a$ and $b^2\le\beta b$. Finally $Q\le\frac12(\alpha a+\beta b)\le\max(\alpha a,\beta b)$.
+\end{proof}
+
+This dichotomy is the only case distinction the local proof needs. We treat the two orderings of $X$ and $Y$ separately.
+
+\subsection{Case $X\le Y$}\label{ssec:caseA}
+
+\begin{proposition}\label{prop:caseA}
+If $X\le Y$ then $T\le H(2q)$.
+\end{proposition}
+
+\begin{proof}
+If $Q\le\beta b$ then $F_B\le X$ by \eqref{eq:FB}, so $T\le X=\min(X,Y)\le H(2q)$ by \eqref{eq:XYH}.
+
+Assume therefore
+\begin{equation}\label{eq:A17}
+Q>\beta b .
+\end{equation}
+By Lemma~\ref{lem:dichotomy}, $Q\le\alpha a$.
+
+\emph{Step 1: a bound on $F_B$.} Since $b\le q/25$,
+\begin{equation}\label{eq:A21a}
+2gh\le\frac{b^2}{2}\le\frac{qb}{50}\le\beta b ,
+\end{equation}
+the last step by Lemma~\ref{lem:basic}. Hence
+\begin{equation}\label{eq:A21}
+F_B=X-\beta b+2ef+2gh\ \le\ X+2ef .
+\end{equation}
+
+\emph{Step 2: four switched profiles.} Consider the four $H$-profiles
+\begin{equation}\label{eq:A18}
+(r_0,r_1,c_0,c_1)=(u+x,\ R,\ C,\ v+y),
+\qquad (x,y)\in\bigl\{(e,2f),\,(2e,f),\,(f,2e),\,(2f,e)\bigr\} .
+\end{equation}
+All coordinates lie in $[0,q]$: inside $N$ we have $u,v\le q/10$ and $e,f\le q/10$, so the largest modified coordinate is at most $q/10+2q/10=3q/10$. The black capacity of \eqref{eq:A18} is
+\begin{equation}\label{eq:A20}
+(u+x)(v+y)+RC=X+uy+vx+xy\ \ge\ X+xy\ =\ X+2ef ,
+\end{equation}
+since $u,v,x,y\ge0$ and each of the four choices in \eqref{eq:A18} has $xy=2ef$. Combining with \eqref{eq:A21}, each of the four profiles has black capacity at least $F_B$.
+
+The white capacity of \eqref{eq:A18} is $(q-u-x)(q-C)+(q-R)(q-v-y)=Y-\bigl(x(q-C)+y(q-R)\bigr)$, so the \emph{white loss} is $x(q-C)+y(q-R)$. Put $L=2q-\sigma$. Over the four choices in \eqref{eq:A18} the values of $x$ sum to $3(e+f)=3a$ and so do the values of $y$; hence the average white loss is exactly
+\begin{equation}\label{eq:A22}
+\frac{3a}{4}\bigl((q-C)+(q-R)\bigr)=\frac34\,aL .
+\end{equation}
+
+\emph{Step 3: the averaged loss is affordable.} We claim
+\begin{equation}\label{eq:A23}
+Q\ \le\ a\Bigl(\frac L4-m\Bigr).
+\end{equation}
+First, by \eqref{eq:core2},
+\begin{equation}\label{eq:A24}
+\frac L4-m\ \ge\ \frac14\Bigl(2-\frac{37}{25}\Bigr)q-\frac9{100}q=\frac{13}{100}q-\frac{9}{100}q=\frac q{25}.
+\end{equation}
+Second, from \eqref{eq:A17}, Lemma~\ref{lem:basic} and \eqref{eq:A21a},
+\[
+2ef=Q-2gh>\beta b-\frac{qb}{50}\ \ge\ \frac{11}{25}qb-\frac{qb}{50}=\frac{21}{50}\,qb .
+\]
+Since $2ef\le a^2/2$, this gives $b<\dfrac{25a^2}{21q}$, and therefore
+\begin{equation}\label{eq:A25}
+Q\le\frac{a^2+b^2}{2}\le\frac{a^2}{2}+\frac{qb}{50}<\frac{a^2}{2}+\frac{q}{50}\cdot\frac{25a^2}{21q}=\frac{11}{21}a^2\le\frac{11}{21}\cdot\frac{9q}{200}\,a=\frac{33}{1400}\,aq<\frac{1}{25}aq ,
+\end{equation}
+using $b^2/2\le qb/50$ (valid as $b\le q/25$) and $a\le9q/200$. Comparing \eqref{eq:A24} and \eqref{eq:A25} proves \eqref{eq:A23}.
+
+\emph{Step 4: conclusion.} Since $\alpha=L-m$, inequality \eqref{eq:A23} is equivalent to
+\begin{equation}\label{eq:A26}
+\frac34\,aL\ \le\ a(L-m)-Q=\alpha a-Q .
+\end{equation}
+By \eqref{eq:A22} at least one of the four profiles has white loss at most $\frac34aL$, hence white capacity at least $Y-(\alpha a-Q)=F_W$. By \eqref{eq:A20} and \eqref{eq:A21} its black capacity is at least $F_B$. That profile therefore has $H$-value at least $\min(F_B,F_W)=T$, and so $T\le H(2q)$.
+\end{proof}
+
+\subsection{Case $Y\le X$}\label{ssec:caseB}
+
+\begin{proposition}\label{prop:caseB}
+If $Y\le X$ and $q\ge130$, then $T\le H(2q)$.
+\end{proposition}
+
+\begin{proof}
+If $Q\le\alpha a$ then $F_W\le Y$ by \eqref{eq:FW}, so $T\le Y=\min(X,Y)\le H(2q)$ by \eqref{eq:XYH}.
+
+Assume therefore
+\begin{equation}\label{eq:B28}
+Q>\alpha a .
+\end{equation}
+By Lemma~\ref{lem:dichotomy}, $Q\le\beta b$.
+
+\emph{Step 1: the integrality step.} We claim $gh>0$. Indeed, if $gh=0$ then, using $a\le\frac{9}{200}q$ and Lemma~\ref{lem:basic},
+\[
+Q=2ef\le\frac{a^2}{2}\le\frac{9q}{400}\,a<\frac{43}{100}q\,a\le\alpha a ,
+\]
+contradicting \eqref{eq:B28}. Since $g$ and $h$ are integer counts, $g\ge1$ and $h\ge1$, so
+\begin{equation}\label{eq:B29}
+b=g+h\ \ge\ 2 .
+\end{equation}
+This is the only point in the whole argument where integrality of the counts is used; it is also exactly the point at which the continuous relaxation is provably insufficient (Remark~\ref{rem:integrality}).
+
+\emph{Step 2: averaging the two cuts.} By \eqref{eq:FB} and \eqref{eq:FW},
+\begin{equation}\label{eq:B30}
+T\ \le\ \frac{F_B+F_W}{2}=\frac{X+Y}{2}-\frac{\alpha a+\beta b-2Q}{2}.
+\end{equation}
+By \eqref{eq:dicho},
+\begin{equation}\label{eq:B31}
+\alpha a+\beta b-2Q\ \ge\ \alpha a+\beta b-(a^2+b^2)=a(\alpha-a)+b(\beta-b)\ \ge\ b(\beta-b),
+\end{equation}
+since $a(\alpha-a)\ge0$ by Lemma~\ref{lem:basic}. On the range $2\le b\le q/25$ the function $b\mapsto b(\beta-b)$ is increasing, because its derivative $\beta-2b\ge\frac{11}{25}q-\frac{2}{25}q=\frac9{25}q>0$. Hence by \eqref{eq:B29},
+\begin{equation}\label{eq:B32}
+\frac{\alpha a+\beta b-2Q}{2}\ \ge\ \frac{2(\beta-2)}{2}=\beta-2 .
+\end{equation}
+
+\emph{Step 3: the balanced-plaid baseline.} We claim
+\begin{equation}\label{eq:B33}
+\frac{X+Y}{2}\ \le\ \kappa q^2 .
+\end{equation}
+Normalize $(u,R,C,v)$ by $q$ and put, as in Lemma~\ref{lem:Hupper},
+\[
+\rho=\frac{u+R}{q},\quad \chi=\frac{v+C}{q},\quad \xi=1-\rho,\quad \eta=1-\chi,\quad
+z=\Bigl(\frac uq-\frac Rq\Bigr)\Bigl(\frac Cq-\frac vq\Bigr).
+\]
+The neighbourhood $N$ gives $\rho\le\frac1{10}+\frac78<1$ and $\chi<1$, so $\xi,\eta>0$. By \eqref{eq:XYid},
+\[
+\frac{X-Y}{q^2}=\rho+\chi-2-z,\qquad |z|\le\rho\chi,\qquad \frac{X+Y}{q^2}=1+\xi\eta .
+\]
+The assumption $X\ge Y$ forces $-\rho\chi\le z\le\rho+\chi-2$, whence $2-\rho-\chi\le\rho\chi$, i.e.\ $2\xi+2\eta-\xi\eta\le1$. With $w=\sqrt{\xi\eta}$, AM--GM gives $4w-w^2\le1$, so $w\le2-\sqrt3$ and
+\[
+\frac{X+Y}{2q^2}=\frac{1+w^2}{2}\le\frac{1+(2-\sqrt3)^2}{2}=4-2\sqrt3=\kappa ,
+\]
+which is \eqref{eq:B33}.
+
+\emph{Step 4: conclusion.} Combining \eqref{eq:B30}, \eqref{eq:B32}, \eqref{eq:B33} and $\beta\ge\frac{11}{25}q$,
+\begin{equation}\label{eq:B34}
+T\ \le\ \kappa q^2-\frac{11}{25}q+2 .
+\end{equation}
+By Lemma~\ref{lem:Hlower}, $H(2q)\ge\kappa q^2-\gamma q-\frac14$, so \eqref{eq:B34} gives $T\le H(2q)$ as soon as
+\begin{equation}\label{eq:B35}
+\Bigl(\frac{11}{25}-\gamma\Bigr)q\ \ge\ \frac94 .
+\end{equation}
+Now $\frac{11}{25}-\gamma=\frac1{\sqrt3}-\frac{14}{25}$, so \eqref{eq:B35} at $q=130$ reads $\frac{130}{\sqrt3}-\frac{14\cdot130}{25}\ge\frac94$, i.e.\ $\frac{130}{\sqrt3}\ge\frac{1501}{20}$, whose square is the integer comparison
+\[
+6{,}760{,}000\ \ge\ 6{,}759{,}003 .
+\]
+This holds, and the left-hand side of \eqref{eq:B35} is increasing in $q$ (the coefficient $\frac1{\sqrt3}-\frac{14}{25}=0.01735\ldots$ is positive), so \eqref{eq:B35} holds for every $q\ge130$.
+\end{proof}
+
+\begin{remark}\label{rem:integrality}
+The margin in \eqref{eq:B35} is $0.01735\ldots$ per unit of $q$ against a fixed deficit of $9/4$, which is why the threshold sits at $q=130$ and not lower. It is also worth noting where the continuous picture fails: at $n=18$ and $n=20$ the best purely continuous certificate gives $t\le43$ and $t\le53$ against the truth $42$ and $51$. The integrality step \eqref{eq:B29} --- and, in the finite range, the integer cut envelope of Section~\ref{sec:ladder} --- is exactly what closes those two units.
+\end{remark}
+
+\subsection{Proof of the upper bound for $q\ge130$}
+
+\begin{theorem}\label{thm:q130}
+$t(2q)\le H(2q)$ for every $q\ge130$.
+\end{theorem}
+
+\begin{proof}
+Suppose $t(2q)\ge H(2q)+1$. By Lemma~\ref{lem:lines} there is a configuration with $\min(B,W)\ge H(2q)+1$, and by Lemma~\ref{lem:chamber} we may assume it lies in the canonical chamber. Since $q\ge130\ge64$, Corollary~\ref{cor:escape} places its normalized profile in $N$ and its counts in the aggregate core \eqref{eq:core}. Lemma~\ref{lem:cuts} gives $\min(B,W)\le T$, and Propositions~\ref{prop:caseA} and~\ref{prop:caseB} --- which between them cover both orderings of $X$ and $Y$ --- give $T\le H(2q)$. Hence $\min(B,W)\le H(2q)$, a contradiction.
+\end{proof}
+
+Explicitly, a canonical profile falls into exactly one of three branches: outside $N$, where Theorem~\ref{thm:cert1} and Lemma~\ref{lem:escape} give $\min(B,W)<H(2q)$; inside $N$ but outside the aggregate core, where Theorem~\ref{thm:cert2} and Lemma~\ref{lem:escape} give the same; and inside the core, where Section~\ref{sec:local} gives $\min(B,W)\le H(2q)$.
+
+\section{The finite range \texorpdfstring{$q\le129$}{q <= 129}}\label{sec:ladder}
+
+\subsection{The certified cut library}
+
+The support-dual cuts used in Section~\ref{sec:local} are two members of a library of $760$. Each cut is a pair $(\alpha_{\mathrm{cut}},\lambda)$ with $\alpha_{\mathrm{cut}}\in\Q\cap[0,1]$ and $\lambda\in\Q^{42}$ such that
+\[
+\alpha_{\mathrm{cut}}\,\mathbf 1[\varepsilon=(1,1,1,1)]+(1-\alpha_{\mathrm{cut}})\,\mathbf 1[\varepsilon=(0,0,0,0)]
+\ \le\ (\lambda^{\mathsf T}E)_{\varepsilon}
+\quad\text{for all }64\text{ columns }\varepsilon,
+\]
+so that $\alpha_{\mathrm{cut}}B+(1-\alpha_{\mathrm{cut}})W\le q^2\,\lambda^{\mathsf T}(\text{right-hand sides})$, a quadratic polynomial in the eight counts. This is a Farkas certificate for a valid inequality: it needs no branching, no box, and no LP solve to \emph{use}.
+
+All $760$ cuts are exactly certified. The original verifier checks the $684$ delivered rational duals and recovers witnesses for $76$ legacy cuts delivered as polynomials only; an independent standard-library verifier re-derives the $42$ rows from torus incidence fibres, verifies all $64$ support columns and the polynomial identities with exact \texttt{Fraction} arithmetic, and recovers the same $76$ witnesses with its own exact two-phase simplex. Both pass $760/760$. The distribution of $\alpha_{\mathrm{cut}}$ over the library is
+\[
+0:136,\quad \tfrac14:14,\quad \tfrac13:2,\quad \tfrac12:157,\quad \tfrac23:19,\quad \tfrac34:124,\quad 1:308 .
+\]
+
+\subsection{The cut envelope at a fixed order}
+
+Fix $q$. The \emph{cut envelope} at $q$ is the function assigning to each integer outer profile the least of the $760$ cut values, evaluated with the correct count scale (a constant monomial contributes its coefficient times $q^2$, a linear monomial its coefficient times $q\,x_i$, and a product monomial its coefficient times $x_ix_j$). If the envelope is at most $H(2q)+\frac12$ at every integer profile in the canonical chamber, then, since $\min(B,W)$ is an integer, $t(2q)\le H(2q)$.
+
+\begin{proposition}\label{prop:ladder}
+For $q\in\{3,5\}$ and for every $q$ with $10\le q\le1000$, the cut envelope is at most $H(2q)+\frac12$ at every admissible integer outer profile; hence $t(2q)=H(2q)$ for those $q$. Together with the seven remaining small orders --- $q\in\{1,2\}$, where $t(2)=0$ and $t(4)=2$ are elementary (and are the recorded terms of A279405); $q\in\{4,6,7\}$, i.e.\ $n\in\{8,12,14\}$, where the recorded terms of A279405 were re-proved by both sweep implementations in the regression campaign of Appendix~\ref{app:campaigns} (complete refutation at $t(n)+1$ for every $5\le n\le16$); and $q\in\{8,9\}$, i.e.\ $n\in\{16,18\}$, settled by the exhaustive sweeps of Appendix~\ref{app:campaigns} --- this gives $t(2q)=H(2q)$ for every $q\le1000$.
+\end{proposition}
+
+The proof is an exact search over canonical integer boxes, implemented in \texttt{envelope\_\bs{}checker.py}. It propagates the four canonical chamber inequalities and the budget $\sum_i x_i\le4q$ exactly, computes for each promising cut a separable McCormick upper bound and then the exact corner maximum of the multi-affine quadratic, removes a box only when one certified cut is provably $\le H(2q)+\frac12$ throughout it, and otherwise bisects. Point boxes are evaluated exactly. All arithmetic is integer after scaling by the least common multiple of the reduced cut coefficients (which the checker computes itself from the cut files, obtaining $12$, rather than assuming a denominator). $H(2q)$ is recomputed independently by a four-dimensional best-first integer-box optimization, matched against the literal four-loop definition at small $q$, and the corresponding parity-plaid witness is recounted cell by cell.
+
+Each order produces one atomic, resumable JSON record binding the cut file hashes, the computed coefficient LCM, the exact $H$-optimizer and its recount, a complete binary-tree accounting, an (empty) survivor list, and the runtime. Across the ladder the engines visited $211{,}596{,}385$ nodes; the slowest order was $q=53$ at $40.9$ seconds; no order came near the $600$-second stop, and no order needed a fallback cut generation or a moment-LP tightness event. At the far end,
+\[
+\begin{gathered}
+q=1000:\qquad H(2000)=535824,\qquad\text{optimizer }(r_0,r_1,c_0,c_1)=(0,732,732,0),\\
+\text{witness }B/W=535824/536000,
+\end{gathered}
+\]
+with $242{,}943$ envelope nodes in $0.75$ seconds and no survivors.
+
+\subsection{Verification tiers}
+
+We state the evidence honestly, since it is not uniform.
+
+\begin{itemize}
+\item \emph{$q\ge130$: two independent verifications.} The two branch certificates are checked by the delivered exact checker and, independently, by a from-scratch verifier that derives the moment system itself (Remark~\ref{rem:certverify}); the finite algebra of Section~\ref{sec:local} was audited by hand and is additionally machine-checked twice, by \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py} and by the independent \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}prose.py} ($126$ checks: symbolic identities, slack decompositions, an exact $\Q(\sqrt3)$ sign routine, a $150{,}000$-point exact integer stress test of the case analysis, and a $q=1..129$ ladder-coverage audit).
+\item \emph{$q\le20$: two independent verifications.} The orders $n\le14$ are the previously known terms of A279405, re-proved for $5\le n\le16$ by both sweep implementations (complete refutation at $t(n)+1$; Appendix~\ref{app:campaigns}). For $n=16,17,18,20,22$ two independently written exhaustive board sweeps agree (Appendix~\ref{app:campaigns}); for $n=24,\dots,40$ two materially different exact envelope implementations agree --- a corrected vectorized exhaustive sweep and the canonical-integer-box branch-and-bound described above --- each with an independent recomputation of $H$ and a direct cell-by-cell witness recount.
+\item \emph{$21\le q\le129$: one exact certified method.} These $109$ orders rest on the box engine alone. A strict C++17 accelerator reproduces the Python engine counter for counter (frozen cross-checks at $q=3,5,10,20$), but it is a second-language port of the same algorithm, not a conceptually different method. This is the one segment of Theorem~\ref{thm:main} awaiting a second independent verification; it is a finite, inexpensive computation, and the $109$ records are shipped so that it can be redone.
+\end{itemize}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+The lower bound $t(2q)\ge H(2q)$ is Proposition~\ref{prop:lower}. The upper bound is Theorem~\ref{thm:q130} for $q\ge130$ and Proposition~\ref{prop:ladder} for $q\le129$ (indeed for $q\le1000$).
+\end{proof}
+
+\begin{proof}[Proof of Corollaries~\ref{cor:asym} and~\ref{cor:values}]
+Immediate from Theorem~\ref{thm:main} with Lemmas~\ref{lem:Hupper} and~\ref{lem:Hlower}, and from Table~\ref{tab:Hvals} together with the evaluation $H(2000)=535824$ at $(0,732,732,0)$, where $r_0c_1+r_1c_0=732^2=535824$ and $(q-r_0)(q-c_0)+(q-r_1)(q-c_1)=1000\cdot268+268\cdot1000=536000$.
+\end{proof}
+
+\section{Odd orders}\label{sec:odd}
+
+The formula of Theorem~\ref{thm:main} has no odd analogue, for a structural reason: on an odd torus a diagonal and an antidiagonal meet in exactly one cell (Lemma~\ref{lem:inc}), the label parities carry no information, and the parity-plaid mechanism --- one square-parity class for each colour --- simply does not exist. Correspondingly, the odd values are much smaller relative to $n^2$, and no candidate formula is known. What we can add is two exact values and one general construction.
+
+\begin{theorem}\label{thm:t15}
+$t(15)=20$.
+\end{theorem}
+
+\begin{theorem}\label{thm:t17}
+$t(17)=28$.
+\end{theorem}
+
+Both lower bounds are known: explicit $20+20$ and $28+28$ configurations appear in the appendix of \cite{CDHS24}. In line-set form, a $20+20$ configuration on the $15\times15$ torus is
+\[
+\begin{aligned}
+R&=\{5,7,8,11,12,14\}, & D&=\{0,1,4,8,12,13,14\},\\
+C&=\{0,3,4,7,9,10,12,13\}, & A&=\{1,2,3,9,10,12,14\},
+\end{aligned}
+\]
+with $|\Bl|=20$ and $|\Wh|=22$; and a $28+28$ configuration on the $17\times17$ torus is
+\[
+\begin{aligned}
+R&=\{0,1,2,4,5,7,8,9\}, & D&=\{2,3,4,7,10,13,14,15\},\\
+C&=\{0,1,2,4,5,7,8,9,13\}, & A&=\{2,5,6,7,9,11,12,13,16\},
+\end{aligned}
+\]
+with $|\Bl|=|\Wh|=28$. Both are verified directly, cell by cell and pair by pair.
+
+The upper bounds are exhaustive computer searches on a common plan: reduce to line colourings (Lemma~\ref{lem:lines}), bound the admissible \emph{size profiles} by elementary counting identities, quotient by the affine symmetry group, and decide each surviving profile by an exact finite search in which every pruning rule is a necessary condition. For $n=15$ this leaves $247$ canonical profiles and $6{,}074{,}753{,}568$ cases; for $n=17$ it leaves $316$ oriented jobs and about $1.6\cdot10^{11}$ cases. In both cases two independently written implementations, with different symmetry quotients and different completion algorithms, agree that no larger placement exists. Appendix~\ref{app:campaigns} gives the architecture and the run statistics.
+
+\begin{remark}
+The even values $t(16)=32$, $t(18)=42$, $t(20)=51$ and $t(22)=64$ were also obtained by the same exhaustive sweeps, before Theorem~\ref{thm:main} was available. They are now corollaries of the formula, and serve as out-of-sample confirmations of it: $H(18)=42$ and $H(20)=51$ were computed from \eqref{eq:Hdef} \emph{before} the corresponding sweeps finished, and the sweeps' extremal witnesses turned out to be parity-separated with exactly the predicted counts: at $n=18$ the extremal configuration has $(r_0,r_1,c_0,c_1)=(6,0,1,7)$ with $X=Y=42$, and at $n=20$ it has $(1,7,7,2)$ with $X=Y=51$.
+\end{remark}
+
+Finally, one general lower bound is worth recording, because it explains part of the prime-factor sensitivity of the odd data.
+
+\begin{proposition}[Divisor lifting]\label{prop:lift}
+If $d\mid n$ then $t(n)\ge(n/d)^2\,t(d)$.
+\end{proposition}
+
+\begin{proof}
+Let $(R,C,D,A)$ be an optimal configuration on the $d\times d$ torus and let $\pi:\Zn\to\Z/d\Z$ be reduction. Take $(\pi^{-1}R,\pi^{-1}C,\pi^{-1}D,\pi^{-1}A)$. A cell $(r,c)$ of the $n$-torus is black-homogeneous iff $(\pi r,\pi c)$ is, since $\pi(r-c)=\pi r-\pi c$ and $\pi(r+c)=\pi r+\pi c$; and each cell of the $d$-torus has exactly $(n/d)^2$ preimages. So both armies scale by $(n/d)^2$, and Lemma~\ref{lem:lines} applies.
+\end{proof}
+
+With $t(5)=2$, $t(7)=4$, $t(9)=7$, $t(11)=10$, $t(13)=16$, $t(15)=20$ and $t(17)=28$ this gives, for instance, $t(39)\ge144$, $t(45)\ge180$ and $t(51)\ge252$. The bound is strictly below the truth where testable ($\max_{d\mid9}(9/d)^2t(d)=0<7=t(9)$ and $\max_{d\mid15}(15/d)^2t(d)=18<20=t(15)$), so class separation modulo a divisor does not by itself produce an odd formula --- it only moves the optimization to the base modulus. The odd asymptotics remain open, bracketed by the constructions of \cite{CDHS24} from below and $t(n)\le0.125\,n^2$ \cite[Thm.~1.4]{CDHS24} from above.
+
+\section{Use of AI tools}\label{sec:ai}
+
+This work was produced with substantial use of AI systems, which we disclose in the interest of transparency.
+
+The mathematical structures of Sections~\ref{sec:formula}--\ref{sec:local} --- the formula $H$, the parity-separated optimum and its continuous constant, the $42$-equation relaxation with its soundness proof, the support-dual cut library, the two branch certificates, the canonical chamber, and the case analysis of Section~\ref{sec:local} --- were produced by a large-language-model collaborator acting as mathematician (OpenAI GPT-5.6~Pro), over seven rounds of written exchange between 25 and 27 July 2026. The exhaustive search architecture for $n=15$ and $n=16$ and the corresponding solvers also originate with that collaborator. Anthropic Claude agents orchestrated the work: they wrote the briefs, audited every prose argument line by line, re-derived every identity, wrote the independent implementations and verifiers listed in Appendix~\ref{app:verify}, ran every computation reported here, and maintained the standing record.
+
+Several proposed intermediate lemmas turned out to be false and were refuted by exact counterexamples found during that audit; they are listed in Appendix~\ref{app:extra}. None of them is used in the proof above, and the final proof shape is precisely what survived. We record them because they document that the surviving shape --- a global localization, a local core, and an integrality-sensitive finish --- is forced rather than chosen.
+
+Agreement between AI-written implementations is a deliberately engineered error filter, not independent verification in the scholarly sense, and it does not replace the proofs in the text. Section~\ref{sec:local} is written so that a referee can check it by hand; the finite computations are shipped so that a third implementation can be written from the definitions. The author reviewed the manuscript and takes full responsibility for its content.
+
+\section*{Acknowledgements}
+
+The problem was brought within reach by the work of Clinch, Drescher, Huynh and Saffidine, whose plaid constructions supply the lower bound of Theorem~\ref{thm:main} at every even order and whose bounds bracketed the answer, and by the OEIS contributors who have kept A279405 current --- most recently Jaideep Padhi, whose values for $n=13$ and $n=14$ in June 2026 marked $n=15$ as the live frontier.
+
+\appendix
+
+\section{Verification and reproduction}\label{app:verify}
+
+\sloppy
+
+Every machine-checkable object in this paper is accompanied by an exact verifier. No verifier uses floating point in any decision; all comparisons are exact rational (\texttt{fractions.Fraction}) or exact in $\Q(\sqrt3)$. The commands below assume the ancillary directory as the working directory and Python $\ge3.10$ with no third-party libraries, with one exception: \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}prose.py} uses \texttt{sympy} for its symbolic identities. NumPy/SciPy are needed only to \emph{rebuild} the branch certificates, never to verify them.
+
+\subsection*{A.1 The range $q\ge130$}
+
+\emph{One-command check of the whole bundle:}
+\begin{verbatim}
+python3 verify_even_q_ge_130_bundle.py
+\end{verbatim}
+Final line: \texttt{EVEN\_\bs{}Q\_\bs{}GE\_\bs{}130\_\bs{}BUNDLE\_\bs{}OK}. Runtime about $3.3$ seconds. This runs the delivered certificate checker, the algebra checker and the constant checks in sequence.
+
+\emph{The two branch certificates, delivered checker:}
+\begin{verbatim}
+python3 verify_even_branch_certificate.py even_c527_sym_mc.json.gz \
+                                          even_local_core_mc.json.gz
+\end{verbatim}
+prints per-certificate statistics, \texttt{EXACT\_\bs{}BRANCH\_\bs{}CERTIFICATE\_\bs{}OK} for each, and \texttt{ALL\_\bs{}EVEN\_\bs{}BRANCH\_\bs{}CERTIFICATES\_\bs{}OK}. The reported counts are those of Table~\ref{tab:certs}.
+
+\emph{The two branch certificates, independent verifier:}
+\begin{verbatim}
+python3 verify_even_finite_independent.py even_c527_sym_mc.json.gz \
+                                          even_local_core_mc.json.gz
+\end{verbatim}
+Final line: \texttt{EVEN\_\bs{}FINITE\_\bs{}INDEPENDENT\_\bs{}VERIFIER\_\bs{}OK}, runtime $2.1$ seconds. It first prints \texttt{moment\_\bs{}rows=42 product\_\bs{}variables=22 inner\_\bs{}atoms=64} and \texttt{semantic\_\bs{}equation\_\bs{}checks=8400}, then for each certificate the node counts, the leaf statistics and \texttt{EXACT\_\bs{}BRANCH\_\bs{}CERTIFICATE\_\bs{}INDEPENDENTLY\_\bs{}OK}. All counts agree with the delivered checker (Table~\ref{tab:certs}). Its largest reconstructed local-core leaf bound is $2329117/4419584$.
+
+\emph{The support cuts and the algebra of Section~\ref{sec:local}:}
+\begin{verbatim}
+python3 verify_even_finite_algebra.py even_finite_support_cuts.json
+python3 verify_even_finite_prose.py
+\end{verbatim}
+The first prints \texttt{EVEN\_\bs{}FINITE\_\bs{}ALGEBRA\_\bs{}OK} and checks the two exact duals of Lemma~\ref{lem:cuts}, their columnwise support property and polynomial identities, and the exact constants ($\kappa-\frac{527}{1000}>\frac1{125}$, $\gamma<\frac12$, $6{,}760{,}000\ge6{,}759{,}003$). The second is an independently written check of the prose: it prints \texttt{126/126 checks passed} and \texttt{EVEN\_\bs{}FINITE\_\bs{}PROSE\_\bs{}OK}, covering the chamber argument of Lemma~\ref{lem:chamber}, every displayed inequality of Sections~\ref{sec:cert}--\ref{sec:local} as a symbolic identity or slack decomposition, a $150{,}000$-point exact integer stress test of both cases, and the coverage bookkeeping $q\le129$ (ladder) $\cup$ $q\ge130$ (certificates).
+
+\emph{The refuted envelope (24$'$):}
+\begin{verbatim}
+python3 verify_counterexample_24prime.py counterexample_24prime.json
+\end{verbatim}
+prints \texttt{COUNTEREXAMPLE\_\bs{}24PRIME\_\bs{}OK}; see Appendix~\ref{app:extra}.
+
+\subsection*{A.2 The finite range}
+
+\emph{The cut library.} \texttt{new\_\bs{}dual\_\bs{}cuts.json} holds the $760$-cut library with its exact duals. \texttt{even\_\bs{}finite\_\bs{}support\_\bs{}cuts.json} holds the compact duals for entries $547$, $609$ and $559$; the proof uses only $609$ and $559$.
+
+\emph{The ladder.} With \texttt{envelope\_\bs{}checker.py} and the cut library in place,
+\begin{verbatim}
+python3 envelope_checker.py 21 22 23 --progress
+\end{verbatim}
+recomputes individual orders, writing one JSON record per order to \texttt{records/}. Each record must have an empty \texttt{survivors} list, a complete terminal-tree accounting, a recomputed $H(2q)$ with its optimizer, and a cell-by-cell witness recount. The $109$ records for $21\le q\le129$ are shipped in \texttt{records\_\bs{}q021\_\bs{}q129/}. The full project ladder runs to $q=1000$; its $993$-record manifest has SHA-256
+\begin{center}\small\texttt{620dd56b7d558fbf3315f2a0058fa65c2943b4c58b3acf53027307b4d5b4db31}\end{center}
+
+\subsection*{A.3 Digests}
+
+\begin{center}\small
+\begin{tabular}{@{}l@{}}
+\toprule
+\texttt{even\_\bs{}c527\_\bs{}sym\_\bs{}mc.json.gz}\\
+\quad\texttt{9f9b52f5600648b23b9b516da01fb177eff6780b38e8532c9f507ec5f96e4643}\\
+\addlinespace
+\texttt{even\_\bs{}local\_\bs{}core\_\bs{}mc.json.gz}\\
+\quad\texttt{d4c493e7b8781cca32e1535d65b864b68b18c9cc14bf60c3c1bd8cd48250fe4f}\\
+\addlinespace
+\texttt{verify\_\bs{}even\_\bs{}branch\_\bs{}certificate.py}\\
+\quad\texttt{286d02d0852ec3e305aa5342b28774c5c7aaa97a1bd3cf38cea3402b8d0463c2}\\
+\addlinespace
+\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}independent.py}\\
+\quad\texttt{53c38e441223478dc9807e447198952634fbe0cbc74a99f0461abda72527cde3}\\
+\addlinespace
+\texttt{even\_\bs{}finite\_\bs{}support\_\bs{}cuts.json}\\
+\quad\texttt{60d5ec497c606265dbb214e83025ff150cb30e30c3f4edeb15202227e83a2a7d}\\
+\addlinespace
+\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py}\\
+\quad\texttt{3e7b391f92ef7f9d57a0549c0c443ebc3838f910141a4c959f31b8ac16943c16}\\
+\addlinespace
+\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}prose.py}\\
+\quad\texttt{8ed91eafbbac5522a295e4c6bfcc3024a685a68cc292f54be029494a301880bb}\\
+\addlinespace
+\texttt{verify\_\bs{}even\_\bs{}q\_\bs{}ge\_\bs{}130\_\bs{}bundle.py}\\
+\quad\texttt{e8a8a9bc05058fd15c042f0787cb66441a75a91d79807b3a2203ab7b6af313fa}\\
+\addlinespace
+\texttt{counterexample\_\bs{}24prime.json}\\
+\quad\texttt{883b981c045acb8731e32d37c372e7931a1e20bb7e9601c8fb7ff7556b08cba4}\\
+\addlinespace
+\texttt{verify\_\bs{}counterexample\_\bs{}24prime.py}\\
+\quad\texttt{8976211b6f2f17bdb9e34e4f3381594966434ddd3bb69fcd07f44b6640952edf}\\
+\addlinespace
+\texttt{new\_\bs{}dual\_\bs{}cuts.json}\\
+\quad\texttt{a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94}\\
+\addlinespace
+\texttt{envelope\_\bs{}checker.py}\\
+\quad\texttt{84aa10abfbccfb6b6135e1adc2217aacc64342180e4114d9d3c90e92184fe744}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Digests of the legacy $n=15$ and $n=16$ files, unchanged from \cite{Harries26}:
+
+\begin{center}\small
+\begin{tabular}{@{}l@{}}
+\toprule
+\texttt{peace15\_\bs{}solver.cpp}\\
+\quad\texttt{1ae5b340d6feb4591dae4f7b57a283a373ce60fd2bc9767fc043f25d402bebe9}\\
+\addlinespace
+\texttt{peace15\_\bs{}certificate.tsv}\\
+\quad\texttt{f9d2c858cc6e3a144a10da509a744114080de801df6d216b8cd2783cb2f410b0}\\
+\addlinespace
+\texttt{peace16\_\bs{}solver.cpp}\\
+\quad\texttt{ff8de5710446f1b8721e372a3f9af70bcd05b5798cb7924bce58d7e9c784df7c}\\
+\addlinespace
+\texttt{peace16\_\bs{}solver\_\bs{}bruteforce.cpp}\\
+\quad\texttt{4153d2181642b3de83f3f0f366d85b8438350aa3b620580cc3509fafe7c65c3f}\\
+\addlinespace
+\texttt{peace16\_\bs{}certificate.tsv}\\
+\quad\texttt{850fc499127193539c06216aa57e91fd6373b3ea2773f4c642654e95def0c086}\\
+\addlinespace
+\texttt{peace16\_\bs{}certificate\_\bs{}bruteforce.tsv}\\
+\quad\texttt{8f606eac6e0b3bcc31f07b21bcfabf1fddd5d6abd350c9b557765f01dc2948d2}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The file \texttt{SHA256SUMS} in the ancillary directory carries digests of every shipped file; verify with \texttt{shasum -a 256 -c SHA256SUMS}.
+
+\subsection*{A.4 What is and is not a proof object}
+
+The two branch certificates and the cut duals \emph{are} machine-checkable proof objects: each carries exact rational multipliers that a reader's own program can re-verify without solving any linear programme, and both are checked here by two programs sharing no code. The ladder records are audit logs, not standalone proof objects: they record what was searched and bind the inputs by hash, and the refutation is the engine together with the definitions of Section~\ref{sec:ladder}. Re-running the engine is what re-establishes it. The same caveat applies to the exhaustive board sweeps of Appendix~\ref{app:campaigns}.
+
+\fussy
+
+\section{The exhaustive board-sweep campaigns}\label{app:campaigns}
+
+This appendix condenses the architecture behind Theorem~\ref{thm:odd} and behind the (now redundant) even sweeps at $n=16,18,20,22$. It is a summary; the detailed treatment of $n=15$ and $n=16$ is \cite{Harries26}, whose programs are among the ancillary files.
+
+\subsection*{B.1 The profile programme}
+
+By Lemma~\ref{lem:lines} the question at order $n$ and target $m$ is whether some $(R,C,D,A)$ has $|\Bl|\ge m$ and $|\Wh|\ge m$. Complementation gives $S:=|R|+|C|+|D|+|A|\le2n$ without loss of generality. We stress that this is used only as an inequality: feasibility is not monotone under moving a line from the white side to the black side, so there is no normalization to $S=2n$, and all strata $S\le2n$ are searched.
+
+Two counting facts drive the filtering. By Lemma~\ref{lem:inc}, any two lines from distinct families meet in one cell unless they are a diagonal--antidiagonal pair, so $|\Bl|\le|\mathcal X||\mathcal Y|$ for five of the six family pairs, with the exceptional pair contributing $2(d_0a_0+d_1a_1)$ for even $n$ and $da$ for odd $n$. And for any three families with black sizes $x,y,z$, indicator algebra gives the exact identity
+\[
+T+T'=n^2-n(x+y+z)+m(X,Y)+m(X,Z)+m(Y,Z),
+\]
+where $T,T'$ count the cells whose three lines are all black, resp.\ all white; since $|\Bl|+|\Wh|\le T+T'$, the right-hand side must be at least $2m$ for each of the four triples. These necessary conditions, applied to the quadruple of sizes (odd $n$) or to the parity-refined six-tuple $(r,c,d_0,d_1,a_0,a_1)$ (even $n$), cut the profile space down to a short canonical worklist.
+
+Each surviving profile is then decided exactly in three stages: enumerate orbit representatives of a fixed pair of families under the affine symmetry group; enumerate all admissible subsets of one completion family; and decide the last family by an exact two-constraint, fixed-cardinality subset problem. Every pruning rule in the last stage is a necessary condition, which is what makes the search exhaustive rather than heuristic.
+
+\subsection*{B.2 Case counts}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+order & target & canonical profiles / jobs & cases examined & outcome\\
+\midrule
+$n=15$ & $21$ & $247$ profiles & $6{,}074{,}753{,}568$ & all UNSAT\\
+$n=16$ & $33$ & $342$ profiles, $677$ jobs & $13{,}163{,}028{,}768$ & all UNSAT\\
+$n=17$ & $29$ & $316$ jobs & $158{,}802{,}287{,}408$ & all UNSAT\\
+$n=18$ & $43$ & $259$ jobs & $228{,}644{,}005{,}008$ & all UNSAT\\
+$n=20$ & $52$ & $1{,}411$ jobs & $31{,}663{,}417{,}814{,}168$ & all UNSAT\\
+$n=22$ & $65$ & $312$ jobs & $169{,}995{,}119{,}667{,}384$ & all UNSAT\\
+\bottomrule
+\end{tabular}
+\medskip
+\caption{The exhaustive sweeps. ``Cases'' counts the subsets enumerated in the second stage; it is quotient-dependent, and the second implementation's totals differ accordingly (for $n=15$, $6{,}241{,}793{,}402$; for $n=17$, $157{,}158{,}165{,}660$).}\label{tab:sweeps}
+\end{table}
+
+\subsection*{B.3 The two-implementation policy, and its limits}
+
+Every campaign was run by two implementations written separately from the mathematical description, with different symmetry quotients and different completion algorithms (depth-first search with suffix dynamic-programming bounds versus exact meet-in-the-middle over Pareto frontiers), plus a shared fail-closed audit layer that regenerates each profile list, recomputes every orbit count by Burnside's lemma, recounts every witness cell by cell, and checks the row and column arithmetic of every certificate. Each solver begins with startup gates that abort the run on failure: a randomized comparison of its completion decision against direct enumeration on $20{,}000$--$100{,}000$ deterministic pseudorandom instances, known orbit counts, and a regeneration of the profile list. Sanitizer builds re-ran complete sweeps at $n=15$ and $n=16$ with zero diagnostics and identical certificates. As a regression control, both implementations also re-proved every previously known order $5\le n\le16$: a witness placement at $t(n)$ and a complete refutation at $t(n)+1$, twenty-four controls per implementation, all passing.
+
+Two limitations are worth recording. First, at $n=16$ the original bundle's two programs differed only in the completion kernel; that debt was closed later by two genuinely independent general-$n$ implementations reproducing the $677$ jobs, the $13{,}163{,}028{,}768$ cases and the $17{,}834$ prefilter survivors exactly. Second, board sweeps do not scale: at $n=24$ the target-$75$ sweep was stopped after $540$ of $3{,}168$ audited jobs, with a projected $151$ hours. That is why the even orders beyond $n=22$ are settled by the envelope certificates of Section~\ref{sec:ladder} rather than by sweeps, and why board sweeps are retired as a value method on the even torus. On the odd side the survivor densities are roughly $10^7$ times the even ones, and $n=19$ is out of reach under the same cost envelope.
+
+\section{Additional even-torus theory}\label{app:extra}
+
+The results in this appendix support the picture of Section~\ref{sec:formula} but are not used in the proof of Theorem~\ref{thm:main}. They are stated without proof; each was verified exactly.
+
+\subsection*{C.1 A compression theorem}
+
+For a square parity $p$, let $X_p$ be the number of parity-$p$ cells whose row and column are both black, $Y_p$ the number whose row and column are both white, and $B_p,W_p$ the numbers of parity-$p$ black- and white-homogeneous cells. Then for every even $n$ and every configuration,
+\[
+B_p+W_p\ \le\ \max(X_p,Y_p).
+\]
+The proof is exact pair-product counting in the two row/column parity blocks of square parity $p$: one obtains $B_p+W_p\le T_p$ with $T_p=X_p+(2q-S)(q-d_p)=Y_p+d_p(S-2q)$ where $S=r_0+r_1+c_0+c_1$, so $T_p\le X_p$ when $S\ge2q$ and $T_p\le Y_p$ when $S\le2q$. No diagonal--antidiagonal independence is used, so the argument is valid also when $4\mid n$; a mirrored version with $a_p$ in place of $d_p$ holds identically.
+
+\subsection*{C.2 Parity counts alone cannot suffice}
+
+The compression theorem together with all the parity-count inequalities is provably too weak to prove Theorem~\ref{thm:main}. Setting all eight normalized densities equal to $x=(3-\sqrt5)/2$ satisfies the budget ($8x<4$), every individual bound and the compression inequality ($4x^2\le2x$), yet gives $b=w=4x^2=14-6\sqrt5=0.5836\ldots>4-2\sqrt3=0.5359\ldots$. This is a countermodel, not a colouring: it shows that no proof of the formula can proceed from parity counts and compression alone, and that weighted moment coupling --- the $42$ equations of Lemma~\ref{lem:moments} --- is essential. A separate exact example shows that the coarser eight-count relaxation is genuinely unsound as a bound: at $n=10$ it admits the value $13$ against $t(10)=12$.
+
+\subsection*{C.3 Quantitative stability near the plaid optimum}
+
+Let $s=\sqrt3-1$, $\kappa=4-2\sqrt3$, $\delta=1/100$. In shifted coordinates around any of the four plaid points, with $\xi,\eta$ the deviations of the two $s$-coordinates and $u,v,e,f,g,h\in[0,\delta]$ the six wrong-parity impurities, the following hold on the whole $\delta$-neighbourhood:
+\begin{itemize}
+\item[(S1)] $\min(b,w)\le\kappa-\frac1{16}(\xi^2+\eta^2)-\frac1{50}(u+v+e+f+g+h)$;
+\item[(S2)] $\min(b,w)\le\kappa-\frac1{16}\operatorname{dist}^2(x,P)$, $P$ the plaid orbit;
+\item[(S3)] outside the four neighbourhoods, $\min(b,w)\le\kappa-10^{-17}$;
+\item[(S4)--(S6)] if $\min(B,W)\ge\kappa q^2-Kq$ and $q>10^{17}K$ then, after a parity translation, $(r_1-sq)^2+(c_0-sq)^2\le16Kq$ and the six impurity counts sum to at most $50K$ --- that is, $O(K)$ wrong-parity lines, independently of $q$.
+\end{itemize}
+Since $H(2q)\ge\kappa q^2-\frac32q$, the value $K=\frac32$ applies to any hypothetical counterexample, giving at most $75$ wrong-parity lines. This is genuine structure, but it cannot finish the proof: the threshold $q>10^{17}K$ is set by the uniform gap in (S3), and feasible parity-separated points just outside the $\delta$-box (with $\xi=-\eta$) have $\min(b,w)=\kappa-\xi^2$, so no tuning of $\delta$ brings the threshold below $q\approx1.4\cdot10^3$. Stability describes the defect; it does not bound it integrally. That is why the finish of Section~\ref{sec:local} is integrality-sensitive.
+
+\subsection*{C.4 Refuted lemmas}
+
+Three intermediate lemmas were proposed in the course of this work and are false. We record them, with their counterexamples, because together they show why the final proof has the shape it does.
+
+\begin{itemize}
+\item \emph{A parametric envelope lemma on a $20\%$ stress domain} (``lemma (4)''), asserting that a six-term local upper bound is dominated by a rounded plaid value together with one-unit transfers. False: the first budget-feasible counterexample is at $q=5$, $(u,R,C,v;e,f,g,h)=(1,3,4,1;1,1,1,1)$, where $8U_6=97>96=8\,\mathrm{RHS}$; another occurs at $q=10$. An exhaustive scan finds failures only at $q=5,10$ through $q=200$, but the universal statement is dead.
+\item \emph{The literal switching inequality} (``(24)''), on the neighbourhood $N$. False: the exact rational point $(u,R,v,C,g,e,h,f)=(\frac9{100},\frac{669}{1000},\frac{94}{1000},\frac{667}{1000},\frac7{1000},\frac{96}{1000},\frac{75}{10000},\frac{95}{1000})\in N$ violates it by about $0.0108$.
+\item \emph{The escape form} (``(24$'$)''), $\min(F_{B,1},F_{B,2},F_W)\le\max(\frac{527}{1000},\mathrm{RHS}_H)$ on $N$. This survived $200{,}000$ adversarial samples and was briefly the proof target. It is nevertheless false, by an exact integer lattice counterexample at $q=10^6$:
+\[
+(u,R,v,C,g,e,h,f)=(47231,\,696103,\,8717,\,758505,\,2,\,1136,\,4,\,2172),
+\]
+where $\min(F_{B,1},F_{B,2},F_W)=528{,}411{,}525{,}794>527{,}000{,}000{,}000$, while even the enlarged envelope over all $16^4$ profiles built from the eight local counts and their complements reaches only $528{,}409{,}318{,}642$ --- an exact violation margin of $2{,}207{,}152$. The files \texttt{counterexample\_\bs{}24prime.json} and \texttt{verify\_\bs{}counterexample\_\bs{}24prime.py} check this in integer arithmetic only.
+\end{itemize}
+
+The calibration lesson is explicit: the violation region of (24$'$) is thinner than a $200{,}000$-point random scan resolves, so sampling evidence for an inequality of this kind is worth very little. The proof of Section~\ref{sec:local} uses no switching envelope at all; the global balanced-plaid baseline of Lemma~\ref{lem:Hlower} replaces it, and the case $Y\le X$ is closed by the integrality step $b\ge2$ instead.
+
+\begin{thebibliography}{99}
+
+\bibitem{Ainley77}
+S.~Ainley,
+\emph{Mathematical Puzzles},
+G.~Bell \& Sons, London, 1977.
+
+\bibitem{CDHS24}
+K.~Clinch, M.~Drescher, T.~Huynh, and A.~Saffidine,
+\emph{Constructions, bounds, and algorithms for peaceable queens},
+arXiv:2406.06974v3 (2024).
+
+\bibitem{Harries26}
+J.~P.~Harries,
+\emph{Peaceable queens on the $15\times15$ and $16\times16$ tori: the exact values $t(15)=20$ and $t(16)=32$},
+preprint, July 2026.
+
+\bibitem{OEIS250000}
+N.~J.~A. Sloane and others,
+\emph{The On-Line Encyclopedia of Integer Sequences}, sequence A250000:
+\emph{Peaceable coexisting armies of queens},
+\url{https://oeis.org/A250000}, accessed July 27, 2026.
+
+\bibitem{OEIS279405}
+N.~J.~A. Sloane and others,
+\emph{The On-Line Encyclopedia of Integer Sequences}, sequence A279405:
+\emph{Peaceable coexisting armies of queens on a toroidal board},
+\url{https://oeis.org/A279405}, accessed July 27, 2026.
+
+\end{thebibliography}
+
+\end{document}
