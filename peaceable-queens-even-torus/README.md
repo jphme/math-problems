@@ -65,7 +65,7 @@ larger enumerations. Full rebuild
 commands for those larger computations are in `anc/README.txt`.
 
 An immutable snapshot of the released ancillary data is commit
-[`c55eb4858c15df01af6ffde5985aa4681244bbd3`](https://github.com/jphme/math-problems/tree/c55eb4858c15df01af6ffde5985aa4681244bbd3/peaceable-queens-even-torus/anc).
+[`459046273420a61d51bac18f3a260b4317ec2e62`](https://github.com/jphme/math-problems/tree/459046273420a61d51bac18f3a260b4317ec2e62/peaceable-queens-even-torus/anc).
 
 The paper contains a concise disclosure of the AI tools used in discovery,
 drafting, code generation, and verification. The author takes responsibility
