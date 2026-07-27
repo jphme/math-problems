@@ -36,9 +36,9 @@ from typing import Iterable, Sequence
 
 
 HERE = Path(__file__).resolve().parent
-PEACEABLE_QUEENS = HERE.parents[1]
-RESULT4 = PEACEABLE_QUEENS / "handoff-mathematician" / "result4"
 DEFAULT_RECORDS = HERE / "records"
+DEFAULT_BENDERS_CUTS = HERE / "benders_cuts.json"
+DEFAULT_NEW_CUTS = HERE / "new_dual_cuts.json"
 SCHEMA = "peaceable-queens-e2e3-envelope-box-proof-v2"
 
 # Each row is sum(a_i*x_i) <= rhs.  The coordinate order is
@@ -86,9 +86,9 @@ def sha256(path: Path) -> str:
 
 
 def _poly_entries() -> tuple[list[dict[str, list[int]]], list[dict[str, list[int]]]]:
-    with (RESULT4 / "benders_cuts.json").open(encoding="utf-8") as handle:
+    with DEFAULT_BENDERS_CUTS.open(encoding="utf-8") as handle:
         old = json.load(handle)
-    with (RESULT4 / "new_dual_cuts.json").open(encoding="utf-8") as handle:
+    with DEFAULT_NEW_CUTS.open(encoding="utf-8") as handle:
         new = [entry["poly"] for entry in json.load(handle)]
     if len(old) != 76 or len(new) != 684:
         raise ValueError(f"unexpected cut counts: {len(old)} and {len(new)}")
@@ -188,8 +188,8 @@ def load_cuts() -> tuple[list[Cut], dict[str, str], int]:
     if len(cuts) != 760:
         raise AssertionError(len(cuts))
     digests = {
-        "benders_cuts.json": sha256(RESULT4 / "benders_cuts.json"),
-        "new_dual_cuts.json": sha256(RESULT4 / "new_dual_cuts.json"),
+        "benders_cuts.json": sha256(DEFAULT_BENDERS_CUTS),
+        "new_dual_cuts.json": sha256(DEFAULT_NEW_CUTS),
     }
     return cuts, digests, common_denominator
 

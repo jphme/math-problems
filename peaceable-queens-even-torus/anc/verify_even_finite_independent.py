@@ -779,14 +779,7 @@ def sha256(path):
 
 
 def main():
-    base = Path(__file__).resolve().parents[1]
-    default = (
-        base
-        / "handoff-mathematician"
-        / "result6-proof"
-        / "bundle"
-        / "even-finite-proof-bundle"
-    )
+    default = Path(__file__).resolve().parent
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "certificates",

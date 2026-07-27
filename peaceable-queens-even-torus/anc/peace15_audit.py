@@ -2,9 +2,12 @@
 """Independent audit of the peaceable-queens exhaustive run.
 
 This script does not repeat the 6.07-billion-case completion sweep. It
-independently regenerates the profile worklist, verifies every recorded orbit
-count by Burnside's lemma, checks the row totals, and verifies the 20+20 lower
-bound witness. Re-run peace15_solver.cpp for the exhaustive completion step.
+independently regenerates the profile worklist and the fixed-pair orbit
+representatives, proves one-per-orbit coverage using canonical orbit
+identifiers, verifies the representative hashes and every orbit count (also
+independently by Burnside's lemma), checks the row totals, and verifies the
+20+20 lower-bound witness. Re-run peace15_solver.cpp for the exhaustive
+completion step.
 """
 from __future__ import annotations
 
@@ -18,6 +21,7 @@ from pathlib import Path
 N = 15
 TARGET = 21
 UNITS = (1, 2, 4, 7, 8, 11, 13, 14)
+ALL = (1 << N) - 1
 D4 = (
     (0, 1, 2, 3), (0, 1, 3, 2), (1, 0, 2, 3), (1, 0, 3, 2),
     (2, 3, 0, 1), (2, 3, 1, 0), (3, 2, 0, 1), (3, 2, 1, 0),
@@ -93,6 +97,109 @@ INV = {
 }
 
 
+def rotate_mask(mask: int, shift: int) -> int:
+    if shift == 0:
+        return mask
+    return ((mask << shift) | (mask >> (N - shift))) & ALL
+
+
+def translation_canonical(mask: int) -> int:
+    return min(rotate_mask(mask, shift) for shift in range(N))
+
+
+TRANSLATION_CANON = tuple(
+    translation_canonical(mask)
+    for mask in range(1 << N)
+)
+NECKLACES = tuple(
+    tuple(sorted({
+        TRANSLATION_CANON[mask]
+        for mask in range(1 << N)
+        if mask.bit_count() == size
+    }))
+    for size in range(N + 1)
+)
+
+
+def multiply_mask(mask: int, unit: int) -> int:
+    out = 0
+    while mask:
+        bit = mask & -mask
+        x = bit.bit_length() - 1
+        out |= 1 << ((unit * x) % N)
+        mask ^= bit
+    return out
+
+
+SCALE_CANON = {
+    (unit, mask): TRANSLATION_CANON[multiply_mask(mask, unit)]
+    for unit in UNITS
+    for necklaces in NECKLACES
+    for mask in necklaces
+}
+
+
+def canonical_pair_id(
+    row_mask: int,
+    column_mask: int,
+    same_size: bool,
+    relative_sign: bool,
+) -> tuple[int, int]:
+    """Canonical identifier for an orbit of translation-normalized pairs."""
+    images: list[tuple[int, int]] = []
+    for unit in UNITS:
+        transformed_row = SCALE_CANON[(unit, row_mask)]
+        column_units = (unit, (-unit) % N) if relative_sign else (unit,)
+        for column_unit in column_units:
+            transformed_column = SCALE_CANON[(column_unit, column_mask)]
+            images.append((transformed_row, transformed_column))
+            if same_size:
+                images.append((transformed_column, transformed_row))
+    return min(images)
+
+
+def regenerate_pair_representatives(
+    r: int,
+    c: int,
+    relative_sign: bool,
+) -> tuple[list[tuple[int, int]], int]:
+    """Partition the complete necklace-pair domain by canonical orbit ID."""
+    assert r <= c
+    same_size = r == c
+    orbit_sizes: Counter[tuple[int, int]] = Counter()
+    for row_mask in NECKLACES[r]:
+        for column_mask in NECKLACES[c]:
+            orbit_id = canonical_pair_id(
+                row_mask, column_mask, same_size, relative_sign
+            )
+            orbit_sizes[orbit_id] += 1
+
+    representatives = sorted(orbit_sizes)
+    domain_size = len(NECKLACES[r]) * len(NECKLACES[c])
+
+    # The canonical IDs partition every necklace pair, and each regenerated
+    # representative is the unique minimum member of its orbit.
+    assert sum(orbit_sizes.values()) == domain_size
+    assert len(representatives) == len(orbit_sizes)
+    assert all(
+        canonical_pair_id(row_mask, column_mask, same_size, relative_sign)
+        == (row_mask, column_mask)
+        for row_mask, column_mask in representatives
+    )
+    return representatives, domain_size
+
+
+def fnv_pair_hash(representatives: list[tuple[int, int]]) -> str:
+    """Match the solver's bytewise 64-bit FNV hash of its pair list."""
+    value = 1469598103934665603
+    for row_mask, column_mask in representatives:
+        packed = row_mask | (column_mask << N)
+        for byte_index in range(4):
+            value ^= (packed >> (8 * byte_index)) & 0xFF
+            value = (value * 1099511628211) & ((1 << 64) - 1)
+    return f"{value:016x}"
+
+
 def burnside_pair_orbits(r: int, c: int, relative_sign: bool) -> int:
     epsilons = (1, -1) if relative_sign else (1,)
     direct_sum = 0
@@ -163,10 +270,12 @@ def main() -> None:
 
     checked_total = 0
     orbit_keys: dict[tuple[int, int, bool], int] = {}
+    orbit_hashes: dict[tuple[int, int, bool], str] = {}
     for row in rows:
         r, c = int(row["r"]), int(row["c"])
         sign = bool(int(row["relative_sign"]))
         orbit_count = int(row["pair_orbits"])
+        orbit_hash = row["pair_hash_fnv64"]
         a = int(row["a"])
         checked = int(row["A_checked"])
         assert checked == orbit_count * math.comb(N, a)
@@ -174,11 +283,22 @@ def main() -> None:
         key = (r, c, sign)
         if key in orbit_keys:
             assert orbit_keys[key] == orbit_count
+            assert orbit_hashes[key] == orbit_hash
         orbit_keys[key] = orbit_count
+        orbit_hashes[key] = orbit_hash
 
     assert checked_total == 6_074_753_568
+    representatives_checked = 0
+    pair_domain_checked = 0
     for (r, c, sign), recorded_count in orbit_keys.items():
+        representatives, domain_size = regenerate_pair_representatives(
+            r, c, sign
+        )
+        assert len(representatives) == recorded_count
+        assert fnv_pair_hash(representatives) == orbit_hashes[(r, c, sign)]
         assert burnside_pair_orbits(r, c, sign) == recorded_count
+        representatives_checked += len(representatives)
+        pair_domain_checked += domain_size
 
     R = {5, 7, 8, 11, 12, 14}
     C = {0, 3, 4, 7, 9, 10, 12, 13}
@@ -190,6 +310,9 @@ def main() -> None:
     print("AUDIT_OK")
     print(f"profiles={len(rows)}")
     print(f"orbit_keys_burnside_checked={len(orbit_keys)}")
+    print(f"pair_hashes_verified={len(orbit_keys)}")
+    print(f"pair_representatives_checked={representatives_checked}")
+    print(f"pair_domain_checked={pair_domain_checked}")
     print(f"A_checked={checked_total}")
     print(f"lower_bound_cells=black:{len(black)},white:{len(white)}")
     print(f"solver_sha256={sha256(source_path)}")

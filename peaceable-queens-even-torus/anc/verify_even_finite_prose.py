@@ -871,8 +871,7 @@ def H_crossing(q: int) -> int:
                 # white(c1) = base_w - A1 c1   (slope -A1 <= 0)
                 cands = {0, q}
                 if r0 + A1 > 0:
-                    t = (base_w - base_b) / (r0 + A1)
-                    ti = int(t)
+                    ti = (base_w - base_b) // (r0 + A1)
                     for cc in (ti - 1, ti, ti + 1):
                         if 0 <= cc <= q:
                             cands.add(cc)
@@ -888,7 +887,7 @@ TABLE_Q_LE_20 = [0, 2, 4, 8, 12, 18, 25, 32, 42, 51,
 
 
 def check_glue() -> None:
-    section("Sections 2/7 glue: exceptional range q <= 129")
+    section("Sections 2/7 glue: H targets and finite-range bookkeeping")
 
     # q <= 20 : frozen table, checked against brute-force H
     bad = []
@@ -955,10 +954,16 @@ def check_glue() -> None:
     check(f"Glue independent H(2q) recomputation matches records for q in {sample}",
           not badh, f"{badh}")
 
-    # the union covers everything the prose needs
-    covered = set(range(1, 21)) | set(range(21, 130))
-    check("Glue q = 1..129 fully covered (table + ladder), q >= 130 by Sections 3-6",
-          covered == set(range(1, 130)))
+    # This is only the division of the small range used by the paper.  The
+    # upper bounds at the seven elementary/sweep orders are audited by the
+    # released general-n and union-domain verifiers, not by this H checker.
+    direct_orders = {1, 2, 4, 6, 7, 8, 9}
+    envelope_orders = {3, 5, *range(10, 21)}
+    check(
+        "Glue stated direct/sweep and envelope orders partition q = 1..20",
+        direct_orders.isdisjoint(envelope_orders)
+        and direct_orders | envelope_orders == set(range(1, 21)),
+    )
 
 
 # ---------------------------------------------------------------------------
