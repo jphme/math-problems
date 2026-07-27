@@ -33,13 +33,16 @@ For the other repository-root commands below, remove the literal
 files under `/tmp`; they do not append to or overwrite the hash-inventoried
 records.
 
-The circulation artifacts built after the report-7 audit and final
-proof-surface corrections are:
+The circulation artifacts built after the report-7 audit, the final
+proof-surface corrections, and the 2026-07-27 referee pass (two wording-level
+edits: the abstract now defines $\mathcal S$ over integers $N>1$, matching the
+introduction, and Section 2 states the side--angle convention explicitly; no
+mathematical content changed) are:
 
 | artifact | SHA-256 |
 |---|---|
-| `erdos634_universal/paper/progress634.tex` | `da61669335f6a9ef18067e4b4796c2e65b823bc5cc5ce8b062a44276074f6e9f` |
-| `erdos634_universal/paper/progress634.pdf` | `81f50384a20f1f95713851fce71f5a8aea649db6d6da8f8123d43887ab4fc37e` |
+| `erdos634_universal/paper/progress634.tex` | `9b2cb91faafdae090ebed008499f18d7398d2dcda9b4a2ed34bc8aff9835bde5` |
+| `erdos634_universal/paper/progress634.pdf` | `737a46e12aaab3c218a8f7ec6fe2159be781850d04794ca43704f5a5dbd62a71` |
 
 ## Environment for the 2026-07-27 reruns
 
