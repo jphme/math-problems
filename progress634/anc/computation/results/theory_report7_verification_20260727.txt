@@ -1,0 +1,37 @@
+A. finite one-patch angle enumeration
+  PASS  A1: Group-2 sources I, II, III have no straightening attachment
+  PASS  A2: Group-2 E starts only row IV (including its swapped form)
+  PASS  A3: Group-2 IV outputs I, IV, III(swapped), or the trivial reptile
+  PASS  A4: Group-2 V outputs II or III (including swapped variants)
+  PASS  A5: no Group-2 row-to-row one-patch attachment lands in V
+  PASS  A6: Group-1 S1 outputs S1, S2, S3, or the trivial reptile
+  PASS  A7: Group-1 S4 outputs S1, S4, S5, or the trivial reptile
+  PASS  A8: no Group-1 attachment starts from S5
+  PASS  A9: Group-1 sources S2 and S3 have no straightening attachment
+B. transfer scale and count identities
+  PASS  B1: all seven Group-2 count identities (parametric sweep)
+  PASS  B2: all six Group-1 count identities (p,q < 60 sweep)
+C. two-orientation parallelograms and Herdt's N=720 inventory
+  PASS  C1: P(bc,pc+qb) has 2(pc+qb) tiles
+  PASS  C2: ten quadratic patches contribute 456 tiles
+  PASS  C3: six uniform subblocks form three transition blocks
+  PASS  C4: transition dimensions are 30x(35+24), twice, and 20x(4+10)
+  PASS  C5: corrected macro inventory totals N=720
+  PASS  C6: target/ray data for (4,5,6) at r=12
+D. primitive Eisenstein parametrization and relation lattice
+  PASS  D1: parametrization finds every ordered primitive triple with a,b<400
+  PASS  D2: parametrization identities and R_c x R_b=-(a,b,c)
+  PASS  D3: primitive cross product gives an index-one kernel basis
+  PASS  D4: flagship (3,5,7) relations
+E. ordered pure-edge layers and defect wedge
+  PASS  E1: A->B has two gamma sectors and exceeds a half-plane
+  PASS  E2: forbidding A->B gives exactly B^j A^(n-j)
+  PASS  E3: a coherent junction's residual alpha sector is one alpha tile
+  PASS  E4: defect wedge has sides (c,c,2a+b) and area ratio (2a+b)/a
+  PASS  E5: the defect area ratio is never integral for a primitive triple
+F. exact mirror-gap obstruction to the proposed forced-layer proof
+  PASS  F1: intended and reflected alpha-sector placements are both (4,5,6)
+  PASS  F2: reflected placement overshoots one ideal wall and undershoots the other
+  PASS  F3: report 7's gap coordinates do not distinguish the two side assignments
+
+SUMMARY: 29 passed, 0 failed

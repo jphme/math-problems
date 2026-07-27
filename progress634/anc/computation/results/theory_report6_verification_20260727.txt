@@ -1,0 +1,252 @@
+== A. addition-theorem hypotheses (rows I-V, E; shapes 4, 5; gamma=2alpha obstruction) ==
+[PASS] A1: addition-theorem hypothesis holds on all six rows, all sweep triples
+[PASS] A2: integer-ratio pairs match report #6's table (I:(b,U) II:(U,3W) III:(V,W) IV:(b,W) V:(U,V) E:(b,a))
+[PASS] A3: shapes 4 and 5 satisfy the hypothesis with ratios (cn, bn) and (bn, hn)
+[PASS] A4: gamma=2alpha addition hypothesis fails at (3,4,5) and (5,6,4) under both assignments
+== B. decomposition (r+s)Delta = rDelta + translated sDelta + parallelogram ==
+[PASS] B1: the three regions cover (r+s)Delta with interiors disjoint (grid check, 4 cases)
+[PASS] B2: area bookkeeping r^2 + s^2 + 2rs = (r+s)^2 (parallelogram = 2rs units)
+== C. generator window: A = <A cap [1, 2C-1]> for additively closed A with tail C ==
+[PASS] C1: window generation reproduces A on 4 sample semigroups
+== D. delta = v sweep ==
+[PASS] D1: delta = min{d : d*u^2 in <b, uv>} equals v for all 1101 primitive (u,v), u <= 60
+== E. gamma=2alpha sub-200 audit ==
+   N=  5  (u,v)=(2,3) r=1  dead: r>=2 [ours]                                          value: in S
+   N=  7  (u,v)=(3,4) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=  9  (u,v)=(4,5) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 11  (u,v)=(5,6) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 13  (u,v)=(6,7) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 15  (u,v)=(7,8) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 16  (u,v)=(3,5) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 17  (u,v)=(8,9) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 19  (u,v)=(9,10) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 20  (u,v)=(2,3) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 21  (u,v)=(10,11) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 23  (u,v)=(11,12) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 24  (u,v)=(5,7) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 25  (u,v)=(12,13) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 27  (u,v)=(13,14) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 28  (u,v)=(3,4) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 29  (u,v)=(14,15) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 31  (u,v)=(15,16) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 32  (u,v)=(7,9) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 33  (u,v)=(4,7) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 33  (u,v)=(16,17) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 35  (u,v)=(17,18) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 36  (u,v)=(4,5) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 37  (u,v)=(18,19) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 39  (u,v)=(5,8) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 39  (u,v)=(19,20) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 40  (u,v)=(9,11) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 41  (u,v)=(20,21) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 43  (u,v)=(21,22) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 44  (u,v)=(5,6) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 45  (u,v)=(2,3) r=3  ALIVE (BB,BC,CC)                                           value: in S
+   N= 45  (u,v)=(22,23) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 47  (u,v)=(23,24) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 48  (u,v)=(11,13) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 49  (u,v)=(24,25) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 51  (u,v)=(7,10) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 51  (u,v)=(25,26) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 52  (u,v)=(6,7) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 53  (u,v)=(26,27) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 55  (u,v)=(27,28) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 56  (u,v)=(5,9) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 56  (u,v)=(13,15) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 57  (u,v)=(8,11) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 57  (u,v)=(28,29) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 59  (u,v)=(29,30) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 60  (u,v)=(7,8) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N= 61  (u,v)=(30,31) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 63  (u,v)=(3,4) r=3  dead: first-layer residuals (E_B=15, R_BC=8, R_CC=-12) [rep6, G11] value: UNDOCUMENTED
+   N= 63  (u,v)=(31,32) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 64  (u,v)=(3,5) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 64  (u,v)=(15,17) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 65  (u,v)=(32,33) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 67  (u,v)=(33,34) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 68  (u,v)=(8,9) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 69  (u,v)=(10,13) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 69  (u,v)=(34,35) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 71  (u,v)=(35,36) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 72  (u,v)=(7,11) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 72  (u,v)=(17,19) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 73  (u,v)=(36,37) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 75  (u,v)=(11,14) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 75  (u,v)=(37,38) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 76  (u,v)=(9,10) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N= 77  (u,v)=(38,39) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 79  (u,v)=(39,40) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 80  (u,v)=(2,3) r=4  ALIVE (BB,BC,CC)                                           value: in S
+   N= 80  (u,v)=(19,21) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 81  (u,v)=(4,5) r=3  dead: first-layer residuals (E_B=8, R_BC=-10, R_CC=-65) [rep6, G11] value: in S
+   N= 81  (u,v)=(40,41) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 83  (u,v)=(41,42) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N= 84  (u,v)=(10,11) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 85  (u,v)=(6,11) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 85  (u,v)=(42,43) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 87  (u,v)=(13,16) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 87  (u,v)=(43,44) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 88  (u,v)=(9,13) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 88  (u,v)=(21,23) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 89  (u,v)=(44,45) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 91  (u,v)=(45,46) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 92  (u,v)=(11,12) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N= 93  (u,v)=(14,17) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 93  (u,v)=(46,47) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 95  (u,v)=(7,12) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 95  (u,v)=(47,48) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N= 96  (u,v)=(5,7) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N= 96  (u,v)=(23,25) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 97  (u,v)=(48,49) r=1  dead: r>=2 [ours]                                          value: in S
+   N= 99  (u,v)=(5,6) r=3  dead: b*r = 33 < v^2 = 36 [rep6, G11]                      value: UNDOCUMENTED
+   N= 99  (u,v)=(49,50) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=100  (u,v)=(12,13) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=101  (u,v)=(50,51) r=1  dead: r>=2 [ours]                                          value: in S
+   N=103  (u,v)=(51,52) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=104  (u,v)=(11,15) r=1  dead: r>=2 [ours]                                          value: in S
+   N=104  (u,v)=(25,27) r=1  dead: r>=2 [ours]                                          value: in S
+   N=105  (u,v)=(8,13) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=105  (u,v)=(16,19) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=105  (u,v)=(52,53) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=107  (u,v)=(53,54) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=108  (u,v)=(13,14) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=109  (u,v)=(54,55) r=1  dead: r>=2 [ours]                                          value: in S
+   N=111  (u,v)=(17,20) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=111  (u,v)=(55,56) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=112  (u,v)=(3,4) r=4  ALIVE (BB,BC,CC)                                           value: in S
+   N=112  (u,v)=(27,29) r=1  dead: r>=2 [ours]                                          value: in S
+   N=113  (u,v)=(56,57) r=1  dead: r>=2 [ours]                                          value: in S
+   N=115  (u,v)=(9,14) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=115  (u,v)=(57,58) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=116  (u,v)=(14,15) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=117  (u,v)=(6,7) r=3  dead: b*r = 39 < v^2 = 49 [rep6, G11]                      value: in S
+   N=117  (u,v)=(58,59) r=1  dead: r>=2 [ours]                                          value: in S
+   N=119  (u,v)=(59,60) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=120  (u,v)=(7,13) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=120  (u,v)=(13,17) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=120  (u,v)=(29,31) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=121  (u,v)=(60,61) r=1  dead: r>=2 [ours]                                          value: in S
+   N=123  (u,v)=(19,22) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=123  (u,v)=(61,62) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=124  (u,v)=(15,16) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N=125  (u,v)=(2,3) r=5  ALIVE (BB,BC,CC)                                           value: in S
+   N=125  (u,v)=(62,63) r=1  dead: r>=2 [ours]                                          value: in S
+   N=127  (u,v)=(63,64) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=128  (u,v)=(7,9) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=128  (u,v)=(31,33) r=1  dead: r>=2 [ours]                                          value: in S
+   N=129  (u,v)=(20,23) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=129  (u,v)=(64,65) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=131  (u,v)=(65,66) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=132  (u,v)=(4,7) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: frontier
+   N=132  (u,v)=(16,17) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: frontier
+   N=133  (u,v)=(66,67) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=135  (u,v)=(7,8) r=3  dead: b*r = 45 < v^2 = 64 [rep6, G11]                      value: UNDOCUMENTED
+   N=135  (u,v)=(11,16) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=135  (u,v)=(67,68) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=136  (u,v)=(15,19) r=1  dead: r>=2 [ours]                                          value: in S
+   N=136  (u,v)=(33,35) r=1  dead: r>=2 [ours]                                          value: in S
+   N=137  (u,v)=(68,69) r=1  dead: r>=2 [ours]                                          value: in S
+   N=139  (u,v)=(69,70) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=140  (u,v)=(17,18) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N=141  (u,v)=(22,25) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=141  (u,v)=(70,71) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=143  (u,v)=(71,72) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=144  (u,v)=(3,5) r=3  ALIVE (BB,BC,CC)                                           value: in S
+   N=144  (u,v)=(4,5) r=4  dead: first-layer residuals (E_B=44, R_BC=35, R_CC=-20) [rep6, G11] value: in S
+   N=144  (u,v)=(35,37) r=1  dead: r>=2 [ours]                                          value: in S
+   N=145  (u,v)=(12,17) r=1  dead: r>=2 [ours]                                          value: in S
+   N=145  (u,v)=(72,73) r=1  dead: r>=2 [ours]                                          value: in S
+   N=147  (u,v)=(23,26) r=1  dead: r>=2 [ours]                                          value: in S
+   N=147  (u,v)=(73,74) r=1  dead: r>=2 [ours]                                          value: in S
+   N=148  (u,v)=(18,19) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=149  (u,v)=(74,75) r=1  dead: r>=2 [ours]                                          value: in S
+   N=151  (u,v)=(75,76) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=152  (u,v)=(17,21) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=152  (u,v)=(37,39) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=153  (u,v)=(8,9) r=3  dead: b*r = 51 < v^2 = 81 [rep6, G11]                      value: in S
+   N=153  (u,v)=(76,77) r=1  dead: r>=2 [ours]                                          value: in S
+   N=155  (u,v)=(13,18) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=155  (u,v)=(77,78) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=156  (u,v)=(5,8) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N=156  (u,v)=(19,20) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N=157  (u,v)=(78,79) r=1  dead: r>=2 [ours]                                          value: in S
+   N=159  (u,v)=(25,28) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=159  (u,v)=(79,80) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=160  (u,v)=(9,11) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=160  (u,v)=(39,41) r=1  dead: r>=2 [ours]                                          value: in S
+   N=161  (u,v)=(8,15) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=161  (u,v)=(80,81) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=163  (u,v)=(81,82) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=164  (u,v)=(20,21) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=165  (u,v)=(14,19) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=165  (u,v)=(26,29) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=165  (u,v)=(82,83) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=167  (u,v)=(83,84) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=168  (u,v)=(11,17) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=168  (u,v)=(19,23) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=168  (u,v)=(41,43) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=169  (u,v)=(84,85) r=1  dead: r>=2 [ours]                                          value: in S
+   N=171  (u,v)=(9,10) r=3  dead: b*r = 57 < v^2 = 100 [rep6, G11]                     value: UNDOCUMENTED
+   N=171  (u,v)=(85,86) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=172  (u,v)=(21,22) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N=173  (u,v)=(86,87) r=1  dead: r>=2 [ours]                                          value: in S
+   N=175  (u,v)=(3,4) r=5  ALIVE (BB,BC,CC)                                           value: UNDOCUMENTED
+   N=175  (u,v)=(9,16) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=175  (u,v)=(87,88) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=176  (u,v)=(5,6) r=4  dead: first-layer residuals (E_B=40, R_BC=18, R_CC=-96) [rep6, G11] value: in S
+   N=176  (u,v)=(43,45) r=1  dead: r>=2 [ours]                                          value: in S
+   N=177  (u,v)=(28,31) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=177  (u,v)=(88,89) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=179  (u,v)=(89,90) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=180  (u,v)=(2,3) r=6  ALIVE (BB,BC,CC)                                           value: in S
+   N=180  (u,v)=(22,23) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=181  (u,v)=(90,91) r=1  dead: r>=2 [ours]                                          value: in S
+   N=183  (u,v)=(29,32) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=183  (u,v)=(91,92) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=184  (u,v)=(21,25) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=184  (u,v)=(45,47) r=1  dead: r>=2 [ours]                                          value: frontier
+   N=185  (u,v)=(16,21) r=1  dead: r>=2 [ours]                                          value: in S
+   N=185  (u,v)=(92,93) r=1  dead: r>=2 [ours]                                          value: in S
+   N=187  (u,v)=(93,94) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=188  (u,v)=(23,24) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: UNDOCUMENTED
+   N=189  (u,v)=(10,11) r=3  dead: b*r = 63 < v^2 = 121 [rep6, G11]                     value: in S
+   N=189  (u,v)=(10,17) r=1  dead: r>=2 [ours]                                          value: in S
+   N=189  (u,v)=(94,95) r=1  dead: r>=2 [ours]                                          value: in S
+   N=191  (u,v)=(95,96) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=192  (u,v)=(11,13) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=192  (u,v)=(13,19) r=1  dead: r>=2 [ours]                                          value: in S
+   N=192  (u,v)=(47,49) r=1  dead: r>=2 [ours]                                          value: in S
+   N=193  (u,v)=(96,97) r=1  dead: r>=2 [ours]                                          value: in S
+   N=195  (u,v)=(17,22) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=195  (u,v)=(31,34) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=195  (u,v)=(97,98) r=1  dead: r>=2 [ours]                                          value: UNDOCUMENTED
+   N=196  (u,v)=(24,25) r=2  dead: r>=3 / r=2 residuals [rep, G11]                      value: in S
+   N=197  (u,v)=(98,99) r=1  dead: r>=2 [ours]                                          value: in S
+   N=199  (u,v)=(99,100) r=1  dead: r>=2 [ours]                                          value: not in S (documented)
+   N=200  (u,v)=(23,27) r=1  dead: r>=2 [ours]                                          value: in S
+   N=200  (u,v)=(49,51) r=1  dead: r>=2 [ours]                                          value: in S
+[PASS] E1: the silent holes (r>=3 candidate, value undocumented) are exactly {63, 99, 135, 171, 175}
+[PASS] E2: 175 = (3,4) r=5 survives every first-layer filter (BB, BC, CC all feasible)
+[PASS] E3: 63, 99, 135, 171 all die under the new bound / first-layer filters [G11-conditional]
+[PASS] E4: r=2 values relying on the branch-wide r=2 kill [rep] and nothing else: {60,76,92,124,140,156,172,188}
+[PASS] E5: at 63, 99, 171, 175 the gamma=2alpha candidate is the ONLY candidate in any branch (135: plus its row-E candidate, dead by X<105 [pub])
+[PASS] E6: corrected sub-200 frontier = {105,120,132,143,154,161,175,184}
+[PASS] E7: bound b*r >= v^2 exceeds r >= 3 iff 3u^2 > 2v^2 (e.g. (5,6), (9,10); not (2,3), (3,4))
+== F. chords and residual membership ==
+[PASS] F1: 4a-chord 36 over (a,b,c)=(9,7,12) decomposes exactly as {4a, 3c} (report #6's 'uniquely three c-edges' is wrong: 4a is also admissible)
+[PASS] F2.1: chord 1a = 9 is purely 1 a-edges (k < delta = 4)
+[PASS] F2.2: chord 2a = 18 is purely 2 a-edges (k < delta = 4)
+[PASS] F2.3: chord 3a = 27 is purely 3 a-edges (k < delta = 4)
+[PASS] F3: the continuation chord 5a = 45 decomposes as {5a, a+3c, 3b+2c} (mixed layer, forcing stops)
+[PASS] F4: residual membership facts (63-kill, 175 survivals, 176-kill, 105 60-degree data)
+== G. complement identity T1(n) u T5(n) = (hn) R ==
+[PASS] G1: counts ch+bh=h^2, merged side, sine correspondences, seam angle sums on 9 (p,q)
+[PASS] G2: (1,2) instance: T1(2)=112-count + T5(2)=84-count = 196 = (7*2)^2 reptile count
+== H. directed c-edge flow: charges and the alpha/beta counting relation ==
+[PASS] H1: corner charges match report #6 for all six rows; each row sums to 0 and to pi
+[PASS] H2: U^2-c^2 = 3b(a+b) and 4c^2-U^2 = 3a^2 (so cos alpha = U/2c in (1/2,1); Niven => alpha not in pi*Q => #alpha = #beta at every non-corner vertex)
+== I. row-III half-parallelogram ==
+[PASS] I1: W^2 - Wb + b^2 = c^2 on all sweep triples (third side = ac, diagonal = a c-edges)
+[PASS] I2: (3,5,7): T has sides (bV, cW, ac) = (55, 56, 21) and count VW = 88 -- the certified 88-tiling
+
+ALL 27 CHECKS PASS

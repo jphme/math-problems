@@ -1,0 +1,139 @@
+Verification of Phi / Phi' boundary invariants
+mpmath working precision: 60 decimal digits
+
+==============================================================================
+ITEM 1: Cancellation character check   [chi(theta+pi) = -chi(theta)]
+==============================================================================
+theta -> theta+pi corresponds to (j,m) -> (j+3,m) in the (j,m) lattice
+(since pi = 3*(pi/3) + 0*alpha = (3,0)).
+Requirement for a valid cancellation character: chi(j+3,m) == -chi(j,m).
+
+  (-1)^j       : chi(j+3,m) = -chi(j,m)  for all tested (j,m)? True   -> PASS
+  (-1)^(j+m)   : chi(j+3,m) = -chi(j,m)  for all tested (j,m)? True   -> PASS
+  (-1)^m       : chi(j+3,m) = -chi(j,m)  for ANY tested (j,m)? False  (expected False: since (-1)^m does not depend on j, chi(j+3,m)==chi(j,m) always)
+                 -> candidate correctly REJECTED: PASS
+
+ITEM 1 RESULT: PASS
+
+==============================================================================
+ITEM 2: One-tile formula  (grid of (j0,m0) in 0..5 x -2..2, both orientations, 4 tiles)
+==============================================================================
+
+tile (a,b,c)=(3,5,7):  Delta=a+c-b=5,  a-b-c=-9
+  combos checked (j0 in 0..5, m0 in -2..2, 2 orientations): 60
+    sample j0=0,m0=0,CCW      : Phi=   5 (sign +1),  Phi'=  -9 (sign +1)
+    sample j0=0,m0=0,reflected: Phi=   5 (sign +1),  Phi'=  -9 (sign +1)
+  Phi=+-Delta and Phi'=+-(a-b-c) for ALL combos:      PASS
+  sign relation  sign_Phi' = sign_Phi*(-1)^m0 for ALL combos: PASS
+  vector closure |sum of directed edge vectors| < 1.0e-45 for ALL combos: PASS
+  -> tile result: PASS
+
+tile (a,b,c)=(7,8,13):  Delta=a+c-b=12,  a-b-c=-14
+  combos checked (j0 in 0..5, m0 in -2..2, 2 orientations): 60
+    sample j0=0,m0=0,CCW      : Phi=  12 (sign +1),  Phi'= -14 (sign +1)
+    sample j0=0,m0=0,reflected: Phi=  12 (sign +1),  Phi'= -14 (sign +1)
+  Phi=+-Delta and Phi'=+-(a-b-c) for ALL combos:      PASS
+  sign relation  sign_Phi' = sign_Phi*(-1)^m0 for ALL combos: PASS
+  vector closure |sum of directed edge vectors| < 1.0e-45 for ALL combos: PASS
+  -> tile result: PASS
+
+tile (a,b,c)=(5,16,19):  Delta=a+c-b=8,  a-b-c=-30
+  combos checked (j0 in 0..5, m0 in -2..2, 2 orientations): 60
+    sample j0=0,m0=0,CCW      : Phi=   8 (sign +1),  Phi'= -30 (sign +1)
+    sample j0=0,m0=0,reflected: Phi=   8 (sign +1),  Phi'= -30 (sign +1)
+  Phi=+-Delta and Phi'=+-(a-b-c) for ALL combos:      PASS
+  sign relation  sign_Phi' = sign_Phi*(-1)^m0 for ALL combos: PASS
+  vector closure |sum of directed edge vectors| < 1.0e-45 for ALL combos: PASS
+  -> tile result: PASS
+
+tile (a,b,c)=(16,39,49):  Delta=a+c-b=26,  a-b-c=-72
+  combos checked (j0 in 0..5, m0 in -2..2, 2 orientations): 60
+    sample j0=0,m0=0,CCW      : Phi=  26 (sign +1),  Phi'= -72 (sign +1)
+    sample j0=0,m0=0,reflected: Phi=  26 (sign +1),  Phi'= -72 (sign +1)
+  Phi=+-Delta and Phi'=+-(a-b-c) for ALL combos:      PASS
+  sign relation  sign_Phi' = sign_Phi*(-1)^m0 for ALL combos: PASS
+  vector closure |sum of directed edge vectors| < 1.0e-45 for ALL combos: PASS
+  -> tile result: PASS
+
+ITEM 2 RESULT: PASS
+
+==============================================================================
+ITEM 3: Boundary evaluation, ROW I  (isosceles T = k(c,c,U), U=a+2b)
+==============================================================================
+tile (a,b,c)=(5,3,7),  k=3   ->  U=a+2b=11,  T=(kc,kc,kU)=(21,21,33)
+Phi(dT)  = k(U-2c) = -9    (expected -9)
+Phi'(dT) = k(U+2c) = 75   (expected 75)
+Delta = a+c-b = 9   (expected 9);   a-b-c = -5   (expected -5)
+M  = Phi/Delta     = -1    (expected -1)
+M2 = Phi'/(a-b-c)  = -15   (expected -15)
+N = kU = 33   (expected 33)
+vector closure |sum| = 3.7338e-60  (< 1.0e-45: PASS)
+M mod 2 = 1, N mod 2 = 1, M2 mod 2 = 1  -> all congruent: PASS
+
+ITEM 3 RESULT: PASS
+
+==============================================================================
+ITEM 4: Known-tiling consistency -- 4-reptiling of tile (7,8,13) scaled x2
+==============================================================================
+tile (a,b,c)=(7,8,13),  T = tile x2 = (14,16,26),  alpha = 0.48512774819097055071418456036863054101948812792673
+T vertices (CCW, 50 digits):
+  P0 = (0.0, 0.0)
+  P1 = (14.0, 0.0)
+  P2 = (22.0, 13.856406460551018348219570732046978935542442030483)
+  boundary closure |Pclose-P0| = 7.9693e-60  (< 1.0e-45: PASS)
+Midpoints (50 digits):
+  Ma = (7.0, 0.0)
+  Mb = (18.0, 6.9282032302755091741097853660234894677712210152415)
+  Mc = (11.0, 6.9282032302755091741097853660234894677712210152415)
+
+Sub-tile boundary matching (numeric direction -> (j,m), tol=1e-30):
+  [corner@P0 ] len=7,(j,m)=(0,0), len=8,(j,m)=(1,0), len=13,(j,m)=(4,-1)   max_resid=0.0   Phi=  12  Phi'= -14   analytic-match=True   OK
+  [corner@P1 ] len=8,(j,m)=(1,0), len=13,(j,m)=(4,-1), len=7,(j,m)=(0,0)   max_resid=0.0   Phi=  12  Phi'= -14   analytic-match=True   OK
+  [corner@P2 ] len=13,(j,m)=(4,-1), len=7,(j,m)=(0,0), len=8,(j,m)=(1,0)   max_resid=0.0   Phi=  12  Phi'= -14   analytic-match=True   OK
+  [middle    ] len=13,(j,m)=(1,-1), len=7,(j,m)=(3,0), len=8,(j,m)=(4,0)   max_resid=0.0   Phi= -12  Phi'=  14   analytic-match=True   OK
+
+Sum over 4 sub-tiles:  Phi_sum  =   24   (T direct: 24)
+                       Phi'_sum =  -28   (T direct: -28)
+interior-edge cancellation (sum of sub-tiles == T boundary): PASS
+
+ITEM 4 RESULT: PASS
+
+==============================================================================
+ITEM 5: Rows II-V boundary evaluations (new data, k=1)
+==============================================================================
+       tile  row                 sides(j,m)    Phi   Phi/D=M    Phi2  Phi2/amb=M2          N M par N par M2 par  geom
+---------------------------------------------------------------------------------------------------------------------
+  (3, 5, 7)   II          (0,0),(0,3),(3,2)     20         4    -162           18        312  even  even   even    OK
+  (3, 5, 7)  III        (0,0),(2,-1),(5,-2)     20         4     -90           10         88  even  even   even    OK
+  (3, 5, 7)   IV          (0,0),(1,1),(4,0)      4       4/5      18           -2        8/5   n/a   n/a   even    OK
+  (3, 5, 7)    V         (0,0),(2,0),(5,-2)     45         9      45           -5        143   odd   odd    odd    OK
+ (7, 8, 13)   II          (0,0),(0,3),(3,2)    108         9    -490           35       1035   odd   odd    odd    OK
+ (7, 8, 13)  III        (0,0),(2,-1),(5,-2)     72         6    -280           20        330  even  even   even    OK
+ (7, 8, 13)   IV          (0,0),(1,1),(4,0)      9       3/4      35         -5/2       15/8   n/a   n/a    n/a    OK
+ (7, 8, 13)    V         (0,0),(2,0),(5,-2)    168        14     168          -12        506  even  even   even    OK
+
+(geometry: closure + law-of-sines + numeric-(j,m)-match all consistent: PASS)
+Per the task spec, rows II-V integrality/parity are reported as NEW data points (no pass/fail judgement is made on them).
+
+==============================================================================
+FINAL SUMMARY
+==============================================================================
+Item  Description                                                   Result
+1     Cancellation character check (symbolic)                       PASS
+2     One-tile formula, 4 tiles, full (j0,m0) grid, both orient.    PASS
+3     Row I boundary evaluation, (5,3,7) k=3 (N=33)                 PASS
+4     4-reptiling consistency, tile (7,8,13) x2                     PASS
+5     Rows II-V geometry/bookkeeping consistency (data reported)    PASS
+
+Rows II-V data table (tile, row, Phi, M=Phi/Delta, Phi', M'=Phi'/(a-b-c), N, parities):
+  tile=(3, 5, 7)  row=II   Phi=   20  M=     4  Phi'= -162  M'=    18  N=    312  M%2=0 N%2=0 M'%2=0
+  tile=(3, 5, 7)  row=III  Phi=   20  M=     4  Phi'=  -90  M'=    10  N=     88  M%2=0 N%2=0 M'%2=0
+  tile=(3, 5, 7)  row=IV   Phi=    4  M=   4/5  Phi'=   18  M'=    -2  N=    8/5  M%2=n/a N%2=n/a M'%2=0
+  tile=(3, 5, 7)  row=V    Phi=   45  M=     9  Phi'=   45  M'=    -5  N=    143  M%2=1 N%2=1 M'%2=1
+  tile=(7, 8, 13)  row=II   Phi=  108  M=     9  Phi'= -490  M'=    35  N=   1035  M%2=1 N%2=1 M'%2=1
+  tile=(7, 8, 13)  row=III  Phi=   72  M=     6  Phi'= -280  M'=    20  N=    330  M%2=0 N%2=0 M'%2=0
+  tile=(7, 8, 13)  row=IV   Phi=    9  M=   3/4  Phi'=   35  M'=  -5/2  N=   15/8  M%2=n/a N%2=n/a M'%2=n/a
+  tile=(7, 8, 13)  row=V    Phi=  168  M=    14  Phi'=  168  M'=   -12  N=    506  M%2=0 N%2=0 M'%2=0
+
+Overall (items 1-4, the strict correctness checks): ALL PASS
+(Item 5 has no external ground truth to check against -- it is new data; 'geom' PASS just means the construction/bookkeeping is self-consistent.)

@@ -1,0 +1,47 @@
+--- A: Group-2 row target boundary polynomials (direction lattice) ---
+PASS A0: no primitive Eisenstein triple with a=1 or b=1 (bound 2000)
+PASS A0b: parity c == a+ab+b (mod 2) on all sampled triples
+PASS A1: row I target boundary = unit * report's polynomial [direction lattice, independent, 12 triples]
+PASS A1: row IV target boundary = unit * report's polynomial [direction lattice, independent, 12 triples]
+PASS A1: row E target boundary = unit * report's polynomial [direction lattice, independent, 12 triples]
+PASS A1: row III target boundary = unit * report's polynomial [direction lattice, independent, 12 triples]
+PASS A1: row V target boundary = unit * report's polynomial [direction lattice, independent, 12 triples]
+PASS A1: row II target boundary = unit * report's polynomial [direction lattice, independent, 12 triples]
+PASS A2: 120-degree one-tile boundary polynomials = unit*P, unit*Q (two reflection classes)
+PASS A3: t <= N and t == N (mod 2) in every row for m = 1..4, 22 triples
+--- B: Group-1 / gamma=2alpha tile polynomials and target residuals ---
+PASS B1: Group-1 one-tile boundary polynomials = unit*(HL), unit*(HM)
+PASS B2: gamma=2alpha one-tile boundary polynomials = unit*(QL), unit*(QM)
+PASS B3a: shape-4 target at multiplier m = unit * (mb) * H
+PASS B3b: shape-5 target at multiplier n = unit * (nb) * H*Hbar
+PASS B3c: gamma=2alpha target at multiplier r = unit * (rb) * Q
+--- C: exact-N representations for the whole frontier ---
+PASS C: N=105 row IV (16,5,19) m=1: exact-105 representation [t=35, padded to N=105 with 35 cancelling pairs]
+PASS C: N=105 row IV (8,7,13) m=1: exact-105 representation [t=21, padded to N=105 with 42 cancelling pairs]
+PASS C: N=120 row IV (7,8,13) m=1: exact-120 representation [t=22, padded to N=120 with 49 cancelling pairs]
+PASS C: N=132 row I (5,3,7) m=2: exact-132 representation [t=30, padded to N=132 with 51 cancelling pairs]
+PASS C: N=143 row V (3,5,7) m=1: exact-143 representation [t=23, padded to N=143 with 60 cancelling pairs]
+PASS C: N=154 row I (8,7,13) m=1: exact-154 representation [t=28, padded to N=154 with 63 cancelling pairs]
+PASS C: N=184 row I (7,8,13) m=1: exact-184 representation [t=28, padded to N=184 with 78 cancelling pairs]
+PASS C: N=132 shape-4 (p,q)=(4,7) m=2: q*(HL)+p*(HM) scaled = mb*H, t=22, pad 55 pairs -> exact-132
+PASS C: N=161 shape-5 (p,q)=(3,4) n=1: (nqHbar)*(HL)+(npHbar)*(HM) = nb*H*Hbar, t=77, pad 42 pairs -> exact-161
+PASS C: N=132 gamma=2alpha (u,v)=(4,7) r=2: rv*(QL)-ru*(QM) = rb*Q, t=22, pad 55 pairs -> exact-132
+--- D: Theorem 2 equilateral->rowV dissection (coordinates) ---
+PASS D1: Theorem-2 dissection verified at coordinate level (AI/BI/IP/IQ lengths, P-I-Q collinear, PCQ equilateral side 2abs, count = UVs^2) on 8 triples, s in {1,5}
+PASS D2: corollary threshold ceil(3R/2) implies equilateral multiplier 2s >= 3R (imported [ours-v] interval)
+PASS D3: (3,5,7): R=3, row-V/II threshold s>=5; new members 143*s^2 for s in {6,8,9,...} beyond the old <5,7> semigroup
+--- E: Theorem 3 shape4->shape5 cevian dissection (coordinates) ---
+PASS E1: Theorem-3 dissection verified at coordinate level (outer triangles = bn-scaled tiles, middle = shape-4 at multiplier pn, counts match)
+PASS E2: contrapositive instance: 70 = shape-5 (2,3) n=1 not in S [ours, STATUS 2026-07-25] => shape-4 (2,3) target has NO m=2 tiling (else Theorem 3 with p=2, n=1 would tile 70)
+--- F: Theorem 4 gamma=2alpha transport (coordinates) ---
+PASS F1: Theorem-4 cevian dissection verified at coordinate level (ABD = bs-scaled tile, ADC = target at multiplier us, counts match)
+PASS F2: (2,3) transport chain from Herdt's r=12: generates 18, 27
+PASS F3: r=2 on (4,5,6) fails -- Beeson 1206.1974v7 lemma:no20, verified against the arXiv source text [pub]
+--- G: shape-4 filter arithmetic and frontier consistency ---
+PASS G1: filter at the live 132 candidate (p,q,m)=(4,7,2): t=1 gives 33-14 = 19 = 3*4+1*7, so the filter does NOT exclude it
+PASS G2: filter reproduces m >= 4 on the (1,2) ray (48 = 3*4^2 classical)
+PASS G3: historical report-4 frontier transcription has seven distinct sorted values below 200 (not a check of the current frontier)
+PASS G4: report decides NO frontier value (report section 5, confirmed: every check above is structural, none removes a candidate)
+
+37 checks, 0 failures
+ALL CHECKS PASSED

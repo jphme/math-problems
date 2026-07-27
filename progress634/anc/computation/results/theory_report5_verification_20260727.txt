@@ -1,0 +1,33 @@
+A. Shape-4 augmentation arithmetic (report #5 §1)
+  PASS  tile/M/μ/X/ℓ/M′ formulas and (q|M′ ⟺ q|m) on 45 coprime pairs × 12 multipliers
+  PASS  instance (p,q,m)=(4,7,2): q ∤ m (7 ∤ 2)
+  PASS  instance (p,q,m)=(4,7,2): M′ = 34 and 7 ∤ 34
+  PASS  consistency with lemma:integermu instances (1,2)/(2,3)/(3,4): q | m reproduces 2|m, 3|m, 4|m
+  PASS  shape-4 'yes' entries obey q | m: 48 = 3·4² (m=4, q=2), 108 = 3·6² (m=6, q=2)
+B. Theorem-19 contradiction data (report #5 §2)
+  PASS  all 15 Table-5 rows satisfy the isosceles-α tiling equation exactly
+  PASS  12 of the 15 rows violate the printed g | M — all except the two 'yes' rows (84, 336) and the (3,8,9) row of 306
+  PASS  161: g = gcd(12,16) = 4 ∤ M = 11
+  PASS  189: g = gcd(2,4) = 2 ∤ M = 15
+  PASS  the open values 161, 280, 465 are all on violating rows (Theorem 19 as printed would 'decide' them)
+  PASS  certified 189-tiling exists on the violating (1,2) row (N189_tiling.json: verdict FOUND, 189 tiles, warns 0)
+  PASS  all 10 Table-3 rows satisfy the isosceles-β equation exactly
+  PASS  all 10 Table-3 rows satisfy g | M (consistency of Theorem 14's claim)
+C. 143 macro-numerology (report #5 §4)
+  PASS  sporadic trapezoid counts: T(29/31/32, 15) → 73/77/79
+  PASS  π/3-parallelogram counts, leg 15: base 35 → 70, base 33 → 66 tiles, both bases in ⟨3,5⟩
+  PASS  area identities 143 = 73+70 = 77+66 = 79+64 (64 = 8² = 8-scaled tile)
+D. First admissible shape-4 multiplier under the reported q | m
+        (1,2): N₁ =   12  ['3n^2']
+        (2,3): N₁ =   45  ['e^2+f^2']
+        (1,3): N₁ =   72  ['e^2+f^2', '2n^2']
+        (3,4): N₁ =  112  in S via 28·2² [pub]
+        (4,5): N₁ =  225  ['square', 'e^2+f^2']
+        (1,4): N₁ =  240  open
+        (3,5): N₁ =  400  ['square', 'e^2+f^2']
+        (2,5): N₁ =  525  open
+        (1,5): N₁ =  600  ['6n^2']
+  PASS  N₁ = (q²−p²)q² and classicality audit for all (p,q) with q ≤ 5 (240 and 525 the only non-classical; 112 ∈ S separately)
+  PASS  240 is non-classical (the sharpest open shape-4 test)
+
+18/18 PASS

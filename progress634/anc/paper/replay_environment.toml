@@ -1,0 +1,22 @@
+[release]
+date = "2026-07-27"
+platform = "macOS 26.5.2 arm64"
+kernel = "Darwin 25.5.0"
+
+[standard_library_runs]
+python = "3.9.6"
+dependencies = []
+
+[laurent_audit]
+python = "3.14.6"
+dependencies = [
+  "sympy==1.14.0",
+  "mpmath==1.3.0",
+]
+
+[diagnostic_regression]
+python = "3.14.6"
+dependencies = []
+
+[document_build]
+tectonic = "0.16.9"

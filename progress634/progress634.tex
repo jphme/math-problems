@@ -1,0 +1,2072 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\definecolor{linkblue}{RGB}{25,60,120}
+\definecolor{draftred}{RGB}{140,25,25}
+\usepackage[colorlinks=true,linkcolor=linkblue,citecolor=linkblue,urlcolor=linkblue]{hyperref}
+\hypersetup{
+  pdftitle={New constructions, obstructions, and multiplier structure for Erdos Problem 634},
+  pdfauthor={Jan Philipp Harries},
+  pdfsubject={Triangle tilings by congruent triangles},
+  pdfkeywords={triangle tilings, congruent triangles, Erdos problem 634, exact computation, numerical semigroups}
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Nzero}{\mathbb N_0}
+\newcommand{\Sset}{\mathcal S}
+\newcommand{\Aset}{\mathcal A}
+\newcommand{\pathcode}[1]{\nolinkurl{#1}}
+
+\title[Progress toward Erd\H{o}s Problem 634]{New constructions, obstructions, and multiplier
+structure for Erd\H{o}s Problem 634}
+
+\author{Jan Philipp Harries}
+\thanks{ellamind GmbH, Bremen, Germany.
+\textit{E-mail address:} \href{mailto:jan@ellamind.com}{jan@ellamind.com}}
+
+\date{July 27, 2026}
+
+\subjclass[2020]{Primary 52C20; Secondary 51M04, 11D07, 11D09, 68V05}
+\keywords{triangle tilings, congruent triangles, Erd\H{o}s problem 634,
+computer-assisted proof, numerical semigroups}
+
+\raggedbottom
+
+\begin{document}
+
+\begin{abstract}
+Let $\Sset$ be the set of positive integers $N$ for which some nondegenerate
+Euclidean triangle can be tiled by $N$ congruent triangles.  This paper
+continues the determination of the prime members of $\Sset$ and develops a
+framework for the full Erd\H{o}s Problem~634.  We give exact-coordinate
+certificates proving $88,189\in\Sset$, and an exact computer-assisted
+exhaustion proving $33\notin\Sset$.  The $189$-tiling settles the first unknown
+multiplier on the Group~1 ray $21n^2$ and, with known constructions, shows that
+every multiplier $n\ge2$ occurs on that ray.
+
+For a primitive $120^\circ$ tile with sides
+$c^2=a^2+ab+b^2$, we introduce a Laurent-polynomial boundary invariant whose
+quotient is $\Z/(3ab)$.  It subsumes the ideal-membership obstructions from
+the known signed boundary characters and gives the exact arithmetic necessity
+on all six Group~2 target shapes.  We
+also prove that every Group~2 multiplier set is a numerical semigroup with an
+explicit finite generator window.  A trapezoid construction improves
+known sufficient thresholds; exact positive certificates and a
+one-implementation exhaustive search determine the entire one-leg family for
+the tile $(3,5,7)$.  Supporting transfer and ordered-segment results isolate,
+but do not solve, the remaining geometric seam-propagation problem.  Detailed
+computational qualifications, a result ledger, and a provisional programme
+below $200$ are separated into the appendices.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+An integer $N>1$ belongs to $\Sset$ if at least one nondegenerate triangle
+admits a dissection into $N$ pairwise interior-disjoint triangles congruent to
+one another; reflections are allowed and the dissection need not be
+edge-to-edge.  Erd\H{o}s Problem~634 asks for a characterization of $\Sset$
+\cite{EP634,Soifer09}.  Classical constructions give
+\[
+ n^2,\qquad 2n^2,\qquad 3n^2,\qquad 6n^2,\qquad n^2+m^2\in\Sset
+\]
+in their natural ranges \cite{SWW91,Soifer09}.  Recent classification theorems
+of Laczkovich, Beeson, and Zhang reduce all remaining possibilities to a small
+number of geometric branches \cite{Lacz95,Lacz12,BLZ633,BZRat}.
+
+This paper is a sequel to \cite{HarriesPrime}.  Three contemporaneous
+manuscripts independently obtained the prime classification
+\[
+             p=2,\qquad p=3,\qquad\text{or}\qquad p\equiv1\pmod4.
+\]
+They use complementary direct and classification-based arguments
+\cite{GeorgePrime,HarriesPrime,BeesonAllPrime,BeesonPrime}; no claim of
+exclusive priority is intended.  Beeson's four scalene $120^\circ$ count
+formulae also confirm four rows of Table~\ref{tab:group2}.  These manuscripts
+settle only the prime subproblem; the full characterization of $\Sset$ remains
+open.
+
+The full problem is substantially harder than the prime case.  Arithmetic
+classification places a candidate on a square ray $N=Cm^2$, but it usually
+does not decide which multipliers $m$ are geometrically realizable.  The three
+principal contributions of this paper are:
+\begin{enumerate}[leftmargin=2.2em]
+\item exact, independently checkable certificates for the new counts $88$
+      and $189$, together with a carefully scoped computer-assisted exclusion
+      of $33$;
+\item a single Laurent quotient that closes the
+      $\chi(j,m)=(-1)^jz^m$ ideal-membership programme for $120^\circ$ tiles;
+      and
+\item additive and finite-generation structure for the multiplier sets,
+      turning every Group~2 ray into finitely many exact tiling questions.
+\end{enumerate}
+Exact trapezoid, transfer, and ordered-segment results support this programme
+and identify the remaining geometric obstruction.
+
+\paragraph{Evidence levels.}
+A result labelled \emph{proved} has a mathematical proof here or in a cited
+source.  A \emph{computer-assisted theorem} depends on an exact exhaustive
+search whose completeness argument and reproducibility data are given in
+Appendix~\ref{app:verification}.  A \emph{verified certificate} is a positive
+tiling rechecked from exact coordinates, independently of the search history.
+The label \emph{conditional} is reserved for consequences of the unfinished
+forced-layer lemma in Appendix~\ref{app:conditional}.  No conditional statement
+is used to prove an unconditional result.
+
+\section{The classified branches and the prime case}\label{sec:framework}
+
+We use the classification in the same form as \cite{HarriesPrime}.  If the
+tile has incommensurable angles and the tiled triangle is neither a reptile nor
+covered by the isosceles or equilateral classifications, the non-similar
+possibilities lie in two groups:
+\[
+  3\alpha+2\beta=\pi \quad\text{(Group 1)},\qquad
+  \gamma=\frac{2\pi}{3}\quad\text{(Group 2)}.
+\]
+Beeson--Zhang rationality then makes the relevant tile sides commensurable
+\cite{BZRat}.  The Group~2 tile can consequently be scaled to a primitive
+integer triple
+\begin{equation}\label{eq:eisenstein}
+       c^2=a^2+ab+b^2,\qquad \gcd(a,b,c)=1,
+\end{equation}
+where $c$ is opposite the $120^\circ$ angle.
+
+\begin{lemma}[Arithmetic of primitive Group~2 triples]\label{lem:g2-units}
+For a primitive positive solution of \eqref{eq:eisenstein}, the integers
+$a,b,c$ are pairwise coprime, $3\nmid c$, and both $c$ and $a-b$ are units
+modulo $3ab$.
+\end{lemma}
+
+\begin{proof}
+If a prime divides any two of $a,b,c$, the norm equation makes it divide the
+third, contrary to primitivity.  Thus the triple is pairwise coprime.  If
+$3\mid c$, reduction modulo $3$ gives $a\equiv b\pmod3$.  If $3\mid a$,
+then also $3\mid b$, again impossible.  Otherwise write $b=a+3t$; then
+\[
+ a^2+ab+b^2=3(a^2+3at+3t^2)\equiv3\pmod9,
+\]
+whereas $c^2\equiv0\pmod9$, a contradiction.  Hence $3\nmid c$.  Finally,
+pairwise coprimality gives $\gcd(a-b,ab)=1$, and
+$(a-b)^2\equiv c^2\not\equiv0\pmod3$ gives $3\nmid(a-b)$.  The stated unit
+claims follow.
+\end{proof}
+
+The six Group~2 target shapes are listed in Table~\ref{tab:group2}.  We use
+\[
+             U=a+2b,\qquad V=2a+b,\qquad W=a+b.
+\]
+Rows I--V are the five non-equilateral shapes in Laczkovich's table, with
+the interchange $(\alpha,a)\leftrightarrow(\beta,b)$ allowed; row E is the
+equilateral target.
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}c>{\raggedright\arraybackslash}p{0.29\linewidth}
+>{\raggedright\arraybackslash}p{0.23\linewidth}
+>{\raggedright\arraybackslash}p{0.25\linewidth}@{}}
+\toprule
+row & target data & necessary scale condition & tile count \\
+\midrule
+I   & sides $k(c,c,U)$                & $b\mid k$ & $m^2bU$ \\
+II  & sides $k(c^2,Uc,3bW)$           & none beyond $k\in\N$ & $3m^2UW$ \\
+III & sides $k(ac,bV,Wc)$              & none beyond $k\in\N$ & $m^2VW$ \\
+IV  & sides $k(a,c,W)$                 & $b\mid k$ & $m^2bW$ \\
+V   & sides $k(aU,bV,c^2)$             & none beyond $k\in\N$ & $m^2UV$ \\
+E   & equilateral, side $L$            & $ab\mid L$ & $m^2ab$ \\
+\bottomrule
+\end{tabular}
+\caption{The Group~2 rays.  In rows I and IV, $k=bm$; in row E,
+$L=abm$.  In the other rows $m=k$.  The arithmetic necessity is proved in
+Section~\ref{sec:laurent}; known constructions realize a tail, but generally
+not every multiplier.}\label{tab:group2}
+\end{table}
+
+The prime case is now unusually well cross-checked.  The proof in
+\cite{HarriesPrime} uses scale integrality and the count formulae;
+\cite{GeorgePrime} adds a signed boundary obstruction; and
+\cite{BeesonAllPrime} derives the four scalene Group~2 cases independently,
+delegating the other branches to the cited classification papers.  We do not
+repeat that proof.  Its role here is to close one slice of $\Sset$ and to fix
+the imported framework on which the composite investigation rests.
+
+\section{New exact tilings and the exclusion of 33}\label{sec:newcounts}
+
+\begin{theorem}[Verified exact certificates]\label{thm:88189}
+The following tilings exist.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item A triangle with side lengths $(21,55,56)$ is tiled by $88$ congruent
+      copies of the triangle $(3,5,7)$.
+\item A triangle with side lengths $(36,36,63)$ is tiled by $189$ congruent
+      copies of the triangle $(2,3,4)$.
+\end{enumerate}
+Consequently $88m^2,189m^2\in\Sset$ for every $m\ge1$.
+\end{theorem}
+
+\begin{proof}
+The exact vertex coordinates are the certificates identified in
+Appendix~\ref{app:positive}.  For each certificate, an exact checker verifies
+the three squared side lengths of every tile, containment in the target,
+pairwise interior-disjointness by rational polygon clipping, and equality of
+the exact total area with the target area.  This proves that the listed
+triangles are the union of the listed congruent tiles.  Subdividing every tile
+quadratically into $m^2$ similar copies gives the final assertion.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}[t]{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/N88_tiling.png}
+\par\smallskip{\small $88$ copies of $(3,5,7)$ tile $(21,55,56)$.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/N189_tiling.png}
+\par\smallskip{\small $189$ copies of $(2,3,4)$ tile $(36,36,63)$.}
+\end{minipage}
+\caption{The two new tilings.  These images are renderings of the exact
+coordinate certificates, not geometric evidence in place of them.}
+\label{fig:newtilings}
+\end{figure}
+
+The $88$-tiling is row III of Table~\ref{tab:group2} at multiplier one:
+$VW=(2a+b)(a+b)=11\cdot8=88$.  Zhang's general construction for this row,
+through its published uniform threshold, first produces $7128=88\cdot9^2$
+tiles for $(3,5,7)$ \cite{Zhang25}.  Thus the exact example reduces the
+smallest known count on this ray by a factor $81$.
+
+The $189$-tiling is Group~1 shape~5 for $(p,q)=(1,2)$, whose ray is
+$21n^2$; see Section~\ref{sec:otherbranches}.  The known $84$- and
+$336$-tilings give multipliers $2$ and $4$ \cite{Beeson2229}, while the new
+tiling gives multiplier $3$.  The addition theorem below therefore yields:
+
+\begin{corollary}[Computer-assisted]\label{cor:21ray}
+On the Group~1 shape-5 ray $21n^2$, a tiling exists exactly for $n\ge2$.
+\end{corollary}
+
+\begin{proof}
+Beeson's Table~5 reports $n=1$ as negative on the basis of a computer boundary
+search \cite{Beeson2229}.  Our exact polygon search supplies the documented
+proof surface: it exhausts the $21$-tile shape-5 target in $415$ states.
+The multipliers $2$ and $3$ occur, and
+Proposition~\ref{prop:addition} makes the multiplier set additively closed.
+Since $\langle2,3\rangle=\{n\ge2\}$, every remaining multiplier occurs.
+\end{proof}
+
+\begin{theorem}[Computer-assisted]\label{thm:no33}
+$33\notin\Sset$.
+\end{theorem}
+
+\begin{proof}
+The published classification, Corollary~\ref{cor:rows},
+Propositions~\ref{prop:group1} and~\ref{prop:gamma2alpha}, and the finite
+branch audit in Appendix~\ref{app:negative} reduce a hypothetical
+$33$-tiling to one target: the isosceles triangle $(21,21,33)$ tiled by
+$(5,3,7)$; this agrees with Beeson's effective isosceles enumeration
+\cite{BeesonIso}.  The primary exact polygon search exhausts this instance in
+$6479$ states.  A replay with the general segment-semigroup table and
+boundary-invariant pruning disabled also returns \texttt{EXHAUSTED}, in
+$22850$ states; feasible-wedge and short-convex-edge tests remain.  The
+convex-corner branching lemma and exact subtraction argument in
+Appendix~\ref{app:negative} prove that the search tree is complete.  No
+second implementation is used in this proof.
+\end{proof}
+
+\begin{remark}
+The boundary invariant of Section~\ref{sec:laurent} does not exclude this
+candidate: it satisfies the Laurent boundary congruence and even
+admits the required exact-$N$ signed inventory.  Theorem~\ref{thm:no33} is
+therefore a small but concrete demonstration that any final solution needs
+interior order, incidence, or connectivity information.
+\end{remark}
+
+\section{A Laurent boundary quotient}\label{sec:laurent}
+
+\begin{lemma}[Boundary integrality]\label{lem:boundary-integrality}
+If a convex polygon is tiled by a triangle with integer side lengths, every
+side of the polygon has integer length and is a concatenation of complete
+tile edges.
+\end{lemma}
+
+\begin{proof}
+Let $\ell$ support one side of the polygon.  Every tile lies in the same
+closed half-plane bounded by $\ell$.  Hence a tile meeting the relative
+interior of that side in a nondegenerate segment meets $\ell$ in a face, and
+that face must be a complete tile edge.  Distinct such edges have disjoint
+relative interiors, while finitely many of them cover the polygon side.
+Their integer lengths therefore add to its length.  No edge-to-edge
+hypothesis is used.
+\end{proof}
+
+In a Group~2 tiling, every directed edge direction has a unique expression
+\[
+             \theta=j\pi/3+m\alpha,\qquad j\in\Z/6,\quad m\in\Z,
+\]
+after an anchor is chosen; here $\alpha/\pi$ is irrational
+\cite{BZRat}.  Put $d=a-b$ and define the character
+\[
+       \chi(j,m)=(-1)^jz^m\in\Z[z,z^{-1}]^\times.
+\]
+For a directed segment $PQ$ of direction $\theta$, set
+$B(PQ)=|PQ|\chi(\theta)$, initially in
+$\mathbb R[z,z^{-1}]$, and extend $B$ additively to oriented polygonal
+chains.  By Lemma~\ref{lem:boundary-integrality}, complete tile and target
+boundaries have integral coefficients.
+
+\begin{theorem}[Laurent boundary quotient]\label{thm:laurent}
+Let a triangle be tiled by a primitive Group~2 tile satisfying
+\eqref{eq:eisenstein}.  Then
+\begin{equation}\label{eq:ideal}
+       B(\partial T)\in I=(d+cz,\ d+cz^{-1})
+       \subseteq\Z[z,z^{-1}],
+\end{equation}
+and
+\begin{equation}\label{eq:quotient}
+       \Z[z,z^{-1}]/I\cong\Z/(3ab),
+       \qquad z\longmapsto-dc^{-1}.
+\end{equation}
+Thus \eqref{eq:ideal} is equivalent to the single evaluation
+\begin{equation}\label{eq:eval}
+       B(\partial T)\big|_{z=-dc^{-1}}\equiv0\pmod{3ab}.
+\end{equation}
+Every ideal-membership obstruction obtained by applying a signed,
+root-of-unity, or other ring specialization to this $\chi$-based invariant
+is a specialization of \eqref{eq:ideal}.  This statement does not include
+the stronger requirement that a boundary be represented by exactly $N$
+allowed tile terms.
+\end{theorem}
+
+\begin{proof}
+The counterclockwise boundary of a direct tile, with its $a$-edge anchored,
+has value
+\[
+                    d+cz^{-1};
+\]
+a reflected tile has value $d+cz$, up to multiplication by a Laurent unit.
+Subdivide every tile edge at every tiling vertex.  In this common refinement,
+each elementary interior segment is incident with exactly one tile on each
+side, so it occurs twice with opposite orientations and cancels.  This proves
+\eqref{eq:ideal}; no edge-to-edge hypothesis is being imposed.
+
+Since $c^2-d^2=3ab$,
+\[
+ c(d+cz)-dz(d+cz^{-1})=(c^2-d^2)z=3abz,
+\]
+and $z$ is a unit, so $3ab\in I$.  Moreover $c$ and $d$ are invertible
+modulo $3ab$ by Lemma~\ref{lem:g2-units}.
+Let $\varepsilon$ evaluate $z$ at $-dc^{-1}$ modulo $3ab$.  Both generators
+of $I$ lie in $\ker\varepsilon$, the second because
+$c^2\equiv d^2\pmod{3ab}$.  Conversely, in the quotient by $I$, the relation
+$3ab=0$ makes $c$ a unit and $d+cz=0$ makes every Laurent monomial a
+constant.  Constants are reduced precisely modulo $3ab$, because
+$I\cap\Z\subseteq\ker\varepsilon\cap\Z=(3ab)$ and $3ab\in I$.
+Thus $\ker\varepsilon=I$, proving \eqref{eq:quotient} and
+\eqref{eq:eval}.  Applying a ring specialization to the ideal containment
+proves the final, deliberately limited assertion.
+\end{proof}
+
+\begin{corollary}[Exact Group~2 arithmetic]\label{cor:rows}
+The six necessary conditions and count rays in
+Table~\ref{tab:group2} hold for every Group~2 tiling.
+\end{corollary}
+
+\begin{proof}
+Evaluate the counterclockwise target boundary in
+\eqref{eq:eval}.  Up to multiplication by units modulo $3ab$, the six
+residues are
+\[
+\begin{array}{c|cccccc}
+\text{row}&\mathrm{I}&\mathrm{II}&\mathrm{III}&\mathrm{IV}&\mathrm{V}&\mathrm{E}\\
+\hline
+B(\partial T)&3a^2k&0&0&3ak&0&3L.
+\end{array}
+\]
+Since $\gcd(a,b)=1$, the nonzero entries give $b\mid k$ in rows I and IV
+and $ab\mid L$ in row E.  The area equations give the counts in
+Table~\ref{tab:group2}.  The primitive target side vectors make the remaining
+scale integral; detailed row polynomials and gcd checks are recorded in
+Appendix~\ref{app:rowalgebra}.
+\end{proof}
+
+\begin{remark}[What the invariant closes]\label{rem:boundaryscope}
+The quotient proves Zhang's divisibility conjecture for equilateral
+$120^\circ$ tiles, including the nonsquarefree cases not covered by his
+lemma, and the same proof works for $60^\circ$ tiles after replacing
+$c^2=a^2+ab+b^2$ by $c^2=a^2-ab+b^2$ and $d=a-b$ by $a+b$:
+the one-tile polynomials become, up to units,
+$d-cz^{-1}$ and $d-cz$, while $c^2-d^2=-3ab$.
+It also removes the congruence hypothesis from Zhang's row-V count formula
+\cite{Zhang25}.  Conversely, all ideal-membership obstructions obtained by
+specializing this Laurent character are exhausted.  Exact-$N$ coefficient
+bounds and non-character invariants lie outside this claim.
+\end{remark}
+
+\section{Construction thresholds and additive multiplier sets}
+\label{sec:semigroup}
+
+For $x,L>0$, an \emph{ideal trapezoid} $T(x,L)$ has parallel sides $x$ and $x+L$, base
+angles $\pi/3$, and two legs of length $L$.\footnote{Zhang
+\cite{Zhang25} interchanges the leg and long-side symbols; here $L$ is the leg.}
+Its Laurent boundary is $3L$,
+independent of $x$, so Theorem~\ref{thm:laurent} gives the necessary condition
+$ab\mid L$.
+
+\begin{lemma}[Trapezoid construction]\label{lem:trapezoid}
+Let $R=(a,b,c)$ be a primitive $120^\circ$ tile.  If
+\[
+       x,L\in\N,\qquad
+       ab\mid L,\qquad x-(a^2+b^2)\in a\Nzero+b\Nzero,
+\]
+then $T(x,L)$ is tiled by
+\[
+                    \frac{L(2x+L)}{ab}
+\]
+copies of $R$.
+\end{lemma}
+
+\begin{proof}
+Zhang constructs the basic trapezoid $T(a^2+b^2,ab)$ and the
+$\pi/3$-parallelograms of side $ab$ and base $a$ or $b$
+\cite[Lemmas~1--2]{Zhang25}.  Write $L=kab$ and slice $T(x,L)$ into $k$
+layers of leg $ab$.  In layer $i$, remove a copy of the basic trapezoid.
+The remainder is a parallelogram whose base is
+\[
+       x+(i-1)ab-(a^2+b^2)\in a\Nzero+b\Nzero,
+\]
+so it is tiled by concatenating Zhang's two parallelograms.  The area ratio
+gives the stated number of tiles.
+\end{proof}
+
+For $x=rab$, the semigroup condition in Lemma~\ref{lem:trapezoid} is
+equivalent to
+\[
+ r\ge R(a,b):=\left\lceil\frac ab\right\rceil+
+              \left\lceil\frac ba\right\rceil.
+\]
+Indeed, if $rab-a^2-b^2=Aa+Bb$, reduction modulo $b$ and $a$ gives
+$A=ub-a$ and $B=va-b$ for integers
+$u\ge\lceil a/b\rceil$, $v\ge\lceil b/a\rceil$, and then $r=u+v$.
+The converse follows from the same formulae.  In Zhang's cyclic
+equilateral construction choose the three trapezoid parameters
+$R,R,m-2R$; all are at least $R$ exactly when $m\ge3R$.  This gives an
+equilateral tiling for every such multiplier.  At
+$(a,b,c)=(32,45,67)$ this gives the smaller multiplier
+$m=9$.\footnote{The threshold printed in \cite[Conjecture~2]{Zhang25} is
+$12$, so that conjectured threshold is not sharp.}  The count $116640$ is
+already classical, so this changes the construction theory rather than
+$\Sset$ itself.
+
+\begin{proposition}[Multiplier addition]\label{prop:addition}
+Let $\Delta$ be a triangle and $R$ a tile.  Suppose one vertex of $\Delta$
+has adjacent sides $L_1,L_2$, while two adjacent sides $e_1,e_2$ of $R$
+meet at that angle or its supplement, and
+$L_1/e_1,L_2/e_2\in\N$.  If $r,s\in\N$ and $r\Delta$ and $s\Delta$ are
+tiled by $R$, then
+$(r+s)\Delta$ is tiled by $R$.
+\end{proposition}
+
+\begin{proof}
+Write $\Delta=\operatorname{conv}(O,A,B)$.  In $(r+s)\Delta$, put
+$P=rA$, $Q=rB$, and $D=rA+sB$.  The three regions
+\[
+ \triangle OPQ,\qquad P+s\Delta,\qquad
+ \operatorname{conv}(P,Q,(r+s)B,D)
+\]
+have disjoint interiors and fill $(r+s)\Delta$; the last is a
+parallelogram with side lengths $r|B-A|$ and $s|B|$.  Labeling the chosen
+corner of $\Delta$ as $B$ makes these $rL_1$ and $sL_2$.
+Subdivide the parallelogram into an
+$r(L_1/e_1)$ by $s(L_2/e_2)$ grid of parallelograms with sides
+$e_1,e_2$, and split every cell along the diagonal determined by whether
+the included angle is the tile angle or its supplement.  The two halves are
+congruent copies of $R$ by SAS.  No edge-to-edge hypothesis is used.
+\end{proof}
+
+For a fixed ray, let $\Aset$ be the set of positive multipliers that admit
+a tiling.  Here a \emph{numerical semigroup} means a cofinite additive
+submonoid of $\Nzero$.  The hypotheses of Proposition~\ref{prop:addition} hold on all
+six Group~2 rows and on Group~1 shapes 4 and 5; the integer ratios are given
+in Appendix~\ref{app:addition}.
+
+\pagebreak[3]
+\begin{corollary}[Finite generator windows]\label{cor:windows}
+For every primitive Group~2 tile and every row of
+Table~\ref{tab:group2}, $\Aset\cup\{0\}$ is a numerical semigroup.
+More precisely:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item in rows E, I, III, and IV, every $m\ge3R(a,b)$ occurs and
+\[
+ \Aset\cup\{0\}
+ =\big\langle\Aset\cap[1,6R(a,b)-1]\big\rangle;
+\]
+\item in rows V and II, every $s\ge\lceil3R(a,b)/2\rceil$ occurs and
+\[
+ \Aset\cup\{0\}
+ =\big\langle\Aset\cap
+ [1,2\lceil3R(a,b)/2\rceil-1]\big\rangle.
+\]
+\end{enumerate}
+Thus each Group~2 ray is determined by finitely many exact tiling questions.
+\end{corollary}
+
+\begin{proof}
+Additive closure is Proposition~\ref{prop:addition}.  The equilateral tail
+$m\ge3R(a,b)$ was proved immediately above from
+Lemma~\ref{lem:trapezoid} and Zhang's cyclic construction.  Zhang's
+Propositions~8--10 transfer that tail to rows I, III, and IV
+\cite[Propositions~8--10]{Zhang25}.  For rows V and II,
+a bisector dissection transfers an equilateral tiling of side $2sab$ to row V
+at multiplier $s$; the dissection and count identity are in
+Appendix~\ref{app:addition}.  Zhang's Proposition~11 transfers the same
+interval to row II \cite[Proposition~11]{Zhang25}.
+Finally, if an additively closed set contains every integer at least $C$,
+then each $n\ge2C$ is $C+(n-C)$ and induction shows that the set is generated
+by its members below $2C$.  The complement is finite, so
+$\Aset\cup\{0\}$ is a numerical semigroup.
+\end{proof}
+
+\begin{theorem}[Computer-assisted trapezoid classification]
+\label{thm:trapezoid357}
+For the tile $(3,5,7)$, $L=15$, and every integer $x\ge1$,
+\[
+ T(x,15)\text{ is tileable}
+ \quad\Longleftrightarrow\quad
+ x\in\{29,31,32\}\cup\{x\in\N:x\ge34\}.
+\]
+\end{theorem}
+
+\begin{proof}
+The boundary inventory first forces $x\in\langle3,5,7\rangle$.
+Lemma~\ref{lem:trapezoid} covers $x=34,37,39,40$ and every $x\ge42$;
+explicit certificates cover
+\[
+  x=29,31,32,35,36,38,41.
+\]
+The boundary inventory excludes positive $x\notin\langle3,5,7\rangle$.
+The exact searcher exhausts precisely the remaining $27$ cases
+\[
+ \langle3,5,7\rangle\cap[1,33]\setminus\{29,31,32\}.
+\]
+The
+campaign comprises $34$ searches and $5{,}699{,}235$ states, with no skipped
+placement warnings.  Appendix~\ref{app:trapezoids} gives the case table and
+the completeness scope.  In particular, the negative half presently depends
+on one exhaustion implementation; the seven positive cases are independently
+checkable coordinate certificates.
+\end{proof}
+
+Theorem~\ref{thm:trapezoid357} gives the complete local picture for this
+one-leg family.\footnote{The literal inequality in
+\cite[Conjecture~5]{Zhang25} does not hold as printed and already conflicts
+with the basic construction in \cite[Lemma~1]{Zhang25}.}  The necessary
+divisibility $ab\mid L$ remains valid.
+
+\section{The remaining arithmetic branches}\label{sec:otherbranches}
+
+For Group~1, normalize $a/c=p/q$ with $0<p<q$ and $\gcd(p,q)=1$.  A primitive
+tile has sides
+\[
+                  (pq,\ q^2-p^2,\ q^2).
+\]
+The five target shapes lie on the rays in Table~\ref{tab:group1}.  Shapes
+1--3 are characterized by Beeson \cite{Beeson2229}.  Shapes 4--5 are
+necessity statements; their sufficiency remains open in general.
+
+\begin{proposition}\label{prop:group1}
+For every Group~1 shape-4 tiling, the natural multiplier $m$ satisfies
+$q\mid m$; hence its count has the shape-4 form in
+Table~\ref{tab:group1}.  Every shape-5 tiling has the shape-5 count in that
+table, without an additional parity factor.  The multiplier sets for shapes
+4 and 5, with zero adjoined, are additive submonoids of $\Nzero$.
+\end{proposition}
+
+\begin{proof}
+For shape 4, an exact target insertion gives equal side
+$X=(q^2-p^2)qm$.  Attach a $qm$-scaled tile along that side.  The union is a
+shape-1 target with count $(2q^2-p^2)m^2$.  Beeson's necessary-and-sufficient
+shape-1 theorem says its count is
+$q^2(2q^2-p^2)n^2$, forcing $m=qn$ \cite[Theorem~7]{Beeson2229}.
+For shape 5, cancellation in the Group~1 boundary ideal forces the target
+scale $C$ to be divisible by $q^2-p^2$, giving the listed count.  The
+factorization and target insertion are recorded in
+Appendix~\ref{app:rowalgebra}.  Additive closure is
+Proposition~\ref{prop:addition}.
+\end{proof}
+
+Unlike Corollary~\ref{cor:windows}, this proposition supplies neither a tail
+nor an a priori finite generator window for shapes 4 and 5.
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}c>{\raggedright\arraybackslash}p{0.36\linewidth}
+>{\raggedright\arraybackslash}p{0.45\linewidth}@{}}
+\toprule
+shape & target angles & necessary count ray \\
+\midrule
+1 & $(2\alpha,\beta,\alpha+\beta)$
+  & $q^2(2q^2-p^2)n^2$ \\
+2 & $(2\alpha,\alpha,2\beta)$
+  & $(2q^2-p^2)(3q^2-p^2)n^2$ \\
+3 & $(\beta,\beta,3\alpha)$
+  & $q^2(3q^2-p^2)n^2$ \\
+4 & $(\alpha+\beta,\alpha+\beta,\alpha)$
+  & $q^2(q^2-p^2)n^2$ \\
+5 & $(\alpha,\alpha,\alpha+2\beta)$
+  & $(q^2-p^2)(2q^2-p^2)n^2$ \\
+\bottomrule
+\end{tabular}
+\caption{Group~1 rays.  In shape 4 the natural scale $m$ is divisible by
+$q$, so $m=qn$; in shape 5 there is no additional parity factor, including
+when $p$ and $q$ are both odd.}\label{tab:group1}
+\end{table}
+
+We do not use a further divisibility clause in Beeson's
+Theorem~19.\footnote{The printed condition $g\mid M$ in
+arXiv:1206.2229v3 \cite{Beeson2229} is violated by $12$ of the $15$ rows in
+that paper's Table~5 and by the exact $189$-tiling of
+Theorem~\ref{thm:88189}.  The ray formula in Proposition~\ref{prop:group1}
+does not depend on this clause.}
+
+The remaining isosceles branch has tile angle $\gamma=2\alpha$
+\cite{BeesonIso}.  With coprime
+integers $u<v<2u$, its primitive side triple is
+\[
+            (a,b,c)=(u^2,\ v^2-u^2,\ uv).
+\]
+
+\begin{proposition}[$\gamma=2\alpha$ ray]\label{prop:gamma2alpha}
+Every tiling of a non-similar isosceles target in this branch has
+\[
+                 N=(v^2-u^2)r^2
+\]
+for an integer $r\ge2$.
+\end{proposition}
+
+\begin{proof}
+The exact boundary ideal forces the equal side of the isosceles target to
+have the required integral scale; inserting it into the area equation gives
+the stated square ray.  At $r=1$, the target boundary is too short to carry
+the necessary tile edges, giving $r\ge2$.  The full boundary insertion and
+capacity argument are given in Appendix~\ref{app:rowalgebra}.
+\end{proof}
+
+\begin{remark}
+A stronger assertion $r\ge3$ is part of the conditional forced-layer program,
+not Proposition~\ref{prop:gamma2alpha}.  This distinction affects several
+small values and is made explicit in Appendix~\ref{app:conditional}.
+\end{remark}
+
+\section{Full-side transfers and ordered segment data}\label{sec:seams}
+
+A \emph{one-patch row transfer} adjoins a quadratically tiled
+$t$-scaled copy of the tile along one complete target side, where
+$t\in\N$, and straightens one seam endpoint.  The following result closes
+this particular construction mechanism; it does not classify partial-side
+or multi-patch attachments.
+
+Write $X(a,b;m)$ for the Group~2 target in row
+$X\in\{E,I,II,III,IV,V\}$ of Table~\ref{tab:group2}, with normalized
+multiplier $m$, and write $S_i(n)$ for the Group~1 target in shape $i$ of
+Table~\ref{tab:group1}, with its displayed normalized multiplier $n$.
+
+\begin{proposition}[One-patch row-transfer calculus]\label{prop:onepatch}
+Under the standing incommensurable-angle hypotheses, the complete
+row-to-row lists, up to reflection and
+$(a,\alpha)\leftrightarrow(b,\beta)$, are as follows:
+\begin{align*}
+\text{\rm Group 2:}\quad&
+ E(a,b;m)\longrightarrow IV(a,b;m),\\
+&IV(a,b;m)\longrightarrow I(a,b;m),\ III(b,a;m),\\
+&V(a,b;m)\longrightarrow II(a,b;m),\\
+&IV(a,b;as)\longrightarrow IV(a,b;cs),\\
+&V(a,b;as)\longrightarrow III(a,b;cs),\\
+&V(a,b;bs)\longrightarrow III(b,a;cs);
+\end{align*}
+and
+\begin{align*}
+\text{\rm Group 1:}\quad&
+ S_4(n)\longrightarrow S_1(n),\ S_5(n),\\
+&S_1(n)\longrightarrow S_2(n),\ S_3(n),\\
+&S_1(bs)\longrightarrow S_1(cs),\\
+&S_4(ps)\longrightarrow S_4(qs).
+\end{align*}
+No Group~2 row-to-row transfer of this kind lands in row V, and no Group~1
+transfer of this kind starts from $S_5$.
+\end{proposition}
+
+\begin{proof}
+The finite angle enumeration, attachment scales, merged sides, and count
+identities are given in Appendix~\ref{app:addition}.  That enumeration also
+contains the uninformative cases in which the union is itself a scaled copy
+of the tile; these are reptilings, not transfers among the named non-similar
+target rows.
+\end{proof}
+
+The transfer graph explains two persistent asymmetries.  A row-V target has
+no incoming one-patch edge, while shape~5 has no outgoing one-patch edge.
+Consequently those two branches require a multi-patch, partial-side, or
+interior-seam construction.
+
+\begin{proposition}[Relation lattice and pure-edge words]
+\label{prop:relationwords}
+Let $(a,b,c)$ be a primitive positive solution of
+$c^2=a^2+ab+b^2$.  After possibly interchanging $a$ and $b$, there are
+coprime integers $r>s>0$, with $r\not\equiv s\pmod3$, such that
+\[
+ a=r^2-s^2,\qquad b=2rs+s^2,\qquad c=r^2+rs+s^2.
+\]
+Put
+\[
+ R_c=(r+s,s,-r),\qquad R_b=(s,-r,s).
+\]
+Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $R_c,R_b$ form a $\Z$-basis of
+\[
+       \{(x,y,z)\in\Z^3:ax+by+cz=0\}.
+\]
+Thus every signed equality of unordered full-edge inventories along a
+collinear segment has two unique integer charges.
+\item Orient a chain of consecutive $a$-edges from left to right and suppose
+all supported tiles lie in the same half-plane.  With
+$\rho=e^{i\pi/3}$, call the third vertex over $[x,x+a]$
+\[
+        A:x+a+b\rho,\qquad B:x+b\rho^2.
+\]
+Every support word has the form $B^jA^{n-j}$ and hence at most one defect.
+The analogous assertion holds for a chain of $b$-edges.
+\item At the possible $B\to A$ defect, the two exposed third vertices and
+the shared endpoint bound a wedge with sides
+\[
+                     (c,c,2a+b).
+\]
+Its area divided by the tile area is $(2a+b)/a$, which is never an integer.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+See Appendix~\ref{app:ordered}.
+\end{proof}
+
+The proposition is deliberately one-dimensional.  The two exposed
+$c$-edges at a defect are seeds, not yet proved paths, and the nonintegral
+wedge is not a detachable row-I macrotile.  A complete seam theorem would
+still have to prove continuation through every encountered vertex,
+embeddedness and noncrossing of suitable outermost paths, pairing or boundary
+termination, geometric realization of the relation charges by strips,
+successive exposure of peelable layers, and termination with finitely
+describable interfaces.  A finite inventory basis alone does not imply any
+of these statements.
+
+\begin{remark}[Herdt's $720$-tiling]\label{rem:720macro}
+The orientation-changing parallelogram construction exhibited by Beeson
+\cite[Fig.~22]{BeesonIso} is made explicit in
+Appendix~\ref{app:addition}.  A vector-figure audit of Herdt's
+$(4,5,6)$ construction in \cite[Fig.~24]{BeesonIso} finds ten quadratic
+patches and three orientation-changing blocks, each split into two uniform
+subparallelograms; their count inventory sums to $720$.  This is a
+check of the displayed macro inventory, not an exact coordinate certificate
+for the figure.
+\end{remark}
+
+\section{Consequences and the remaining geometric gap}\label{sec:gap}
+
+The principal conceptual consequence is negative but useful: after
+Theorem~\ref{thm:laurent}, further specializations of the same
+$\chi(j,m)=(-1)^jz^m$ ideal-membership invariant will not settle the surviving
+multipliers.  Promising next objects must retain ordering or incidence, or
+impose exact-term constraints absent from ideal membership.  Three such
+structures are already available:
+\begin{enumerate}[leftmargin=2.2em]
+\item orient every $c$-edge of a Group~2 tile from its $\alpha$ endpoint to
+      its $\beta$ endpoint.  The resulting flow is conserved at every
+      non-corner vertex and forces directed $c$-edge paths between charged
+      target corners; such a path may run along the target boundary;
+\item row III at multiplier one is exactly a two-grid staircase problem:
+      half of a $(2a+b)\times(a+b)$ parallelogram is cut along a legal
+      $c$-edge diagonal.  The $88$-tiling is the first worked instance.
+\item every unordered full-edge segment mismatch has the two unique charges
+      of Proposition~\ref{prop:relationwords}, while a pure $a$- or $b$-edge
+      support word has at most one ordered defect.
+\end{enumerate}
+These facts do not yet exclude or construct a new multiplier, but they name
+finite, ordered geometric objects that a final argument can classify.
+Their short proofs are included in Appendix~\ref{app:ordered}.
+
+\section{Conclusion}
+
+The results above change the shape of the full problem in four ways.
+First, the small exact tilings at $88$ and $189$ show that published
+construction thresholds can be far from sharp.  Second, the Laurent quotient
+settles the $\chi$-based ideal-membership arithmetic, sharply identifying what
+that boundary method can and cannot decide.  Third, multiplier addition
+turns every Group~2 ray into a numerical semigroup determined by an explicit
+finite window.  Fourth, the complete one-patch transfer graph and the
+relation/word normal forms isolate the next genuinely geometric object: an
+ordered seam whose continuation, pairing, and interfaces must be controlled
+in the presence of T-junctions.  Thus the Group~2 branch reduces to explicit
+finite per-ray windows; the other branches still require comparable
+construction or obstruction theorems before such a finite reduction is
+available for the full Erd\H{o}s Problem~634.
+
+The immediate mathematical targets are small and concrete: decide the first
+unknown multipliers on the row-I, row-IV, row-V, Group~1 shape-5, and
+$\gamma=2\alpha$ rays; close or replace the forced-layer induction; prove a
+geometrically realizable seam calculus rather than only its inventory
+charges; and export search-independent refutation certificates for negative
+computations.  The manuscript is structured so that those results can be
+added without changing the distinction between proved and conditional claims.
+
+\appendix
+
+\section{Exact certificates and positive verification}\label{app:verification}
+\paragraph{Data and code availability.}
+The accompanying arXiv-ready source package contains an \pathcode{anc}
+directory with the verification manifest, exact certificate data, the primary
+$N=33$ search and two stored exhaustion outputs, the corrected separately
+written diagnostic searcher and its regression witness, and the arithmetic
+audit programs and captured outputs.  Computational paths displayed below
+are relative to the root of that ancillary tree.  The manifest records exact
+commands, environments, qualifications, and SHA-256 digests.
+
+\subsection{Certificate semantics}\label{app:positive}
+
+Coordinates are pairs $(x,w)$ representing $(x,w\sqrt D)$, with rational
+$x,w$.  Here $D=3$ for Group~2 and $D=15$ for the displayed Group~1
+$(2,3,4)$ instance.  The verifier reads only the tile triangles from a JSON
+certificate; it does not read the search tree.  It reconstructs their convex
+hull and, when supplied with the theorem's expected data, asserts the number
+of hull corners and the exact multiset of target side lengths.  For the seven
+trapezoid certificates it further checks the cyclic order of the four side
+lengths, parallelism of the two unequal bases, and both diagonal lengths; thus
+the asserted hull is the intended ideal trapezoid $T(x,15)$, not merely a
+quadrilateral with the same side multiset.
+It checks:
+\begin{enumerate}[leftmargin=2.2em]
+\item each tile has the required three squared side lengths;
+\item every tile is contained in the reconstructed convex target;
+\item every pair of tiles has intersection of exact area zero; and
+\item the sum of the exact tile areas equals the exact target area.
+\end{enumerate}
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+certificate & tiles & chirality split & pairs checked & SHA--256 \\
+\midrule
+$N=88$  & 88  & $58/30$  & $3828$ &
+\texttt{163327fc06cf8f98\ldots aefbbd} \\
+$N=189$ & 189 & $77/112$ & $17766$ &
+\texttt{28f33084443ba303\ldots d5096} \\
+\bottomrule
+\end{tabular}
+\caption{Exact-certificate audit.}
+\end{table}
+
+\noindent The full SHA--256 digests are
+\begin{quote}\scriptsize
+$N=88$:\quad
+\pathcode{163327fc06cf8f98639b38743e8d796c9fdcd86d722485229a8f047e94aefbbd}\\
+$N=189$:\quad
+\pathcode{28f33084443ba303e6758511e616c3f9bbf3de1657e3422eee6680118a0d5096}.
+\end{quote}
+
+The files are:
+\begin{quote}\small
+\pathcode{computation/tiling_search/results/N88_tiling.json}\\
+\pathcode{computation/tiling_search/results/N189_tiling.json}\\
+\pathcode{computation/tiling_search/verify_tiling.py}.
+\end{quote}
+The SVG and plain-text coordinate exports beside the JSON files are
+convenience views of the same data.
+
+\subsection{The exact exhaustion method}\label{app:negative}
+
+The primary search selects a deterministic convex corner $P$ of each
+remaining polygonal component.
+
+\begin{lemma}[Convex-corner branching]\label{lem:corner-branching}
+Let a polygonal region be tiled by finitely many nondegenerate triangles, and
+let $P$ be a convex vertex of one remaining component.  Fix either incident
+boundary ray at $P$.  The tile adjacent to that ray has a vertex at $P$ and a
+complete tile edge beginning at $P$ along the ray.  Therefore branching over
+all tile angles, both assignments of the adjacent side lengths, and both
+chiralities is exhaustive.
+\end{lemma}
+
+\begin{proof}
+Intersect a sufficiently small disk about $P$ with the component.  It is a
+wedge of angle less than $\pi$, partitioned by the sectors of the incident
+tiles.  The point $P$ cannot lie in a tile interior, and it cannot lie in the
+relative interior of a tile edge, since the wedge contains no complete line
+through $P$.  Thus every incident tile has a vertex at $P$.  The tile sector
+adjacent to the chosen boundary ray has one of its sides on that ray, and that
+side is a complete edge of the tile.  The edge may continue beyond a later
+reflex boundary vertex; exact containment, not the length of the first
+boundary segment, decides whether the placement is legal.
+\end{proof}
+
+\begin{lemma}[Exact boundary subtraction]\label{lem:exact-subtraction}
+Let $\Delta$ be a triangle contained in a simple polygonal component $R$, with
+no proper crossing of their boundaries, and suppose that
+$\partial R\cap\partial\Delta$ contains a nondegenerate segment.  This is the
+situation for every flush placement of
+Lemma~\ref{lem:corner-branching}.  Split $\partial R$ and
+$\partial\Delta$ at every vertex of either boundary lying on the other, form
+the oriented chain $\partial R-\partial\Delta$, and cancel opposite elementary
+edges.  Tracing the remaining directed edges by taking, at each vertex, the
+first edge clockwise from the reverse incoming direction gives exactly the
+counterclockwise boundaries of the positive-area components of
+$\overline{R\setminus\Delta}$, including when components meet at pinch
+vertices.
+\end{lemma}
+
+\begin{proof}
+The split edges form a finite planar arrangement.  An elementary edge cancels
+exactly when the two boundaries coincide there; every uncancelled edge
+separates $\overline{R\setminus\Delta}$ on its left from its complement on its
+right.  Hence the remaining chain is balanced at every vertex.  Because the
+removed triangle meets $\partial R$ in a segment, it creates no enclosed
+boundary component; by the Jordan curve theorem, every positive-area
+component of the complement is a polygonal disk.  The clockwise successor
+rule follows the boundary of the same local face and separates different
+faces at a pinch vertex.  It therefore uses every directed edge once in
+closed counterclockwise walks, one for each component.  Removing degenerate
+zero-area walks leaves precisely the asserted components.
+\end{proof}
+
+The program enumerates precisely these flush placements.  Subtraction is
+performed as an exact oriented $1$-chain: all component and tile edges are
+split at all vertices, opposite duplicates cancel, and the remaining faces are
+traced by a deterministic turning rule.  This handles a flush tile edge
+spanning several collinear boundary segments.  All orientation, containment,
+area, and intersection predicates are rational in $\Q(\sqrt D)$; the
+implementation is exactly Lemma~\ref{lem:exact-subtraction}.
+
+\begin{lemma}[Convex-end segment pruning]\label{lem:convex-segment}
+If a polygonal region tiled by triangles with side lengths $a,b,c$ has a
+boundary segment whose two endpoints are convex, then its length belongs to
+$a\Nzero+b\Nzero+c\Nzero$.
+\end{lemma}
+
+\begin{proof}
+A tile meeting the relative interior of the segment in a nondegenerate
+interval has a complete edge on the same supporting line.  Such a tile edge
+cannot extend past either endpoint: extension beyond a convex endpoint leaves
+the local interior wedge.  These complete tile edges partition the segment,
+so their lengths add to its length.
+\end{proof}
+
+A placement is pruned only by necessary conditions: integer area budget,
+feasible convex wedges, Lemma~\ref{lem:convex-segment}, and the proved
+boundary invariants.  Each recursive placement removes one tile, so the tree
+is finite.  Lemma~\ref{lem:corner-branching} shows that exhausting every
+branch proves nonexistence.  The implementation passes its exact geometry
+self-tests.  For $N=33$ it visits $6479$ states with all pruning enabled and
+$22850$ states when the general segment-semigroup table and boundary-invariant
+pruning are disabled.  The latter run retains the feasible-wedge test and the
+special case of Lemma~\ref{lem:convex-segment} that rejects a selected
+convex-ended edge shorter than every tile side.
+
+A separately written diagnostic searcher is included for transparency, but
+its historical output is not part of the proof.  A previous version rejected
+a flush tile edge whenever its length exceeded that of the first boundary
+segment on the ray.  Lemma~\ref{lem:corner-branching} shows why this
+restriction is invalid when the next boundary vertex is reflex.  The supplied
+regression reaches a legal two-placement state in which the first segment has
+length $5$ and a contained tile edge has length $7$.  The cap has been
+removed; the corrected diagnostic search has not been exhausted, so no
+independent-exhaustion claim is made.
+
+\subsection{The complete \texorpdfstring{$N=33$}{N=33} reduction}
+
+For clarity, the reduction to the searched target is as follows.  The
+classical, reptile, commensurable-angle, and right-triangle count forms do not
+contain $33$.  The exact Group~1 ray formulae leave only shape-4 formal
+candidates with $(p,q)=(4,7)$ or $(16,17)$ at natural multiplier $m=1$;
+Proposition~\ref{prop:group1} excludes both because $q\nmid m$.  The
+$\gamma=2\alpha$ formula likewise leaves only $(u,v)=(4,7)$ or $(16,17)$ at
+$r=1$, excluded by Proposition~\ref{prop:gamma2alpha}.  The primitive
+$60^\circ$ norm equation has no equilateral candidate at $33$.  Finally, a
+finite divisor enumeration of the six Group~2 rows leaves exactly row I for
+$(a,b,c)=(5,3,7)$ at $k=3$, namely the target with sides
+$(21,21,33)$.  This agrees with Beeson's effective isosceles enumeration
+\cite[Theorem~12.10 and Example~2]{BeesonIso}.
+
+These branch checks are executable in
+\pathcode{computation/verify_theory_report3_claims.py}.  The primary
+exact-search commands, source and output hashes, interpreter version, and
+stored outputs are recorded in
+\pathcode{paper/verification_manifest.md}; the same manifest identifies the
+diagnostic regression and its scope.
+
+\subsection{Verification runs}
+
+The following checks were rerun for this manuscript:
+\begin{center}
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+check & result \\
+\midrule
+Laurent and signed-character invariant checks & all passed \\
+threshold and auxiliary-ray arithmetic & $23/23$ \\
+branch and fixed-$N$ audit & $76/76$ \\
+boundary-polynomial and transfer audit & $37/37$ \\
+Group~1 and macro arithmetic audit & $18/18$ \\
+construction and layer arithmetic audit & $53/53$ \\
+addition and conditional-layer arithmetic & $27/27$ \\
+one-patch and lattice bounded regressions & $29/29$ \\
+searcher geometry self-tests & all passed \\
+$N=33$ fresh primary exhaustion & $6479$ states, no warnings \\
+$N=33$ reduced-pruning replay & $22850$ states, no warnings \\
+long-edge/reflex-vertex regression & passed \\
+nine positive coordinate certificates & all passed \\
+\bottomrule
+\end{tabular}
+\end{center}
+The exact commands and hashes are collected in
+\pathcode{paper/verification_manifest.md}.  Passing a script verifies only
+the claims named in that script.  In
+particular, \pathcode{verify_theory_report6_claims.py} verifies arithmetic
+consequences of the proposed forced-layer induction, not the missing geometric
+induction itself.  The final audit script performs finite regression checks of
+the one-patch enumeration, transfer identities, relation lattice, pure-edge
+word, and defect-wedge formula.  Its ranges include
+$r\le35$ for the Group~2 parametrization and defect tests, $p,q<60$ for
+Group~1 identities, and support words of length at most $10$; the complete
+bounds are recorded in the script and manifest.  The universal statements are
+proved in the text, not by extrapolation from these tests.  The script also
+checks that the manually transcribed inventory of Herdt's figure sums to
+$720$, and records an exact mirror-placement witness to the unresolved
+forced-layer step.  It does not certify that figure's coverage, forced-layer induction,
+seam propagation, macro-normalization, or semilinearity.
+
+\subsection{The trapezoid campaign}\label{app:trapezoids}
+
+For $(a,b,c)=(3,5,7)$ and $L=15$, the seven certificate values are:
+\[
+\begin{array}{c|rrrrrrr}
+x&29&31&32&35&36&38&41\\
+\hline
+N=2x+15&73&77&79&85&87&91&97.
+\end{array}
+\]
+Each certificate passes exact congruence, containment, all pairwise
+intersection, and exact-area checks.  The search exhausts the remaining
+arithmetically possible values in the finite window: all possible $x\le28$,
+and $x=30,33$, together with the other cases not supplied by
+Lemma~\ref{lem:trapezoid}.  The aggregate is $27$ exhausted cases and seven
+tilings, $5{,}699{,}235$ states, and zero warnings.
+
+The negative result is computer-assisted and depends on one exhaustion
+implementation.  The search algorithm has the same completeness argument as
+the primary polygon search and extensive local tests; the positive cases are
+independently checkable exact coordinate certificates.  Exporting a semantic
+refutation DAG whose checker recomputes the complete candidate set at every
+state remains a desirable independent audit of the negative cases.
+
+\section{Row algebra and the other branches}\label{app:rowalgebra}
+
+\subsection{Group~2 target evaluations}
+
+Let
+\[
+ \varepsilon:\Z[z,z^{-1}]\longrightarrow\Z/(3ab),
+ \qquad z\longmapsto-dc^{-1}.
+\]
+Counterclockwise traversal gives the following target polynomials and
+evaluations:
+\begin{align*}
+\mathrm{I}:\quad&
+ B=k(U-cz-cz^{-1}),&
+ d\,\varepsilon(B)&\equiv3a^2k;\\
+\mathrm{II}:\quad&
+ B=k(3bW-c^2z^{-2}-Ucz),&
+ d^2\varepsilon(B)&\equiv6ab\,kd^2\equiv0;\\
+\mathrm{III}:\quad&
+ B=k(Wc-acz^2-bVz),&
+ c\,\varepsilon(B)&\equiv3ab\,dk\equiv0;\\
+\mathrm{IV}:\quad&
+ B=k((2a+b)-cz),&
+ \varepsilon(B)&\equiv3ak;\\
+\mathrm{V}:\quad&
+ B=k(c^2-(aU+bV)z^2),&
+ c^2\varepsilon(B)&\equiv-6ab\,kd^2\equiv0;\\
+\mathrm{E}:\quad&
+ B=\pm3Lz^{m_0},&
+ \varepsilon(B)&=\pm3L\,\varepsilon(z)^{m_0}.
+\end{align*}
+All congruences are modulo $3ab$.  The factors $c,d$, and
+$\varepsilon(z)$ used to clear denominators are units there.
+This proves precisely the conditions in Table~\ref{tab:group2}.
+
+\begin{lemma}[Primitivity of the Group~2 target vectors]
+\label{lem:target-primitivity}
+Each of the five integer side vectors in rows I--V of
+Table~\ref{tab:group2} is primitive.
+\end{lemma}
+
+\begin{proof}
+Suppose throughout that a prime $\ell$ divides every component of the vector
+in question.  For row I, $\ell\mid c,U$ gives
+$c^2\equiv3b^2\pmod\ell$; if $\ell=3$ this contradicts $3\nmid c$, and
+otherwise it forces $\ell\mid a,b$.  For row II, $\ell\mid c$; pairwise
+coprimality and $3\nmid c$ give $\ell\nmid3b$, so $\ell\mid W$, whence
+$c^2\equiv b^2\pmod\ell$, a contradiction.
+
+For row III the vector is $(ac,bV,Wc)$.  If $\ell\mid a$, then
+pairwise coprimality gives $\ell\nmid b$, so $\ell\mid bV$ forces
+$\ell\mid V=2a+b$ and hence $\ell\mid b$, a contradiction.  Thus
+$\ell\nmid a$, and $\ell\mid ac$ gives $\ell\mid c$.  Again
+$\ell\nmid b$, so $\ell\mid bV$ gives $\ell\mid V$, hence
+$b\equiv-2a\pmod\ell$.  The norm equation then yields
+$0\equiv c^2\equiv3a^2\pmod\ell$; this forces $\ell=3$, contrary to
+$3\nmid c$.
+Row IV is immediate from $\gcd(a,c)=1$.  Finally, in row V one has
+$\ell\mid c$ and hence $\ell\nmid a,b$; therefore $\ell\mid U,V$.
+The identities $2U-V=3b$ and $2V-U=3a$ force $\ell=3$, again contradicting
+$3\nmid c$.
+\end{proof}
+
+To justify the integral scale used in Table~\ref{tab:group2}, write the
+classified target side vector as $\lambda\mathbf v$, where $\mathbf v$ is
+one of the primitive integer vectors above.  Lemma~\ref{lem:boundary-integrality}
+makes every component of $\lambda\mathbf v$ integral.  B\'ezout coefficients
+for the components of $\mathbf v$ then express $\lambda$ as an integer
+combination of those integral side lengths, so $\lambda\in\Z$.
+
+\subsection{Group~1 boundary factorization}
+
+Put
+\[
+ b=q^2-p^2,\qquad h=2q^2-p^2,\qquad
+ Q=qz^2+pz+q,\qquad \overline Q=qz^2-pz+q .
+\]
+For the primitive tile $(pq,b,q^2)$, the two one-tile boundary polynomials
+factor as
+\[
+\begin{split}
+F(z)&=-pqz^3+bz^2+q^2=(q-pz)Q,\\
+G(z)&=q^2z^3+bz-pq=(qz-p)Q.
+\end{split}
+\]
+The common quadratic is the geometric direction relation.  Set
+$J=(q-pz,qz-p)$.  The homomorphism
+\[
+ \Z[z,z^{-1}]\longrightarrow\Z/b,\qquad z\longmapsto qp^{-1},
+\]
+is well defined because $p$ and $q$ are units modulo $b$, and it kills both
+generators of $J$.  Conversely,
+\[
+        q(q-pz)+p(qz-p)=b
+\]
+and $q-pz=0$ determines every Laurent monomial after reduction modulo $b$.
+Hence
+\[
+ \Z[z,z^{-1}]/J\cong\Z/b,\qquad J\cap\Z=(b).
+\]
+
+For shape 4, boundary integrality and $\gcd(p,q)=1$ make the target sides
+$(Cq,Cq,Cp)$ with $C\in\Z$.  Direct insertion gives
+\[
+                     zB(\partial T)=CQ.
+\]
+Every tile contribution lies in $QJ$.  Cancelling $Q$ in the Laurent domain
+gives $C\in J$, and hence $C\in J\cap\Z=(b)$.  Write $C=bm$.  The equal target
+side is therefore
+\[
+                     X=Cq=bqm.
+\]
+Attaching a tile scaled by $qm$ along that side produces the shape-1 target
+used in Proposition~\ref{prop:group1}; Beeson's shape-1 theorem then forces
+$q\mid m$.
+
+For shape 5, boundary integrality and
+$\gcd(q^2,h)=1$ make the target sides
+$(Cq^2,Cq^2,Ch)$ with $C\in\Z$.  Direct insertion gives
+\[
+ z^2B(\partial T)
+ =C(q^2z^4+hz^2+q^2)=C Q\overline Q.
+\]
+Every tile contribution lies in $QJ$.  Cancelling $Q$ in the Laurent domain
+therefore gives $C\overline Q\in J$.  In the quotient,
+\[
+ \overline Q(qp^{-1})=q^3p^{-2},
+\]
+which is a unit, so $b\mid C$.  Writing $C=bn$ in the area identity
+$N=C^2h/b$ gives $N=bhn^2$, with no additional parity factor even when
+$p,q$ are both odd.
+
+\subsection{The \texorpdfstring{$\gamma=2\alpha$}{gamma=2 alpha} insertion}
+
+Put $b=v^2-u^2$.  The two one-tile polynomials factor as
+\[
+\begin{split}
+u^2z^3-bz+uv&=(uz+v)(uz^2-vz+u),\\
+uvz^3-bz^2+u^2&=(u+vz)(uz^2-vz+u).
+\end{split}
+\]
+Thus the residual ideal is $J=(uz+v,u+vz)$, and
+\[
+ v(uz+v)-u(u+vz)=b,\qquad
+ \Z[z,z^{-1}]/J\cong\Z/b,\quad z\mapsto-vu^{-1}.
+\]
+The target is isosceles with equal side $X$ and base $Y$.  The law of sines
+gives $X=ut$, $Y=vt$.  Its boundary is, up to a Laurent unit,
+$t(uz^2-vz+u)$.  Cancelling the common quadratic from the target and tile
+boundaries forces $t\in J\cap\Z=(b)$, say $t=br$.  Beeson's area equation
+$X^2=Nu^2b$ then gives $N=br^2$.
+
+It remains to exclude $r=1$.  Then an equal target side has length $ub$ and
+decomposes into complete tile edges as
+\[
+             ub=A u^2+B b+Cuv,\qquad A,B,C\in\Nzero.
+\]
+Reduction modulo $u$ gives $u\mid B$, since $\gcd(u,b)=1$, while the size
+bound gives $B\le u$.  Hence $B=0$ or $B=u$.
+
+If $\alpha/\pi$ were rational, then
+$2\cos\alpha=v/u$ would be a rational algebraic integer and hence an integer.
+But $1<v/u<2$, a contradiction.  Thus $\alpha/\pi\notin\Q$.  Since
+$3\alpha+\beta=\pi$ and $\gamma=2\alpha$, the only angle multisets at an
+internal straight-boundary vertex are
+\[
+                   \{3\alpha,\beta\},\qquad
+                   \{\alpha,\beta,\gamma\}.
+\]
+If $B=u$, equality forces $A=C=0$.  The side then consists of $u$ edges of
+length $b$, each with one $\gamma$ endpoint.  Neither target endpoint carries
+$\gamma$, while each of the $u-1$ internal vertices carries at most one:
+a contradiction.
+
+If $B=0$, let $E=A+C$.  Every $a$- or $c$-edge has one $\beta$ endpoint.
+At the apex the angle $\alpha+\beta$ is decomposed as one $\alpha$ and one
+$\beta$; choose the equal side whose incident apex tile contributes the
+$\alpha$.  Its other endpoint has angle $\alpha$, so neither endpoint of
+this side supplies a $\beta$.  Its $E$ beta endpoints would have to occupy
+only $E-1$ internal vertices, each of which carries exactly one $\beta$.
+This is again impossible.  Thus $r\ge2$.  The argument does not imply
+$r\ge3$.
+
+\section{Addition data and constructive transfers}\label{app:addition}
+
+For Proposition~\ref{prop:addition}, the following corner data work at
+multiplier one:
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}clll@{}}
+\toprule
+ray & target adjacent sides & tile adjacent sides & integer ratios \\
+\midrule
+I   & $bc,bU$       & $c,b$ & $(b,U)$ \\
+II  & $Uc,3bW$      & $c,b$ & $(U,3W)$ \\
+III & $bV,cW$       & $b,c$ & $(V,W)$ \\
+IV  & $bc,bW$       & $c,b$ & $(b,W)$ \\
+V   & $aU,bV$       & $a,b$ & $(U,V)$, supplement \\
+E   & $ab,ab$       & $a,b$ & $(b,a)$, supplement \\
+G1 shape 4 & $bc,bc$ & $b,c$ & $(c,b)$ \\
+G1 shape 5 & $bc,b(2q^2-p^2)$ & $c,b$ &
+$(b,2q^2-p^2)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For the row-V interval transfer, bisect the two doubled base angles of the
+row-V target at multiplier $s$.  Label its vertices
+\[
+       \angle A=2\beta,\qquad \angle B=2\alpha,\qquad
+       \angle C=\alpha+\beta=\pi/3,
+\]
+and let the bisectors from $A$ and $B$ meet at $I$.  The sine rule in
+$\triangle AIB$, which has angles $\beta,\alpha,2\pi/3$, gives
+$AI=acs$ and $BI=bcs$.  Thus $AIB$ is a $cs$-scaled copy of the tile.
+
+Choose $P\in AC$ so that $AIP$ is an $as$-scaled tile with $AI$ as its
+$c$-side, and choose $Q\in BC$ analogously so that $BIQ$ is a $bs$-scaled
+tile.  The angles at $I$ are respectively
+$\alpha,2\pi/3,\beta$, so $P,I,Q$ are collinear.  Moreover
+$PI=IQ=abs$, hence $PQ=2abs$.  The angles at $P$ and $Q$ supplementary to
+the two $2\pi/3$ tile angles are both $\pi/3$, as is $\angle C$; therefore
+$PCQ$ is equilateral of side $2abs$.
+
+Quadratically tiling the three corner triangles and tiling the equilateral
+core gives
+\[
+ (c^2+a^2+b^2+4ab)s^2=UVs^2,
+\]
+where the equality uses $c^2=a^2+ab+b^2$.  Zhang's Proposition~11 then gives
+the same multiplier interval for row II \cite{Zhang25}.
+
+\subsection{The complete one-patch tables}
+
+We use ordered notation
+\[
+ \langle\theta_0,\theta_1,\theta_2\mid x_0,x_1,x_2\rangle,
+\]
+where $x_i$ is opposite $\theta_i$.  The elementary gluing rule used below is
+\[
+\begin{aligned}
+&\langle\theta_0,\theta_1,\theta_2\mid x_0,x_1,x_2\rangle
+ \mathbin{\cup}
+ \langle\phi_0,\phi_1,\phi_2\mid ty_0,ty_1,ty_2\rangle\\
+&\qquad =
+ \langle\theta_0,\theta_2+\phi_2,\phi_0
+ \mid ty_1,\ x_2+ty_2,\ x_1\rangle,
+\end{aligned}
+\]
+provided $x_0=ty_0$, the corresponding seam endpoints satisfy
+$\theta_1+\phi_1=\pi$, and $\theta_2+\phi_2<\pi$.  Thus one endpoint
+disappears, while the two collinear outer sides at that endpoint merge by
+addition.
+
+The ordered Group~2 data are
+\[
+\begin{array}{@{}ccl@{}}
+\toprule
+\text{row}&\text{angles}&\text{opposite sides}\\
+\midrule
+I(m)&(\alpha,\alpha,\alpha+3\beta)&m(bc,bc,bU)\\
+II(m)&(\alpha,2\alpha,3\beta)&m(c^2,Uc,3bW)\\
+III(m)&(\alpha,2\beta,2\alpha+\beta)&m(ac,bV,Wc)\\
+IV(m)&(\alpha,\alpha+\beta,\alpha+2\beta)&m(ab,bc,bW)\\
+V(m)&(2\alpha,2\beta,\alpha+\beta)&m(aU,bV,c^2)\\
+E(m)&(\alpha+\beta,\alpha+\beta,\alpha+\beta)&m(ab,ab,ab)\\
+\bottomrule
+\end{array}
+\]
+and, with $h=b+c$ and $g=b+2c$, the ordered Group~1 data are
+\[
+\begin{array}{@{}ccl@{}}
+\toprule
+\text{shape}&\text{angles}&\text{opposite sides}\\
+\midrule
+S_1(n)&(2\alpha,\beta,\alpha+\beta)&n(ah,bc,c^2)\\
+S_2(n)&(2\alpha,\alpha,2\beta)&n(ch,c^2,bg)\\
+S_3(n)&(\beta,\beta,3\alpha)&n(c^2,c^2,ag)\\
+S_4(n)&(\alpha+\beta,\alpha+\beta,\alpha)&n(bc,bc,ab)\\
+S_5(n)&(\alpha,\alpha,\alpha+2\beta)&n(bc,bc,bh)\\
+\bottomrule
+\end{array}
+\]
+
+For Group~2, the attachment scales and count identities in
+Proposition~\ref{prop:onepatch} are:
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}lll@{}}
+\toprule
+transfer & patch scale & normalized count identity \\
+\midrule
+$E(m)\to IV(m)$ & $bm$ & $ab+b^2=bW$ \\
+$IV(m)\to I(m)$ & $bm$ & $bW+b^2=bU$ \\
+$IV(m)\to III(b,a;m)$ & $Wm$ & $bW+W^2=UW$ \\
+$V(m)\to II(m)$ & $Um$ & $UV+U^2=3UW$ \\
+$IV(as)\to IV(cs)$ & $bWs$ & $bWa^2+b^2W^2=bWc^2$ \\
+$V(as)\to III(a,b;cs)$ & $bVs$ &
+  $UVa^2+b^2V^2=VWc^2$ \\
+$V(bs)\to III(b,a;cs)$ & $aUs$ &
+  $UVb^2+a^2U^2=UWc^2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Here and below the omitted parameter pair is $(a,b)$.  The last two
+identities follow from
+\[
+Ua^2+b^2V=Wc^2
+\]
+and its $a\leftrightarrow b$ image.
+
+In every case the straight pair is
+$(\alpha+\beta)+\gamma=\pi$.  The shared-side and merged-side checks are:
+\[
+\renewcommand{\arraystretch}{1.15}
+\begin{array}{@{}llll@{}}
+\toprule
+\text{transfer}&\text{shared side}&\text{other angle}
+ &\text{destination sides}\\
+\midrule
+E(m)\to IV(m)
+ &abm=a(bm)&(\alpha+\beta)+\beta
+ &(abm,bcm,\underbrace{abm+b^2m}_{bWm})\\
+IV(m)\to I(m)
+ &abm=a(bm)&(\alpha+2\beta)+\beta
+ &(bcm,bcm,\underbrace{bWm+b^2m}_{bUm})\\
+IV(m)\to III(b,a;m)
+ &bWm=b(Wm)&\alpha+\alpha
+ &(bcm,\underbrace{abm+aWm}_{aUm},cWm)\\
+V(m)\to II(m)
+ &aUm=a(Um)&2\beta+\beta
+ &(c^2m,cUm,\underbrace{bVm+bUm}_{3bWm})\\
+IV(as)\to IV(cs)
+ &abWs=a(bWs)&\alpha+\beta
+ &(abcs,\underbrace{a^2bs+b^2Ws}_{bc^2s},bcWs)\\
+V(as)\to III(a,b;cs)
+ &abVs=a(bVs)&2\alpha+\beta
+ &(ac^2s,bcVs,\underbrace{a^2Us+b^2Vs}_{Wc^2s})\\
+V(bs)\to III(b,a;cs)
+ &abUs=b(aUs)&2\beta+\alpha
+ &(bc^2s,acUs,\underbrace{b^2Vs+a^2Us}_{Wc^2s})\\
+\bottomrule
+\end{array}
+\]
+
+For Group~1 put
+\[
+ a=pq,\quad b=q^2-p^2,\quad c=q^2,\quad
+ h=b+c,\quad g=b+2c.
+\]
+The normalized tables are:
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}lll@{}}
+\toprule
+transfer & patch scale & normalized count identity \\
+\midrule
+$S_4(n)\to S_1(n)$ & $cn$ & $bc+c^2=ch$ \\
+$S_4(n)\to S_5(n)$ & $bn$ & $bc+b^2=bh$ \\
+$S_1(n)\to S_2(n)$ & $hn$ & $ch+h^2=hg$ \\
+$S_1(n)\to S_3(n)$ & $cn$ & $ch+c^2=cg$ \\
+$S_1(bs)\to S_1(cs)$ & $ahs$ &
+  $chb^2+a^2h^2=chc^2$ \\
+$S_4(ps)\to S_4(qs)$ & $bqs$ &
+  $bcp^2+b^2q^2=bcq^2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The corresponding Group~1 side checks are:
+\[
+\renewcommand{\arraystretch}{1.15}
+\begin{array}{@{}llll@{}}
+\toprule
+\text{transfer}&\text{shared side}&\text{other angle}
+ &\text{destination sides}\\
+\midrule
+S_4(n)\to S_1(n)
+ &bcn=b(cn)&\alpha+\alpha
+ &(\underbrace{abn+acn}_{ahn},bcn,c^2n)\\
+S_4(n)\to S_5(n)
+ &abn=a(bn)&(\alpha+\beta)+\beta
+ &(bcn,bcn,\underbrace{bcn+b^2n}_{bhn})\\
+S_1(n)\to S_2(n)
+ &ahn=a(hn)&\beta+\beta
+ &(chn,c^2n,\underbrace{bcn+bhn}_{bgn})\\
+\bottomrule
+\end{array}
+\]
+\[
+\renewcommand{\arraystretch}{1.15}
+\begin{array}{@{}llll@{}}
+\toprule
+\text{transfer}&\text{shared side}&\text{other angle}
+ &\text{destination sides}\\
+\midrule
+S_1(n)\to S_3(n)
+ &bcn=b(cn)&2\alpha+\alpha
+ &(c^2n,c^2n,\underbrace{ahn+acn}_{agn})\\
+S_1(bs)\to S_1(cs)
+ &abhs=b(ahs)&\beta+\alpha
+ &(achs,bc^2s,\underbrace{b^2cs+a^2hs}_{c^3s})\\
+S_4(ps)\to S_4(qs)
+ &bcps=a(bqs)&\alpha+\beta
+ &(bcqs,\underbrace{abps+b^2qs}_{bcqs},
+   \underbrace{bcps}_{abqs})\\
+\bottomrule
+\end{array}
+\]
+The final identities use
+\[
+ b^2c+a^2h=c^3,\qquad abp+b^2q=bcq,\qquad bcp=abq.
+\]
+
+For completeness, the exhaustion is an angle calculation, not a search over
+lengths.  In Group~2,
+\[
+ \pi=3\alpha+3\beta,\qquad
+ \gamma=2\alpha+2\beta.
+\]
+The complements in $\pi$ of the three tile angles are respectively
+$2\alpha+3\beta$, $3\alpha+2\beta$, and $\alpha+\beta$.
+Among target vertices capable of a straightening attachment, only
+$\alpha+\beta$ occurs, in rows E, IV, and V.  Assigning the two remaining
+tile angles to the two seam endpoints gives exactly the Group~2 rows above,
+their reflected forms, and one IV-to-reptile output.  Similarly, in Group~1
+the complements are
+$2\alpha+2\beta$, $3\alpha+\beta$, and $\alpha+\beta$.
+Only $\alpha+\beta$ occurs, in $S_1$ and $S_4$; the two assignments give the
+six listed transfers and the $S_1$-to-reptile and $S_4$-to-reptile outputs.
+The incommensurability hypothesis ensures that no unlisted equality of angle
+vectors is hidden in these comparisons.
+
+More explicitly, let $\mathcal O_j(X)$ be the set of row-shaped angle outputs
+from a source row $X$ in Group $j$, let $R$ denote a tile-shaped output, and
+let ${}^\ast$ interchange $(a,\alpha)$ with $(b,\beta)$.  The enumeration is
+\[
+\begin{aligned}
+&\mathcal O_2(I)=\mathcal O_2(II)=\mathcal O_2(III)=\varnothing,\\
+&\mathcal O_2(E)=\{IV,IV^\ast\},\qquad
+ \mathcal O_2(IV)=\{I,IV,III^\ast,R\},\\
+&\mathcal O_2(V)=\{II,II^\ast,III,III^\ast\},
+\end{aligned}
+\]
+and
+\[
+\begin{aligned}
+&\mathcal O_1(S_2)=\mathcal O_1(S_3)=\mathcal O_1(S_5)=\varnothing,\\
+&\mathcal O_1(S_1)=\{S_1,S_2,S_3,R\},\qquad
+ \mathcal O_1(S_4)=\{S_1,S_4,S_5,R\}.
+\end{aligned}
+\]
+For the five non-preserving angle outputs, the generic destination
+multipliers are
+\[
+             \frac{cm}{a},\quad\frac{cm}{a},\quad\frac{cm}{b},
+             \quad\frac{cm}{b},\quad\frac{qm}{p}.
+\]
+Pairwise coprimality of $(a,b,c)$ and $\gcd(p,q)=1$ force, respectively,
+$a\mid m,a\mid m,b\mid m,b\mid m,p\mid m$.  These are exactly the
+$as,as,bs,bs,ps$ parametrizations in
+Proposition~\ref{prop:onepatch}; the remaining outputs preserve the
+normalized multiplier.
+
+\subsection{Orientation-changing parallelograms and the
+\texorpdfstring{$720$}{720} inventory}
+
+\begin{lemma}[Herdt--Beeson parallelogram]\label{lem:orientationblock}
+Let $p,q\in\Nzero$, not both zero.  A parallelogram with adjacent side
+lengths
+\[
+                         bc,\qquad pc+qb
+\]
+and included angle $\alpha$ is tiled by $2(pc+qb)$ copies of $R$.  If
+$p,q>0$, its two subparallelograms use different grid orientations.  Cyclic
+side-label variants hold as well.
+\end{lemma}
+
+\begin{proof}
+Split the second side after length $pc$.  The first subparallelogram is a
+$c$-by-$p$ array of fundamental cells with adjacent sides $b,c$; the second
+is a $b$-by-$q$ array with those roles reversed.  Each cell splits along its
+$a$-diagonal into two copies of $R$.  The shared line may have different
+edge subdivisions on its two sides, which is permitted because tilings need
+not be edge-to-edge.
+\end{proof}
+
+For $(a,b,c)=(4,5,6)$, Herdt's $720$-tiling in
+\cite[Fig.~24]{BeesonIso} has target sides $(120,120,180)$ and count
+$5\cdot12^2$.  Its vector drawing has ten triangular macroregions: one
+quadratic patch of scale $15$ and three each of scales $6,5,4$.  These
+contribute
+\[
+                  15^2+3(6^2+5^2+4^2)=456.
+\]
+The inventory has three orientation-changing blocks.  Two have common
+side $30$ and width $59=24+35$, with uniform constituent counts
+$48+70$ in opposite orders; the third is the cyclically relabelled block
+with common side $20$ and width $14=4+10$, with counts $8+20$.
+Thus the macro count is
+\[
+              456+(48+70)+(48+70)+(8+20)=720.
+\]
+The rounded source vector paths are consistent with this grouping and total
+area.  Since no exact labelled macro coordinates are archived, this paragraph
+records an arithmetic audit of a manually transcribed figure inventory rather
+than a coordinate or coverage certificate.
+
+\subsection{The shape-1/shape-5 complement}
+
+Every shape-4 tiling has $m=qn$ and, after a single scaled tile is attached
+along its base, produces a shape-5 tiling at multiplier $n$.  Thus shape 4
+is subordinate to shape 5.  Conversely, a shape-1 and a shape-5 target at
+the same multiplier glue along a common side to form a reptiling; the
+remaining difficulty is to force the corresponding seam inside an arbitrary
+reptiling.
+
+\section{Ordered interior structures}\label{app:ordered}
+
+\paragraph{The relation lattice.}
+Let $\rho=e^{i\pi/3}$, so
+\[
+       N(x+y\rho)=x^2+xy+y^2.
+\]
+The standard primitive Eisenstein-triple parametrization gives, after
+interchanging $a,b$ if necessary,
+\[
+ a=r^2-s^2,\qquad b=2rs+s^2,\qquad c=r^2+rs+s^2,
+\]
+where $r>s>0$, $\gcd(r,s)=1$, and $r\not\equiv s\pmod3$.
+For completeness, the factorization argument is as follows.
+In the Euclidean domain $\Z[\rho]$,
+\[
+                  N(a+b\rho)=c^2.
+\]
+The two conjugate factors are coprime up to units: a common nonunit would
+force a common rational prime divisor of $a,b,c$, except possibly the
+ramified prime over $3$, and that possibility is excluded by $3\nmid c$.
+Unique factorization therefore makes $a+b\rho$ a unit times a square.
+Multiplication by a unit, conjugation, and if necessary interchange of
+$a,b$ put its square root in the chamber $r>s>0$.  Expanding
+$(r+s\rho)^2$ gives the displayed formulae.  Common factors of $r,s$, or
+$r\equiv s\pmod3$, would make the resulting triple nonprimitive; the
+converse is immediate from the same formulae.
+
+Direct expansion now gives
+\[
+ rc=(r+s)a+sb,\qquad rb=s(a+c),\qquad
+ (r+2s)a=(r-s)(b+c).
+\]
+Thus
+\[
+ R_c=(r+s,s,-r),\qquad R_b=(s,-r,s)
+\]
+lie in the integer kernel of $(a,b,c)$.  Moreover,
+\[
+                         R_c\times R_b=-(a,b,c).
+\]
+The normal vector on the right is primitive.  Hence the parallelogram
+spanned by $R_c,R_b$ has index one in the rank-two lattice
+$\ker_{\Z}(a,b,c)$, proving
+Proposition~\ref{prop:relationwords}(i).  This statement concerns signed,
+unordered counts of complete $a$-, $b$-, and $c$-edges.  It contains no
+endpoint order, connectivity, or geometric-realizability assertion.
+
+\paragraph{Pure-edge support words.}
+For an oriented $a$-edge $[x,x+a]$ supporting a tile in the upper
+half-plane, the two configurations in
+Proposition~\ref{prop:relationwords} have endpoint labels
+\[
+                   A:(\beta,\gamma),\qquad
+                   B:(\gamma,\beta).
+\]
+An $A\to B$ junction would put two $\gamma=2\pi/3$ sectors in the same
+half-plane and is impossible.  Therefore a support word contains no
+substring $AB$, which is equivalent to the form $B^jA^{n-j}$.
+
+At an $A\to A$ or $B\to B$ junction, the supported angles sum to
+$\beta+\gamma=\pi-\alpha$, leaving an $\alpha$ sector.  If that sector
+contains $n_\alpha,n_\beta,n_\gamma$ tile angles, then
+\[
+ (n_\alpha-n_\beta-1)\alpha+
+ \frac{n_\beta+2n_\gamma}{3}\pi=0,
+\]
+because $\beta=\pi/3-\alpha$ and $\gamma=2\pi/3$.  The irrationality of
+$\alpha/\pi$, proved in the next paragraph, gives
+$n_\alpha=1$ and $n_\beta=n_\gamma=0$.  This forces one tile angle, but it
+does not decide which of that tile's two adjacent sides lies on which
+wall; that distinction is the forced-layer mirror gap.
+
+At the possible $B\to A$ junction, put the common endpoint at $O=0$.
+The two supported third vertices are
+\[
+                  Q_-=-a+b\rho^2,\qquad Q_+=a+b\rho.
+\]
+Using $\rho^2=\rho-1$ gives
+\[
+ |OQ_-|=|OQ_+|=c,\qquad |Q_-Q_+|=2a+b.
+\]
+Both third vertices have height $b\sqrt3/2$, so the defect area is
+$(2a+b)b\sqrt3/4$, whereas the tile area is $ab\sqrt3/4$.
+Their ratio is $(2a+b)/a$.  If this were integral, then $a\mid b$;
+primitivity would force $a=1$.  But then
+\[
+             (2c-(2b+1))(2c+(2b+1))=3
+\]
+forces $b=0$, contrary to positivity.  The defect wedge is therefore never
+a union of whole tiles.
+
+\paragraph{The directed $c$-flow.}
+Orient every $c$-edge from its $\alpha$ endpoint to its $\beta$ endpoint,
+splitting a through-edge at each T-junction.  At a non-corner vertex, let
+$A,B,G$ count incident $\alpha,\beta,\gamma$ tile corners, and let $F$
+count incident tiles for which the vertex lies in the relative interior of
+a tile edge.  Each such tile contributes a flat sector of angle $\pi$.
+Since $\gamma=2(\alpha+\beta)$ and $\pi=3(\alpha+\beta)$, the angle
+equation is
+\[
+ (A+2G)\alpha+(B+2G)\beta
+ =(6-3F)(\alpha+\beta)\quad\hbox{or}\quad
+   (3-3F)(\alpha+\beta),
+\]
+according as the vertex is interior or lies straight on the target boundary.
+Here $\alpha/\pi$ is irrational.  Indeed,
+$2\cos\alpha=U/c$ is rational and lies strictly between $1$ and $2$, because
+$U^2-c^2=3bW>0$ and $4c^2-U^2=3a^2>0$.  If $\alpha/\pi$ were rational,
+$2\cos\alpha$ would be a rational algebraic integer and hence an integer, a
+contradiction.  Hence
+$\alpha$ and $\beta=\pi/3-\alpha$ are linearly independent over $\Q$, and
+$A=B$.
+An $\alpha$ corner contributes one outgoing $c$-end, a $\beta$ corner one
+incoming end, and a $\gamma$ corner neither.  A through-$c$ edge contributes
+one incoming and one outgoing end, while a through-$a$ or through-$b$ edge
+contributes neither.  The flow is therefore conserved.
+At a convex target corner no flat sector can occur.  If its angle is
+$P\alpha+Q\beta$, then
+\[
+       A+2G=P,\qquad B+2G=Q,
+\]
+so its net outflow is $A-B=P-Q$.  Standard decomposition of the resulting
+finite directed multigraph gives directed cycles and source-to-sink
+$c$-edge paths.  The latter may run along the target boundary; no interiority
+claim is made.
+
+\paragraph{The row-III half-parallelogram.}
+Let $\rho=e^{i\pi/3}$, $u=b$, and $v=b+a\rho$; then $|v|=c$ and the
+$(u,v)$ unit parallelogram is two copies of the tile because $v-u=a\rho$.
+The multiplier-one row-III target is
+\[
+                    T=\operatorname{conv}(0,Vu,Wv).
+\]
+Indeed, its first two side lengths are $bV$ and $cW$, while
+\[
+ Wv-Vu=a(W\rho-b),\qquad
+ |W\rho-b|^2=W^2-Wb+b^2=c^2,
+\]
+so its third side is $ac$.  Its area is $VW$ tile areas.  Thus $T$ is one
+half of the $V$-by-$W$ parallelogram tiled in the $(u,v)$ grid.  Moreover the
+cut from $Vu$ to $Wv$ is a straight chain of $a$ legal $c$-edges in the
+second orientation.  What remains for a uniform construction is precisely
+to fill across this change of grids; the exact $88$-tiling does so for
+$(a,b,c)=(3,5,7)$.
+
+\clearpage
+\section{Result ledger and computational qualifications}\label{app:ledger}
+
+Table~\ref{tab:status} summarizes the results most relevant to a final
+solution.  It does not claim that the displayed values form a complete
+frontier.
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}
+>{\raggedright\arraybackslash}p{0.42\linewidth}
+>{\raggedright\arraybackslash}p{0.31\linewidth}@{}}
+\toprule
+status & values or families & basis \\
+\midrule
+members
+& the five classical families; published sporadic constructions; newly
+  $88m^2$ and $189m^2$
+& classical theorems, cited constructions, exact certificates \\
+\addlinespace
+nonmembers
+& $7,11,14,15$; every prime $p>3$ with $p\equiv3\pmod4$; and
+  $21,30,33,46$
+& published proofs, proved arithmetic, or scoped exact searches \\
+\addlinespace
+further audited exclusions
+& $55,56,66,70,438$
+& exact arithmetic audits; $56$ and $70$ include single-implementation
+  exhaustive searches \\
+\addlinespace
+finite-window ray problems
+& every Group~2 ray
+& Corollary~\ref{cor:windows} \\
+\addlinespace
+additive ray problems
+& Group~1 shapes 4--5; no cofinite tail is proved in general
+& Proposition~\ref{prop:group1} \\
+\addlinespace
+Group~2 rays with unresolved finite windows
+& for example the rays with base counts $33$, $154$, and $184$
+& only finitely many multipliers remain undecided on each; the
+  $\chi$-based ideal-membership arithmetic is already exhausted \\
+\bottomrule
+\end{tabular}
+\caption{Conservative status summary.}
+\label{tab:status}
+\end{table}
+
+The table below intentionally omits the forced-layer-dependent exclusions.  It also
+distinguishes ``separately derived'' from merely running two programs in the
+same repository: the $88$ and $189$ certificates have a checker independent
+of the search history, but a third-party reimplementation remains desirable.
+
+The phrase ``full branch audit'' means that the classical, right-triangle,
+Group~1, Group~2, $\gamma=2\alpha$, and $60^\circ$ equilateral branches were
+all enumerated under the cited classification, rather than that one displayed
+congruence was treated as a global exclusion.  The executable audits are in
+\pathcode{computation/verify_theory_report3_claims.py} (including the explicit
+$N=33$ reduction and the audits of $21,30,55,66,438$) and
+\pathcode{computation/sieve_120rows.py}; their commands and hashes are in
+\pathcode{paper/verification_manifest.md}.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.16}
+\begin{tabular}{@{}>{\raggedleft\arraybackslash}p{0.10\linewidth}
+>{\raggedright\arraybackslash}p{0.62\linewidth}
+>{\raggedright\arraybackslash}p{0.17\linewidth}@{}}
+\toprule
+$N$ & present basis for nonmembership & evidence \\
+\midrule
+7, 11 & Beeson's direct proofs \cite{Beeson7} & published \\
+14, 15 & Beeson's finite equilateral analysis \cite{Beeson7}; $14$ also has a project
+  exact exhaustion & published + search \\
+$p\equiv3\pmod4$ & three prime-case manuscripts
+  \cite{HarriesPrime,GeorgePrime,BeesonAllPrime} & independently derived \\
+21 & full branch audit; exact exhaustion of the surviving Group~1
+  shape-5 candidate & arithmetic + search \\
+30 & full branch audit; the Group~2 candidate fails boundary divisibility,
+  with an exact exhaustion as a cross-check & arithmetic + search \\
+33 & unique candidate; primary exact exhaustion, with a replay disabling
+  the general segment-semigroup table and boundary-invariant pruning &
+  computer-assisted, one implementation \\
+46 & complete arithmetic branch audit; also \cite{GeorgePrime} &
+  independently derived \\
+55 & full branch audit; the Group~2 row-IV candidate has $b\nmid k$ &
+  proved + machine-audited arithmetic \\
+56 & full candidate audit; row-E and two shape-4 exact exhaustions &
+  computer-assisted, decisive searches not independently ported \\
+66 & full branch audit; the Group~2 row-E candidate has $ab\nmid L$ &
+  proved + machine-audited arithmetic \\
+70 & full candidate audit; shape-5 exact exhaustion &
+  computer-assisted, decisive search not independently ported \\
+438 & full arithmetic branch audit using the audited Group~1 shape-5 formula &
+  machine-audited arithmetic \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Provisional below-\texorpdfstring{$200$}{200} research programme}
+\label{app:conditional}
+
+\begin{center}
+\fcolorbox{draftred}{white}{\parbox{0.90\linewidth}{\small
+\textbf{\color{draftred}Not a theorem.}
+Everything in this appendix depends on an unfinished forced-corner-layer
+induction and on a complete regeneration of the cross-branch candidate list.
+It is reported to direct future work and must not be cited as an established
+reduction.}}
+\end{center}
+
+The proposed forced-layer lemma would make a distinguished corner patch
+repeat along the equal sides of certain isosceles targets.  The supporting
+line, chord partition, purity, and arithmetic residual steps have been
+checked.  The missing step must exclude the mirror side-assignment of the
+tile placed in each interstitial gap and justify the endpoint-sector order.
+An undershooting mirror placement leaves angle-legal completions; an
+overshooting placement crosses the next chord line.  No completed argument
+currently rules out every intermediate configuration.
+
+A subsequent attempted proof correctly partitions the existing chord into
+coherently oriented tile edges and identifies the ideal triangular regions
+between two consecutive scaled patches.  It then infers that the actual
+tiling occupies those ideal regions.  That inference is precisely the
+missing step: the reflected congruent placement exchanges the two adjacent
+side lengths, undershoots one ideal wall at a T-junction, and crosses the
+artificial next chord on the other side.  The pure-edge word theorem in
+Proposition~\ref{prop:relationwords} forces the residual angle at a coherent
+junction, but not this side assignment.  Thus the later attempt does not
+complete the forced-layer induction or establish any of its consequences.
+
+If the forced-layer induction and full candidate regeneration are completed
+as intended, the provisional ledger predicts that the unresolved values below
+$200$ reduce to
+\[
+             105,\ 120,\ 132,\ 143,\ 154,\ 161,\ 175,\ 184.
+\]
+At present, the status of at least
+\[
+\begin{split}
+\{&60,63,76,92,99,105,120,124,132,135,140,143,154,156,\\
+  &161,171,172,175,184,188\}
+\end{split}
+\]
+is materially entangled with the missing induction or the audit built on it.
+In particular, neither ``only eight values remain below $200$'' nor ``every
+$N\le104$ is decided'' is asserted here.
+
+\subsection{Provisional candidate table}\label{app:conditional-table}
+
+Assuming the forced-layer induction and complete below-$200$ candidate
+regeneration, the provisional eight-value table is:
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}r>{\raggedright\arraybackslash}p{0.64\linewidth}@{}}
+\toprule
+$N$ & proposed surviving instance(s) \\
+\midrule
+105 & row IV: $(8,7,13)$ at $k=7$; $(16,5,19)$ at $k=5$ \\
+120 & row IV: $(7,8,13)$ at $k=8$; a conditional $60^\circ$ skeleton also remains \\
+132 & row I: $(5,3,7)$ at multiplier $2$ \\
+143 & row V: $(3,5,7)$ at multiplier $1$ \\
+154 & row I: $(8,7,13)$ at multiplier $1$ \\
+161 & Group~1 shape 5: $(12,7,16)$, $(p,q)=(3,4)$, multiplier $1$ \\
+175 & $\gamma=2\alpha$: $(9,7,12)$, $(u,v)=(3,4)$, $r=5$ \\
+184 & row I: $(7,8,13)$ at multiplier $1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Positive transfer tests can be cheaper than direct searches: a row-IV
+$(5,3,7)$ tiling at $N=96$ would imply $132\in\Sset$; the remaining Group~1
+shape-4 instance at $N=112$ would imply $161\in\Sset$; and row-IV finds at
+$105$ or $120$ would also settle the linked values $154$ or $184$,
+respectively.  These are one-way construction opportunities, not
+nonexistence proofs.
+
+\subsection{Priorities for deconditioning the ledger}
+
+The most direct next steps are:
+\begin{enumerate}[leftmargin=2.2em]
+\item close the forced-layer mirror gap with a side-assignment argument valid
+      in the presence of T-junctions, together with the endpoint-sector order;
+\item independently exhaust the $\gamma=2\alpha$ instances at $N=63$ and
+      $N=99$, and the $60^\circ$ candidates at $N=105$;
+\item port the exact searcher to the $\gamma=2\alpha$ geometry and attempt
+      the sole proposed $N=175$ instance; and
+\item produce a script-generated all-branch candidate ledger through $200$,
+      with every imported theorem and conditional filter separately
+      switchable.
+\end{enumerate}
+
+\section*{Disclaimer: use of AI tools}
+
+This project used multiple AI systems extensively.  OpenAI GPT-5.6 Pro agents
+and Anthropic Claude Fable agents proposed lemmas, derived formulae, wrote and
+audited exact-search code, compared source versions, and helped draft this
+manuscript.  Separate agents were assigned mathematical derivation,
+computation, source checking, and adversarial review.  Agreement among models
+is an error filter, not independent scholarly verification.  Every
+unconditional theorem is either proved in the text, imported with a precise
+citation, or explicitly labelled computer-assisted with its verification
+surface stated.  Responsibility for any circulated version remains with the
+author.
+
+\section*{Acknowledgements}
+
+This work is built on the structural program of Michael Beeson, Mikl\'os
+Laczkovich, and Yan~X.~Zhang, and on Thomas Bloom's curation of the Erd\H{o}s
+problems collection.  I thank Michael Beeson for sharing his new manuscript,
+for comparing the independently obtained prime proofs, for offering to inspect
+the full Problem~634 work, and for offering help with figures.  The manuscript
+of Robert Joseph George, GPT-5.6 Pro, and Inkling supplied another independent
+prime proof and a separate $N=46$ audit.  Bryce Herdt's unexpectedly small
+constructions remain an important warning against unsupported lower-bound
+intuition.
+
+\begin{thebibliography}{99}
+
+\bibitem{Beeson7}
+M.~Beeson,
+\emph{No triangle can be cut into seven congruent triangles},
+arXiv:1811.09723v5 (2019).
+
+\bibitem{Beeson2229}
+M.~Beeson,
+\emph{Triangle tiling: the case $3\alpha+2\beta=\pi$},
+arXiv:1206.2229v3 (2019).
+
+\bibitem{BeesonIso}
+M.~Beeson,
+\emph{Tilings of an isosceles triangle},
+arXiv:1206.1974v7 (2026).
+
+\bibitem{BeesonPrime}
+M.~Beeson,
+\emph{No prime tiling of an isosceles triangle},
+arXiv:2607.19572v1 (2026).
+
+\bibitem{BeesonAllPrime}
+M.~Beeson,
+\emph{Tiling a triangle into a prime number of congruent triangles},
+author-supplied manuscript dated July 26, 2026, version consulted
+July 26, 2026; exact SHA-256 recorded in the supplementary verification
+manifest; arXiv identifier pending.
+
+\bibitem{BLZ633}
+M.~Beeson, M.~Laczkovich, and Y.~X.~Zhang,
+\emph{Solution of Erd\H{o}s Problem 633},
+arXiv:2604.03609v2 (2026).
+
+\bibitem{BZRat}
+M.~Beeson and Y.~X.~Zhang,
+\emph{Rationality of certain triangle tilings},
+arXiv:2604.01314v1 (2026).
+
+\bibitem{EP634}
+T.~F.~Bloom,
+\emph{Erd\H{o}s Problem \#634},
+archived snapshot of July 21, 2026, consulted July 27, 2026,
+\url{https://web.archive.org/web/20260721053300/https://www.erdosproblems.com/634}.
+
+\bibitem{GeorgePrime}
+R.~J.~George, GPT-5.6 Pro, and Inkling,
+\emph{Candidate partial solution to Erd\H{o}s Problem 634:
+a complete direct proof for $N=19$, a prime obstruction, and the composite
+case $N=46$},
+public author manuscript, version dated July 16, 2026, consulted
+July 24, 2026; exact SHA-256 recorded in the supplementary verification
+manifest;
+\url{https://drive.google.com/file/d/1ZXacH37WDv3kVQzY3GzbxndJm6dbRqel/view}.
+
+\bibitem{HarriesPrime}
+J.~P.~Harries,
+\emph{No triangle can be cut into nineteen congruent triangles:
+the prime case of Erd\H{o}s Problem 634},
+preprint, July 24, 2026, public repository snapshot at commit
+\texttt{fb9ad8d55872},
+\href{https://github.com/jphme/math-problems/tree/fb9ad8d55872260b4ffbf08cc389ee6db8a4ad40/no19tiling}{immutable
+repository snapshot}.
+
+\bibitem{Lacz95}
+M.~Laczkovich,
+\emph{Tilings of triangles},
+Discrete Mathematics \textbf{140} (1995), 79--94.
+\url{https://doi.org/10.1016/0012-365X(93)E0176-5}.
+
+\bibitem{Lacz12}
+M.~Laczkovich,
+\emph{Tilings of convex polygons with congruent triangles},
+Discrete \& Computational Geometry \textbf{48} (2012), 330--372.
+\url{https://doi.org/10.1007/s00454-012-9404-x}.
+
+\bibitem{SWW91}
+S.~L.~Snover, C.~Waiveris, and J.~K.~Williams,
+\emph{Rep-tiling for triangles},
+Discrete Mathematics \textbf{91} (1991), 193--200.
+\url{https://doi.org/10.1016/0012-365X(91)90110-N}.
+
+\bibitem{Soifer09}
+A.~Soifer,
+\emph{How Does One Cut a Triangle?},
+2nd ed., Springer, New York, 2009; see pp.~47--50.
+
+\bibitem{Zhang25}
+Y.~X.~Zhang,
+\emph{Tiling triangles with $2\pi/3$ angles},
+arXiv:2512.22696v4 (2026).
+
+\end{thebibliography}
+
+\end{document}

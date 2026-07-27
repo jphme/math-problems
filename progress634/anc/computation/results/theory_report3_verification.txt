@@ -1,0 +1,101 @@
+== A. gamma=2alpha branch ==
+PASS  A1: (uz+v)(uz^2-vz+u) = az^3 - bz + c  [grid-proof]
+PASS  A1b: (u+vz)(uz^2-vz+u) = cz^3 - bz^2 + a  [grid-proof]
+PASS  A2: v(uz+v) - u(u+vz) = v^2-u^2 = b  [grid-proof]
+PASS  A3: J = (uz+v, u+vz) maps into ker(Z[z,1/z] -> Z/b), u invertible; with A2, J cap Z = (b)
+PASS  A4: gamma=2alpha target boundary = unit * Q(z), Q = uz^2 - vz + u  [direction lattice, independent]
+PASS  A5: target (ubr, ubr, vbr) has area ratio exactly N = b r^2
+PASS  A5b: X = ubr satisfies X^2 = N*a*b with N = br^2
+PASS  A6: 720 = 5*12^2, tile (4,5,6) = (u,v)=(2,3)
+PASS  A6b: 45 = 5*3^2
+PASS  A6c: 132 = 33*2^2, tiles (16,33,28) [(4,7)] and (256,33,272) [(16,17)]
+PASS  A6d: 189 = 21*3^2, tile (100,21,110) [(10,11)]
+PASS  A7: r=1 equal-side decompositions have B in {0,u}; B=u forces A=C=0
+PASS  A8: interior vertex (= pi): multisets exactly {3a+b, a+b+g}
+PASS  A8b: target apex (= pi-2a): exactly {a+b}
+PASS  A8c: target base angle (= a): exactly {a}
+== B. Group-1 shape 4 ==
+PASS  B1: shape-4 target boundary = unit * (qz^2 + pz + q)  [direction lattice, independent]
+PASS  B2: shape-4 target (bqm, bqm, bpm) has area ratio N = b m^2 = (q^2-p^2) m^2
+PASS  B3: m=1 base decomposition unique: B = p, A = C = 0
+PASS  B4: interior vertex (= pi): multisets exactly {3a+2b, a+b+g}
+PASS  B4b: shape-4 base corner (= a+b): exactly {a, b}
+PASS  B4c: shape-4 apex (= a): exactly {a}
+PASS  B4d: shape-5 apex (= a+2b = pi-2a): exactly {a, 2b}
+PASS  B5: filter (4) on (1,2): m=1,2,3 infeasible, m=4 feasible (first construction 48 = 3*4^2)
+== C. Group-1 shape 5 (kappa) ==
+PASS  C1: Q(z) Qbar(z) = q^2(z^4+1) + (2q^2-p^2) z^2  [grid-proof]
+PASS  C2: shape-5 target boundary = unit * (q^2 z^4 + h z^2 + q^2) = unit * Q Qbar  [direction lattice]
+PASS  C3: Qbar(q p^{-1}) = q^3 p^{-2} is a unit mod b for ALL (p,q) incl. both-odd -> b | C, no kappa
+PASS  C4: corrected shape-5 ray bases: (1,2)->21 (2,3)->70 (3,4)->161 (1,4)->465; both-odd (1,3)->136 (3,5)->656 (1,5)->1176 (5,7)->1752
+PASS  C4b: old kappa=4 bases 34, 164, 294, 438 are NOT on the corrected rays
+PASS  C4c: displaced values are classical anyway: 34, 164, 306 sums of two squares, 294 = 6*7^2
+PASS  C4d: 306 is the base of the (4,5) ray
+PASS  C5: N189 certificate: C = 36/q^2 = 9, b | C, Y = hC = 63, N = bh m^2 = 189
+PASS  C5b: (1,3) target (36,36,68) has area ratio 34 (the phantom the ideal condition kills; C=4, b=8 does not divide 4)
+== D. 60-degree tile ==
+PASS  D1: 60-degree one-tile boundary = unit * (d - c z^{-1}), d = a+b  [direction lattice, independent]
+PASS  D2: d^2 - c^2 = 3ab for 60-degree triples (so 3ab lies in the ideal, quotient Z/3ab)
+PASS  D3: c and d = a+b invertible mod 3ab (sample primitive 60-degree triples)
+PASS  D4: equilateral side L = abm gives N = ab m^2 exactly (area ratio)
+== E. Fixed-N branch audits ==
+   audit N=21: classical=False right=False group2=[] group1=[('s5', 1, 2, 1), ('s4', 2, 5, 1), ('s4', 10, 11, 1)] g2a(all r)=[(10, 11, 1)] g2a(r>=2)=[] sixty=[]
+PASS  E-21: after exact ray conditions only Group-1 shape 5 (1,2), n=1 remains; shape-4 and gamma=2alpha formal candidates are multiplier-one and fail q|m or r>=2
+   audit N=30: classical=False right=False group2=[] group1=[] g2a(all r)=[] g2a(r>=2)=[] sixty=[]
+PASS  E-30: every classified arithmetic branch is empty after exact ray conditions
+   audit N=33: classical=False right=False group2=[('I', 5, 3, 1)] group1=[('s4', 4, 7, 1), ('s4', 16, 17, 1)] g2a(all r)=[(4, 7, 1), (16, 17, 1)] g2a(r>=2)=[] sixty=[]
+PASS  E-33: exact cross-branch reduction leaves only Group-2 row I (5,3,7), multiplier m=1
+PASS  E-33: surviving row-I target is (21,21,33)
+   audit N=55: classical=False right=False group2=[] group1=[('s4', 3, 8, 1), ('s4', 27, 28, 1)] g2a(all r)=[(27, 28, 1)] g2a(r>=2)=[] sixty=[]
+PASS  E-55: exact Group-2 condition removes row IV; remaining formal shape-4/gamma candidates are multiplier-one and fail q|m or r>=2
+   audit N=66: classical=False right=False group2=[] group1=[] g2a(all r)=[] g2a(r>=2)=[] sixty=[]
+PASS  E-66: every classified arithmetic branch is empty after exact row-E divisibility
+   audit N=46: classical=False right=False group2=[] group1=[] g2a(all r)=[] g2a(r>=2)=[] sixty=[]
+PASS  E-46: not classical, right-tile impossible (23 not square/sum2sq)
+PASS  E-46: Group-2 rows I-V and E: no Eisenstein candidate at all
+PASS  E-46: Group-1 rays (incl. corrected shape 5): none; shape-4 base 46 = (q-p)(q+p) impossible (46 = 2 mod 4)
+PASS  E-46: gamma=2alpha: no tile with b = 46 (46 = 6 mod 8), no candidate even without r >= 2
+PASS  E-46: 60-degree equilateral: no candidate
+PASS  E-46  =>  46 not in S (closes gate G8, independent of the George manuscript)
+   audit N=438: classical=False right=False group2=[] group1=[] g2a(all r)=[] g2a(r>=2)=[] sixty=[]
+PASS  E-438: not classical, right-tile impossible (219 = 3*73 not square/sum2sq)
+PASS  E-438: Group-2 rows: no Eisenstein candidate (report's norms 190533/46659/20029/4123 etc. none square)
+PASS  E-438: report's row-I/IV norm values verified: (436,1)->190533, (215,2)->46659, (140,3)->20029, (61,6)->4123; (437,1)->191407, (217,2)->47527, (143,3)->20887, (67,6)->4927
+PASS  E-438: Group-1: shapes 1/3 need q^2 | 438 (squarefree: no); shape 2/5 factor-pair differences 437,217,143,67 none square; shape 4 m=1 killed by m>=2, m>=2 needs 4 | 438
+PASS  E-438: gamma=2alpha: no tile with b = 438 (438 = 6 mod 8); squarefree so r = 1 only anyway
+PASS  E-438: 60-degree equilateral: none
+PASS  E-438  =>  438 not in S  [depends on corrected shape-5 ray, C2/C3 above]
+   audit N=56: classical=False right=False group2=[('E', 7, 8, 1), ('E', 8, 7, 1)] group1=[('s4', 5, 9, 1), ('s4', 13, 15, 1)] g2a(all r)=[(5, 9, 1), (13, 15, 1)] g2a(r>=2)=[] sixty=[]
+PASS  E-56: not classical, right-tile impossible (28 not square/sum2sq)
+PASS  E-56: Group-2: exactly the row-E candidate (7,8,13) at m=1 [EXHAUSTED, see G below]
+PASS  E-56: Group-1: exactly the two shape-4 m=1 candidates (13,15) [EXHAUSTED] and (5,9) [killed by m>=2]
+PASS  E-56: gamma=2alpha: exactly the two r=1 tiles (25,56,45), (169,56,195) -- killed by r >= 2; none survive
+PASS  E-56: 60-degree equilateral: none
+   audit N=70: classical=False right=False group2=[] group1=[('s5', 2, 3, 1)] g2a(all r)=[] g2a(r>=2)=[] sixty=[]
+PASS  E-70: not classical, right-tile impossible (35 not square/sum2sq)
+PASS  E-70: Group-2 rows: none
+PASS  E-70: Group-1: exactly the shape-5 (2,3) candidate at m=1 [EXHAUSTED]
+PASS  E-70: gamma=2alpha: NO candidate under the ray theorem (b = 70 = 6 mod 8 has no tile; b = 280 killed because N = b r^2 forces N >= b)
+PASS  E-70: 60-degree equilateral: none
+== F. Frontier below 200 after the new theorems ==
+   N=105: group2=[('IV', 8, 7, 1), ('IV', 16, 5, 1)] group1=[('s4', 4, 11, 1), ('s4', 8, 13, 1), ('s4', 16, 19, 1), ('s4', 52, 53, 1)] gamma2a(surviving r>=2)=[] sixty=[(5, 21, 1), (7, 15, 1)]
+   N=120: group2=[('IV', 7, 8, 1)] group1=[('s4', 1, 11, 1), ('s4', 7, 13, 1), ('s4', 13, 17, 1), ('s4', 29, 31, 1)] gamma2a(surviving r>=2)=[] sixty=[(8, 15, 1)]
+   N=132: group2=[('I', 5, 3, 2)] group1=[('s4', 4, 7, 2), ('s4', 16, 17, 2)] gamma2a(surviving r>=2)=[(4, 7, 2), (16, 17, 2)] sixty=[]
+   N=143: group2=[('V', 3, 5, 1), ('V', 5, 3, 1)] group1=[('s4', 1, 12, 1), ('s4', 71, 72, 1)] gamma2a(surviving r>=2)=[] sixty=[]
+   N=154: group2=[('I', 8, 7, 1)] group1=[] gamma2a(surviving r>=2)=[] sixty=[]
+   N=161: group2=[] group1=[('s5', 3, 4, 1), ('s4', 8, 15, 1), ('s4', 80, 81, 1)] gamma2a(surviving r>=2)=[] sixty=[]
+   N=184: group2=[('I', 7, 8, 1)] group1=[('s4', 21, 25, 1), ('s4', 45, 47, 1)] gamma2a(surviving r>=2)=[] sixty=[]
+PASS  F: after r>=2 the gamma=2alpha branch is EMPTY at 105, 120, 143, 154, 161, 184
+PASS  F2: 132 keeps exactly its two r=2 gamma=2alpha candidates (4,7) and (16,17)
+PASS  F3: after m>=2 the only shape-4 candidates below 200 are 132's two at m=2: (4,7), (16,17)
+PASS  F4: filter (4) verdict on 132's m=2 shape-4 candidates: (16,17) infeasible, (4,7) feasible
+PASS  F5: 161 keeps its shape-5 (3,4) m=1 candidate (search running)
+PASS  F6 [NEW CANDIDATES SURFACED, G7 realized]: 60-degree-tile equilateral candidates exist at 105 (tiles (5,21,19), (7,15,13), L=105) and 120 (tile (8,15,13), L=120) -- previously untracked
+== G. Stored search verdicts ==
+PASS  G1: N56 row-E EXHAUSTED, 0 warnings (completed after STATUS was last written)  | ('EXHAUSTED', 1236044, 0)
+PASS  G2: N70 shape-5 (2,3) EXHAUSTED
+PASS  G3: N56 shape-4 (13,15) EXHAUSTED
+PASS  G4: N34 shape-5 (1,3) EXHAUSTED (paranoid re-run) -- consistent with 34 NOT on the corrected ray
+PASS  G5: N21 shape-5 (1,2) EXHAUSTED (paranoid re-run) -- 21 IS the (1,2) ray base, m=1 excluded
+
+SUMMARY: 76 passed, 0 failed

@@ -1,0 +1,70 @@
+A. shape-4 q|m via the shape-1 patch (second, Thm-7-based route)
+  PASS  (α+β) + γ = π (base vertex straightens)
+  PASS  union angles are (2α, β, α+β) — Beeson's shape 1
+  PASS  side + count bookkeeping, all (p,q<40), m<6 (N' = hm²)
+  PASS  K | M² ⟺ q | t  ⟹  exact shape-1 set {q²hn²}
+  PASS  all 8 Table-1 rows are q²hn² (the iff's necessity side)
+  PASS  (4,7): h·2² = 132+64 = 196·? — not q²h·n² for any n (7 ∤ 2 ⟹ 132's shape-4 candidate dead)
+B. shape-4 at m = qn  ⟹  shape-5 at n
+  PASS  (α+β) + γ = π; (α+β) + β = α+2β; union = (α, α, α+2β) = shape 5
+  PASS  side + count bookkeeping, all (p,q<40), n<6 (lands on the verified shape-5 ray)
+  PASS  shape-4 (3,4) m=4: N = 112, target (112,112,84), tile (12,7,16)
+  PASS  112-tiling + 49-tile patch = 161-tiling (the sole 161 candidate)
+C. γ=2α branch: δ = v and the three r = 2 orientation kills
+  PASS  straight multisets are exactly {3α+β, α+β+γ} (no ββ, no γγ possible)
+  PASS  δ(u,v) = v for all primitive u < 24
+  PASS  all three r=2 residuals negative or outside ⟨a,b,c⟩ (u < 24, incl. both 132 tiles)
+  PASS  general-proof identities ((v−u)b − vD = u³, CC cases; u < 200)
+  PASS  contains Beeson's no20 [pub]: (2,3) r=2 is N = 5·4 = 20
+  PASS  132 kill #1: (16,33,28) = (u,v)=(4,7), r=2, N = 33·4 = 132
+  PASS  132 kill #2: (256,33,272) = (u,v)=(16,17), r=2, N = 132
+  PASS  consistent with Herdt's 720 (r = 12 on (4,5,6)) and transport set
+D. 60° tiles at 105: both candidates impossible
+  PASS  straight multisets are exactly {α+β+γ, 3γ}; αα/ββ impossible
+  PASS  (5,21,19): 60° tile (c² = a²−ab+b²)
+  PASS  (5,21,19): δ = 3
+  PASS  (5,21,19): two b-ends on one side overlap (2δb > 105)
+  PASS  (5,21,19): all 8 corner configs → overlap or all-mixed
+  PASS  (5,21,19): mixed-side middle = 27
+  PASS  (5,21,19): 27 ∉ ⟨5,19,21⟩ — contradiction
+  PASS  (7,15,13): 60° tile (c² = a²−ab+b²)
+  PASS  (7,15,13): δ = 4
+  PASS  (7,15,13): two b-ends on one side overlap (2δb > 105)
+  PASS  (7,15,13): all 8 corner configs → overlap or all-mixed
+  PASS  (7,15,13): mixed-side middle = 17
+  PASS  (7,15,13): 17 ∉ ⟨7,13,15⟩ — contradiction
+E. 60° tile (8,15,13) at 120: forced cyclic skeleton
+  PASS  (8,15,13) is a 60° tile
+  PASS  δ = 3 (3c = 3a+b = 39)
+  PASS  2δb = 90 < 120 — overlap argument does NOT close this one
+  PASS  two-b-end side residual 30 decomposes ONLY as 15+15
+  PASS  mixed-side middle 51 decomposes ONLY as {8,15,15,13}
+  PASS  remainder hexagon (51,39,51,39,51,39), 120 − 3·9 = 93 tiles
+F. Group-2 transfers: IV(a,b;m) ⟹ I(a,b;m) and III(b,a;m)
+  PASS  (α+β) + γ = π (row-IV vertex straightens)
+  PASS  (α+2β) + β = α+3β = π−2α (row-I apex)
+  PASS  merged-side identity kW + b²m = bmU (row-I sides bm(c,c,U))
+  PASS  count identities bW+b² = bU, bW+W² = UW, bW+a² = c² (all primitive 120° tiles a,b < 45)
+  PASS  N132 = row I (5,3,7) k=6: sides (42,42,66) = 6·(7,7,11), N = 3·11·2² = 132
+  PASS  IV(5,3;2) N=96 ⟹ I(5,3;2) N=132
+  PASS  IV(8,7;1) N=105 ⟹ I(8,7;1) N=154
+  PASS  IV(7,8;1) N=120 ⟹ I(7,8;1) N=184
+  PASS  IV(16,5;1) N=105 ⟹ I(16,5;1) N=130
+  PASS  N=96 target sides 6·(5,7,8) = (30,42,48)
+  PASS  130 is classical (11²+3²) — that chain adds no frontier info
+  PASS  row-III cascade counts 330/345/352
+  PASS  330, 345 non-classical (new members if 105/120 row-IV tile); 352 = 88·2² already in S
+G. historical report-5.2 candidate ledger (before report #7)
+  PASS  132 has exactly ONE surviving candidate
+  PASS  105 is decided by its two row-IV searches alone
+  PASS  historical report-5.2 list is 105,120,132,143,154,161,184 (not a check of the current frontier)
+  INFO N=105: 2 historical candidate(s): row IV (8,7,13) m=1; row IV (16,5,19) m=1
+  INFO N=120: 2 historical candidate(s): row IV (7,8,13) m=1; 60° (8,15,13) [forced skeleton]
+  INFO N=132: 1 historical candidate(s): row I (5,3,7) m=2
+  INFO N=143: 1 historical candidate(s): row V (3,5,7) m=1
+  INFO N=154: 1 historical candidate(s): row I (8,7,13) m=1
+  INFO N=161: 1 historical candidate(s): shape 5 (3,4) n=1
+  INFO N=184: 1 historical candidate(s): row I (7,8,13) m=1
+
+53 PASS, 0 FAIL
+ALL REPORT-5.2 CHECKS PASSED (see header for what is NOT covered)
