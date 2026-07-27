@@ -1,0 +1,160 @@
+{
+  "H(2q)": 684,
+  "algorithm": {
+    "arithmetic": "integer only after coefficient scaling",
+    "bounds": [
+      "integer linear-inequality propagation",
+      "separable bilinear McCormick interval upper bound",
+      "exact multi-affine corner maximum"
+    ],
+    "name": "canonical-integer-box branch-and-bound",
+    "threads": 1
+  },
+  "cut_library": {
+    "arithmetic_coefficient_scale": 12,
+    "common_denominator": 12,
+    "common_denominator_derivation": "LCM of every reduced rational coefficient in both cut files",
+    "file_sha256": {
+      "benders_cuts.json": "ad960316bc8099e4be3e0d585abb472c6a7e81d2963ee65f79457d7161d5a96a",
+      "new_dual_cuts.json": "a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94"
+    },
+    "loaded_count": 760
+  },
+  "envelope": {
+    "active_cut_count": 76,
+    "corner_candidate_limit": 6,
+    "cut_box_wins": {
+      "benders76:0": 852,
+      "benders76:1": 171,
+      "benders76:10": 386,
+      "benders76:11": 283,
+      "benders76:12": 4168,
+      "benders76:14": 55,
+      "benders76:15": 31,
+      "benders76:16": 46,
+      "benders76:17": 29,
+      "benders76:18": 7,
+      "benders76:19": 16,
+      "benders76:2": 930,
+      "benders76:20": 34,
+      "benders76:21": 32,
+      "benders76:22": 1,
+      "benders76:23": 5,
+      "benders76:24": 108,
+      "benders76:25": 65,
+      "benders76:26": 77,
+      "benders76:27": 111,
+      "benders76:28": 648,
+      "benders76:29": 979,
+      "benders76:3": 227,
+      "benders76:31": 1,
+      "benders76:32": 27,
+      "benders76:33": 13,
+      "benders76:34": 11,
+      "benders76:35": 58,
+      "benders76:36": 275,
+      "benders76:37": 460,
+      "benders76:38": 201,
+      "benders76:39": 93,
+      "benders76:4": 96,
+      "benders76:40": 1,
+      "benders76:41": 1,
+      "benders76:46": 411,
+      "benders76:47": 171,
+      "benders76:48": 7,
+      "benders76:5": 72,
+      "benders76:54": 2682,
+      "benders76:55": 1322,
+      "benders76:56": 2315,
+      "benders76:57": 1137,
+      "benders76:58": 568,
+      "benders76:59": 490,
+      "benders76:60": 345,
+      "benders76:61": 212,
+      "benders76:62": 576,
+      "benders76:63": 652,
+      "benders76:64": 1446,
+      "benders76:65": 1106,
+      "benders76:66": 1173,
+      "benders76:67": 453,
+      "benders76:68": 878,
+      "benders76:69": 977,
+      "benders76:7": 63,
+      "benders76:70": 1310,
+      "benders76:71": 1136,
+      "benders76:72": 4187,
+      "benders76:73": 2181,
+      "benders76:74": 1859,
+      "benders76:75": 1030,
+      "benders76:8": 18,
+      "benders76:9": 143
+    },
+    "runtime_seconds": 27.377271792000016,
+    "stats": {
+      "certified_boxes": 39418,
+      "corner_certified_boxes": 36633,
+      "corners_inspected": 19578903,
+      "cut_center_evaluations": 5947889,
+      "cut_corner_calls": 370177,
+      "cut_interval_evaluations": 1298597,
+      "interval_certified_boxes": 2763,
+      "max_depth": 41,
+      "max_stack": 20,
+      "nodes": 81653,
+      "point_boxes": 22,
+      "propagation_infeasible": 1409,
+      "survivor_count": 0
+    },
+    "survivors": [],
+    "threshold": {
+      "expression": "H(2q) + 1/2",
+      "integer_comparison_scale": 12,
+      "integer_threshold": 8214
+    },
+    "unfinished_stack_boxes": 0,
+    "verdict": "envelope_le_h_plus_half"
+  },
+  "h_computation": {
+    "literal_bruteforce_crosscheck": {
+      "limit": 30,
+      "performed": false
+    },
+    "method": "crossing-O(q^3)",
+    "runtime_seconds": 0.045438457999992465
+  },
+  "h_optimizer": [
+    0,
+    23,
+    30,
+    0
+  ],
+  "n": 72,
+  "q": 36,
+  "schema": "peaceable-queens-e2e3-envelope-box-proof-v2",
+  "witness": {
+    "armies": {
+      "black": 690,
+      "cells_recounted": 5184,
+      "minimum": 684,
+      "overlap": 0,
+      "white": 684
+    },
+    "line_counts": {
+      "antidiagonals": 36,
+      "columns": 30,
+      "diagonals": 36,
+      "rows": 23,
+      "total": 125
+    },
+    "outer_profile": [
+      0,
+      23,
+      30,
+      0,
+      0,
+      36,
+      0,
+      36
+    ]
+  }
+}

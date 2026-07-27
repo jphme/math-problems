@@ -1,0 +1,158 @@
+{
+  "H(2q)": 760,
+  "algorithm": {
+    "arithmetic": "integer only after coefficient scaling",
+    "bounds": [
+      "integer linear-inequality propagation",
+      "separable bilinear McCormick interval upper bound",
+      "exact multi-affine corner maximum"
+    ],
+    "name": "canonical-integer-box branch-and-bound",
+    "threads": 1
+  },
+  "cut_library": {
+    "arithmetic_coefficient_scale": 12,
+    "common_denominator": 12,
+    "common_denominator_derivation": "LCM of every reduced rational coefficient in both cut files",
+    "file_sha256": {
+      "benders_cuts.json": "ad960316bc8099e4be3e0d585abb472c6a7e81d2963ee65f79457d7161d5a96a",
+      "new_dual_cuts.json": "a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94"
+    },
+    "loaded_count": 760
+  },
+  "envelope": {
+    "active_cut_count": 76,
+    "corner_candidate_limit": 6,
+    "cut_box_wins": {
+      "benders76:0": 931,
+      "benders76:1": 167,
+      "benders76:10": 484,
+      "benders76:11": 317,
+      "benders76:12": 4949,
+      "benders76:14": 76,
+      "benders76:15": 43,
+      "benders76:16": 82,
+      "benders76:17": 50,
+      "benders76:18": 12,
+      "benders76:19": 16,
+      "benders76:2": 1179,
+      "benders76:20": 51,
+      "benders76:21": 31,
+      "benders76:23": 5,
+      "benders76:24": 114,
+      "benders76:25": 57,
+      "benders76:26": 97,
+      "benders76:27": 142,
+      "benders76:28": 733,
+      "benders76:29": 1041,
+      "benders76:3": 271,
+      "benders76:32": 37,
+      "benders76:33": 19,
+      "benders76:34": 13,
+      "benders76:35": 63,
+      "benders76:36": 300,
+      "benders76:37": 476,
+      "benders76:38": 254,
+      "benders76:39": 94,
+      "benders76:4": 130,
+      "benders76:40": 2,
+      "benders76:46": 522,
+      "benders76:47": 257,
+      "benders76:48": 3,
+      "benders76:49": 1,
+      "benders76:5": 91,
+      "benders76:54": 3176,
+      "benders76:55": 1556,
+      "benders76:56": 2633,
+      "benders76:57": 1364,
+      "benders76:58": 661,
+      "benders76:59": 527,
+      "benders76:60": 417,
+      "benders76:61": 241,
+      "benders76:62": 555,
+      "benders76:63": 693,
+      "benders76:64": 1622,
+      "benders76:65": 1202,
+      "benders76:66": 1361,
+      "benders76:67": 613,
+      "benders76:68": 932,
+      "benders76:69": 1071,
+      "benders76:7": 54,
+      "benders76:70": 1588,
+      "benders76:71": 1264,
+      "benders76:72": 4890,
+      "benders76:73": 2498,
+      "benders76:74": 2048,
+      "benders76:75": 1171,
+      "benders76:8": 21,
+      "benders76:9": 160
+    },
+    "runtime_seconds": 31.28297170799999,
+    "stats": {
+      "certified_boxes": 45428,
+      "corner_certified_boxes": 41988,
+      "corners_inspected": 22212195,
+      "cut_center_evaluations": 6846290,
+      "cut_corner_calls": 423398,
+      "cut_interval_evaluations": 1466134,
+      "interval_certified_boxes": 3428,
+      "max_depth": 42,
+      "max_stack": 20,
+      "nodes": 93923,
+      "point_boxes": 12,
+      "propagation_infeasible": 1534,
+      "survivor_count": 0
+    },
+    "survivors": [],
+    "threshold": {
+      "expression": "H(2q) + 1/2",
+      "integer_comparison_scale": 12,
+      "integer_threshold": 9126
+    },
+    "unfinished_stack_boxes": 0,
+    "verdict": "envelope_le_h_plus_half"
+  },
+  "h_computation": {
+    "literal_bruteforce_crosscheck": {
+      "limit": 30,
+      "performed": false
+    },
+    "method": "crossing-O(q^3)",
+    "runtime_seconds": 0.0530311660000109
+  },
+  "h_optimizer": [
+    0,
+    24,
+    32,
+    0
+  ],
+  "n": 76,
+  "q": 38,
+  "schema": "peaceable-queens-e2e3-envelope-box-proof-v2",
+  "witness": {
+    "armies": {
+      "black": 768,
+      "cells_recounted": 5776,
+      "minimum": 760,
+      "overlap": 0,
+      "white": 760
+    },
+    "line_counts": {
+      "antidiagonals": 38,
+      "columns": 32,
+      "diagonals": 38,
+      "rows": 24,
+      "total": 132
+    },
+    "outer_profile": [
+      0,
+      24,
+      32,
+      0,
+      0,
+      38,
+      0,
+      38
+    ]
+  }
+}

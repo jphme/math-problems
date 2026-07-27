@@ -1,0 +1,167 @@
+{
+  "H(2q)": 1377,
+  "algorithm": {
+    "arithmetic": "integer only after coefficient scaling",
+    "bounds": [
+      "integer linear-inequality propagation",
+      "separable bilinear McCormick interval upper bound",
+      "exact multi-affine corner maximum"
+    ],
+    "name": "canonical-integer-box branch-and-bound",
+    "threads": 1
+  },
+  "cut_library": {
+    "arithmetic_coefficient_scale": 12,
+    "common_denominator": 12,
+    "common_denominator_derivation": "LCM of every reduced rational coefficient in both cut files",
+    "file_sha256": {
+      "benders_cuts.json": "ad960316bc8099e4be3e0d585abb472c6a7e81d2963ee65f79457d7161d5a96a",
+      "new_dual_cuts.json": "a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94"
+    },
+    "loaded_count": 760
+  },
+  "envelope": {
+    "active_cut_count": 76,
+    "corner_candidate_limit": 6,
+    "cut_box_wins": {
+      "benders76:0": 866,
+      "benders76:1": 170,
+      "benders76:10": 374,
+      "benders76:11": 377,
+      "benders76:12": 5510,
+      "benders76:14": 79,
+      "benders76:15": 34,
+      "benders76:16": 40,
+      "benders76:17": 25,
+      "benders76:18": 4,
+      "benders76:19": 2,
+      "benders76:2": 1017,
+      "benders76:20": 55,
+      "benders76:21": 46,
+      "benders76:23": 3,
+      "benders76:24": 104,
+      "benders76:25": 91,
+      "benders76:26": 104,
+      "benders76:27": 144,
+      "benders76:28": 720,
+      "benders76:29": 1278,
+      "benders76:3": 251,
+      "benders76:31": 1,
+      "benders76:32": 45,
+      "benders76:33": 29,
+      "benders76:34": 19,
+      "benders76:35": 69,
+      "benders76:36": 310,
+      "benders76:37": 598,
+      "benders76:38": 206,
+      "benders76:39": 145,
+      "benders76:4": 161,
+      "benders76:40": 1,
+      "benders76:41": 1,
+      "benders76:46": 516,
+      "benders76:47": 337,
+      "benders76:48": 7,
+      "benders76:5": 91,
+      "benders76:54": 3528,
+      "benders76:55": 1928,
+      "benders76:56": 3410,
+      "benders76:57": 1706,
+      "benders76:58": 757,
+      "benders76:59": 588,
+      "benders76:60": 465,
+      "benders76:61": 292,
+      "benders76:62": 804,
+      "benders76:63": 694,
+      "benders76:64": 1807,
+      "benders76:65": 1341,
+      "benders76:66": 1483,
+      "benders76:67": 662,
+      "benders76:68": 1111,
+      "benders76:69": 1260,
+      "benders76:7": 78,
+      "benders76:70": 1897,
+      "benders76:71": 1520,
+      "benders76:72": 5452,
+      "benders76:73": 2975,
+      "benders76:74": 2524,
+      "benders76:75": 1475,
+      "benders76:8": 19,
+      "benders76:9": 160
+    },
+    "runtime_seconds": 36.736016667,
+    "stats": {
+      "certified_boxes": 51766,
+      "corner_certified_boxes": 48742,
+      "corners_inspected": 26206883,
+      "cut_center_evaluations": 7839708,
+      "cut_corner_calls": 485345,
+      "cut_interval_evaluations": 1711079,
+      "fallback_cut_point_evaluations": 0,
+      "fallback_full_library_points": 0,
+      "interval_certified_boxes": 2994,
+      "max_depth": 46,
+      "max_stack": 21,
+      "nodes": 106951,
+      "point_boxes": 30,
+      "propagation_infeasible": 1710,
+      "survivor_count": 0
+    },
+    "survivors": [],
+    "threshold": {
+      "expression": "H(2q) + 1/2",
+      "integer_comparison_scale": 12,
+      "integer_threshold": 16530
+    },
+    "unfinished_stack_boxes": 0,
+    "verdict": "envelope_le_h_plus_half"
+  },
+  "h_computation": {
+    "literal_bruteforce_crosscheck": {
+      "limit": 30,
+      "performed": false
+    },
+    "method": "exact monotone-box branch-and-bound",
+    "runtime_seconds": 0.022111124999999995,
+    "search_stats": {
+      "max_queue": 1166,
+      "nodes": 7595,
+      "pruned_children": 7596,
+      "unfinished_boxes_with_upper_above_H": 0
+    }
+  },
+  "h_optimizer": [
+    0,
+    36,
+    39,
+    0
+  ],
+  "n": 102,
+  "q": 51,
+  "schema": "peaceable-queens-e2e3-envelope-box-proof-v2",
+  "witness": {
+    "armies": {
+      "black": 1404,
+      "cells_recounted": 10404,
+      "minimum": 1377,
+      "overlap": 0,
+      "white": 1377
+    },
+    "line_counts": {
+      "antidiagonals": 51,
+      "columns": 39,
+      "diagonals": 51,
+      "rows": 36,
+      "total": 177
+    },
+    "outer_profile": [
+      0,
+      36,
+      39,
+      0,
+      0,
+      51,
+      0,
+      51
+    ]
+  }
+}

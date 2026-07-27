@@ -1,257 +1,214 @@
-Ancillary files for:
+Ancillary files for
 
-  "Peaceable queens on the 15x15 and 16x16 tori:
-   the exact values t(15)=20 and t(16)=32"
+  "Peaceable queens on even tori: an exact parity formula"
   Jan Philipp Harries, July 2026
 
-The two cases are independent computations that share a common reduction
-(Section 2 of the paper). Files are grouped by case.
+The paper proves
+
+  t(2q) = max over (r0,r1,c0,c1) in {0,...,q}^4 of
+          min(r0*c1 + r1*c0,
+              (q-r0)*(q-c0) + (q-r1)*(q-c1))
+
+for every positive integer q, and also proves t(15)=20 and t(17)=28.
+
+The paper records the exact commit of an immutable public snapshot.  The
+canonical repository path is:
+
+  https://github.com/jphme/math-problems/tree/main/
+  peaceable-queens-even-torus/anc
+
+SHA256SUMS binds every other released file.  Verify it with:
+
+  shasum -a 256 -c SHA256SUMS
 
 
-Files for n = 15
-----------------
-peace15_solver.cpp            The proof solver. Exhaustively decides all 247
-                              canonical size profiles (Sections 4-6 of the
-                              paper). C++17 + OpenMP.
-profile_enum.cpp              The second, independently written exact
-                              enumerator (different symmetry quotient,
-                              different completion algorithm: exact 7+8
-                              meet-in-the-middle instead of DFS with
-                              dynamic-programming bounds). C++20.
-peace15_audit.py              Independent audit: regenerates the 247-profile
-                              worklist, verifies all 43 fixed-pair orbit
-                              counts by Burnside's lemma, checks the row
-                              arithmetic and column total of the certificate,
-                              and re-counts the 20+20 witness. Python 3, no
-                              third-party dependencies.
-WORKLIST-2026-07-25.tsv       The 247 canonical size profiles. The solver
-                              regenerates this set from scratch and refuses
-                              to run if it differs.
-peace15_certificate.tsv       Per-profile certificate of the recorded
-                              five-thread run.
-peace15_certificate_run2.tsv  Per-profile certificate of the recorded
-                              three-thread run. All columns except the
-                              per-profile timing agree with the file above.
+One-command portable audit
+--------------------------
 
-Files for n = 16
-----------------
-peace16_solver.cpp            The proof solver. Exhaustively decides all 677
-                              oriented parity-refined profiles (Sections
-                              8-10 of the paper). C++20 + OpenMP.
-peace16_solver_bruteforce.cpp The same program with the completion kernel
-                              replaced by direct enumeration of every
-                              admissible diagonal mask (at most
-                              C(8,d0)*C(8,d1) <= 4900 per case). It differs
-                              from peace16_solver.cpp in ten lines; see the
-                              caveat below.
-peace16_audit.py              Independent audit: regenerates the 1,898
-                              ordered / 342 canonical profiles and their
-                              strata, verifies all 14 row-column pair-orbit
-                              counts by Burnside's lemma, checks the two-lift
-                              (d,a) reconstruction against brute force for
-                              all 256 label pairs, re-counts the 36/32
-                              lower-bound line colouring, and compares all
-                              non-timing columns of the two certificates.
-peace16_certificate.tsv       Per-job certificate, optimized kernel.
-peace16_certificate_bruteforce.tsv
-                              Per-job certificate, brute-force kernel.
+From this directory, run:
 
-Witness checks and integrity
-----------------------------
-check_witness15.py            From-scratch pairwise check of the 20+20
-                              witness: recomputes the homogeneous cells from
-                              the line sets, matches the cell lists in the
-                              paper, and checks all 400 black-white pairs
-                              against all four attack relations directly.
-check_witness16.py            The same for the 32+32 witness: 36/32
-                              homogeneous cells, all 36x32 pairs checked
-                              directly.
-SHA256SUMS                    SHA-256 digests of every other file in this
-                              directory. Verify with:  shasum -a 256 -c
-                              SHA256SUMS   (or sha256sum -c).
+  uv run --isolated --python 3.14.6 \
+    --with sympy==1.14.0 --with mpmath==1.3.0 \
+    python verify_bundle.py
 
-README.txt                    This file.
+The final line is:
+
+  PEACEABLE_QUEENS_RELEASE_BUNDLE_OK
+
+The recorded environment is CPython 3.14.6 and SymPy 1.14.0.  The other
+Python verifiers use only the standard library.  The C++ sources require
+C++20 unless their header comments state C++17.  Recorded rebuilds used
+Apple Clang 21.0.0; the n=16 union enumerator was also reproduced under
+GCC 14 with OpenMP and Clang 17 in serial mode.
+
+The one-command audit does not rerun the multi-billion-case C++ enumerations
+or recompute all finite-ladder trees.  It verifies their frozen outputs,
+coverage, input hashes, orbit counts, representative hashes, and witness
+counts.  The commands below rerun individual proof computations.
 
 
-Requirements
-------------
-A C++17 compiler with OpenMP for peace15_solver.cpp, a C++20 compiler for
-profile_enum.cpp and for both n=16 solvers (g++ recommended; the n=16
-solvers need OpenMP), and Python >= 3.10 for the audit scripts. No
-third-party libraries.
-
-
-Run: the upper bound for n = 15
--------------------------------
-    g++ -O3 -march=native -fopenmp -DNDEBUG -std=c++17 \
-        peace15_solver.cpp -o peace15_solver
-    OMP_NUM_THREADS=5 ./peace15_solver \
-        --worklist WORKLIST-2026-07-25.tsv \
-        --output peace15_certificate.tsv
-    python3 peace15_audit.py
-
-Expected output: the solver prints
-
-    SELFTEST_OK profiles=247 estimated_A=6074753568 threads=...
-    [  1/247] 5,5,5,5 S=20 ... result=UNSAT ...
-    ...
-    ALL_UNSAT A_checked=6074753568 triple_pass=2329772941
-              dfs_calls=26948453 dfs_nodes=246476279 elapsed=...
-
-and the audit script prints
-
-    AUDIT_OK
-    profiles=247
-    orbit_keys_burnside_checked=43
-    A_checked=6074753568
-    lower_bound_cells=black:20,white:22
-    solver_sha256=...
-    certificate_sha256=...
-
-The recorded five-thread run took about 60 seconds.
-
-
-Run: the independent enumerator for n = 15
-------------------------------------------
-    clang++ -O3 -std=c++20 -DNDEBUG -Wall -Wextra -Wpedantic \
-        profile_enum.cpp -o profile_enum
-    ./profile_enum --self-test --random 100000
-    ./profile_enum --batch --worklist WORKLIST-2026-07-25.tsv \
-        --results results.jsonl --log logs
-
-This writes one JSON record per profile to results.jsonl and is resumable.
-It reports 6,241,793,402 completions in total (a different case count from
-the solver's 6,074,753,568, because the two programs use different symmetry
-quotients) and result "UNSAT" for every one of the 247 profiles. It takes
-about 200 seconds single-threaded.
-
-
-Run: the upper bound for n = 16
--------------------------------
-    g++ -O3 -march=native -fopenmp -std=c++20 \
-        peace16_solver.cpp -o peace16_solver
-    OMP_NUM_THREADS=5 ./peace16_solver --output peace16_certificate.tsv
-
-    g++ -O3 -march=native -fopenmp -std=c++20 \
-        peace16_solver_bruteforce.cpp -o peace16_solver_bruteforce
-    OMP_NUM_THREADS=5 ./peace16_solver_bruteforce \
-        --output peace16_certificate_bruteforce.tsv
-
-    python3 peace16_audit.py
-
-Expected output: each solver prints
-
-    SELFTEST_OK profiles=342 jobs=677 estimated_A=13163028768 threads=...
-    [  1/677] 6,6,0,6,0,6 -> 6,6,0,6,0,6 orb=10132 A=283696 UNSAT sec=...
-    ...
-    ALL_UNSAT A=13163028768 triple=17834 calls=0 nodes=0 elapsed=...
-
-and the audit script prints
-
-    profiles (1898, 342, {24: 13, 25: 41, 26: 101, 27: 120, 28: 57, 29: 10})
-    orbits {...14 entries...}
-    plaid_masks (43680, 43680, 21845, 21845)
-    lift_map OK
-    certificates (677, 13163028768, 17834)
-    <sha256> peace16_solver.cpp
-    <sha256> peace16_solver_bruteforce.cpp
-    <sha256> peace16_certificate.tsv
-    <sha256> peace16_certificate_bruteforce.tsv
-    AUDIT_OK
-
-The recorded five-thread runs took about 78 seconds each. Runtime is not
-part of either proof. Both audit scripts read the certificates from their
-own directory, so run them after the solvers have written those files (or
-against the shipped copies).
-
-
-Build flags, determinism, environments
---------------------------------------
-The commands above reproduce the recorded runs, which used -march=native
-(and, for n=15, -DNDEBUG). Both flags are optional speed measures: no
-proof-relevant check in any program is implemented via assert (the only
-assertion is an internal size-ordering invariant), all gates being explicit
-runtime tests that abort the program in every build. A portable
-verification build simply omits the two flags.
-
-The randomized self-tests are deterministic: std::mt19937_64 with fixed
-seed 0x4d595df4d0f33173 (n=15 solver, 20,000 instances; profile_enum uses
-its own fixed-seed generator, 100,000 instances) and 0x16e0ddc0ffee (each
-n=16 solver, 20,000 instances).
-
-Recorded five-thread runs: GCC + OpenMP, x86-64 (AMD EPYC) container.
-Independent local reruns (serial, and full-sweep ASan+UBSan builds with
-zero diagnostics): Apple clang 21, arm64 (Apple Silicon), macOS. All
-non-timing certificate columns agree across these environments.
-
-
-Certificate column schema
+Even theorem for q >= 130
 -------------------------
-peace15_certificate*.tsv - one row per canonical profile; '#' lines are
-comments (header and final totals). Columns:
-  profile         canonical profile "s0,s1,s2,s3"
-  S               s0+s1+s2+s3
-  fixed           which pair was fixed: RC or DA (Section 5, Stage 1)
-  r, c            sizes of the fixed pair, r <= c
-  d, a            sizes of the completion families; the family of size a
-                  is the one enumerated in Stage 2
-  relative_sign   1 if the relative-sign quotient was admissible (d = a)
-  pair_orbits     number of fixed-pair orbit representatives
-  pair_hash_fnv64 FNV-1a 64-bit hash of the representative list, in hex
-                  (binds the certificate to the exact representative set)
-  A_per_orbit     C(15, a)
-  A_checked       pair_orbits * A_per_orbit (Stage-2 subsets examined)
-  triple_pass     survivors of the two scalar Stage-2 conditions
-  dfs_calls       survivors of the Stage-3 root bounds (searches entered)
-  dfs_nodes       branch nodes in those searches
-  result          UNSAT (or SAT, never observed; a SAT row would be
-                  followed by a '# WITNESS ...' line)
-  seconds         wall time for the profile (not part of the proof)
 
-peace16_certificate*.tsv - one row per oriented job; same conventions.
-Columns: canonical profile, oriented profile "r,c,d0,d1,a0,a1", S, r, c,
-d0, d1, a0, a1, sign flag, pair_orbits, A_count = C(8,a0)*C(8,a1),
-A_checked = pair_orbits * A_count, triple_pass (scalar-prefilter
-survivors), calls (root-bound survivors entering the search; 0 in the
-recorded runs), nodes, result, seconds.
+even_c527_sym_mc.json.gz
+  Exact global branch certificate over the 42-equation moment relaxation.
+
+even_local_core_mc.json.gz
+  Exact local-core branch certificate.
+
+verify_even_branch_certificate.py
+  Delivered exact rational checker for both trees.
+
+verify_even_finite_independent.py
+  Separately written checker.  It derives the 42 moment rows from torus
+  incidence fibres, rechecks the trees, and tests tampered certificates.
+
+even_finite_support_cuts.json
+verify_even_finite_algebra.py
+  Compact duals and exact checks for the support cuts used in the local
+  algebraic finish.
+
+verify_even_finite_prose.py
+  Independent symbolic and exact-integer audit of the displayed local proof.
+  This is the only verifier requiring SymPy.
+
+verify_even_q_ge_130_bundle.py
+  Driver for the delivered branch and local-algebra checks.
+
+Run:
+
+  python verify_even_q_ge_130_bundle.py
+  python verify_even_finite_independent.py
+  python verify_even_finite_prose.py
 
 
-What is checked, and what that means
-------------------------------------
-The reductions of Sections 2, 4-6 and 8-10 of the paper are proved in the
-text; the programs carry out the finite search those reductions leave open.
+Finite cut envelope
+-------------------
 
-1. Every solver begins with gates that abort on failure. peace15_solver.cpp
-   compares its exact subset decision against direct enumeration of all
-   C(15,k) subsets on 20,000 pseudorandom instances (profile_enum.cpp:
-   100,000), checks three known pair-orbit counts (11,793 / 6,892 / 13,654),
-   and regenerates the 247-profile set and compares it with the supplied
-   worklist. Both n=16 solvers compare the optimized and brute-force
-   completion kernels on 20,000 pseudorandom instances with randomized
-   parity cardinalities, check that Z/16Z has 810 necklaces of size 8 and
-   that the pair-orbit counts 73,663 (r,c = 7,8) and 42,062 (8,8, no
-   relative sign) come out right, and regenerate the 1,898 / 342 profile
-   counts.
+benders_cuts.json
+  The 76 legacy support-cut polynomials.
 
-2. Every pruning rule inside the exact completion decisions is a necessary
-   condition for feasibility, so no candidate is discarded unexamined; this
-   is what makes the searches exhaustive rather than heuristic.
+new_dual_cuts.json
+  The 684 delivered support cuts with rational duals.
 
-3. The certificate TSVs are audit logs, not standalone machine-checkable
-   proof objects. They record what was searched. The refutations are the
-   programs together with the reductions in the paper; re-running the
-   programs is what re-establishes them.
+verify_support_duals.py
+recovered_benders_duals.json
+moment_model.json
+  A standalone exact verifier for all 760 cuts, together with frozen
+  recovered witnesses and the derived moment model.
 
-4. The audit scripts do not repeat the multi-billion-case sweeps. They check
-   the finite bookkeeping around them: the profile lists, the orbit counts
-   (by independent Burnside computations), the per-row and total case
-   arithmetic, the lower-bound witnesses, and (for n=16) the two-lift
-   incidence map and the agreement of the two certificates.
+envelope_checker.py
+  Portable exact integer-box engine.  Both cut inputs are resolved relative
+  to this directory; no research-tree path is required.
 
-5. CAVEAT for n = 16. peace16_solver.cpp and peace16_solver_bruteforce.cpp
-   are the same program apart from the completion kernel; they share profile
-   generation, the symmetry quotient, the pair-representative construction,
-   the parity-orientation logic and the antidiagonal loop. Their agreement
-   therefore tests the kernel, not the chassis. Unlike n=15, there is as yet
-   no fully independent second enumerator for n=16. Writing one from
-   Sections 8-9 of the paper is the most valuable check that remains open.
+records_q003_q020/
+records_q021_q129/
+  Complete records for q=3,5 and q=10,...,129.
+
+check_envelope_records.py
+  Checks the exact coverage, terminal accounting, witnesses, and input
+  hashes of all 122 records.
+
+Recompute selected orders into a fresh directory:
+
+  python envelope_checker.py 21 22 23 --records-dir fresh-records
+
+
+The n=15 search
+---------------
+
+peace15_solver.cpp
+peace15_certificate.tsv
+peace15_certificate_run2.tsv
+  The C++17 proof enumerator and two complete outputs.
+
+profile_enum.cpp
+peace15_independent_results.jsonl
+check_peace15_independent_results.py
+  Separately written C++20 meet-in-the-middle enumerator, its complete
+  247-profile output, and a strict coverage checker.
+
+WORKLIST-2026-07-25.tsv
+peace15_audit.py
+check_witness15.py
+  Profile worklist, independent profile/orbit/certificate audit, and direct
+  black-white pair witness check.
+
+Typical builds:
+
+  g++ -O3 -fopenmp -std=c++17 peace15_solver.cpp -o peace15_solver
+  ./peace15_solver --worklist WORKLIST-2026-07-25.tsv \
+    --output fresh_peace15_certificate.tsv
+
+  c++ -O3 -std=c++20 profile_enum.cpp -o profile_enum
+  ./profile_enum --batch --worklist WORKLIST-2026-07-25.tsv \
+    --results fresh_peace15_results.jsonl --log fresh_peace15_logs
+
+
+The n=16 union-domain search
+----------------------------
+
+peace16_union_enum.cpp
+peace16_union_certificate.tsv
+peace16_union_audit.py
+  The primary direct n=16 proof search.  It searches the union of all 1,898
+  ordered completion profiles, tests 3,226,530,570 antidiagonal masks and
+  then 38,830,322 diagonal masks literally, and finds no 33+33 placement.
+  The Python audit independently regenerates all representative lists,
+  hashes, Burnside counts, and certificate totals.
+
+Build and rerun serially:
+
+  c++ -O3 -std=c++20 peace16_union_enum.cpp -o peace16_union_enum
+  ./peace16_union_enum --output fresh_peace16_union_certificate.tsv
+  python peace16_union_audit.py \
+    --certificate fresh_peace16_union_certificate.tsv \
+    --source peace16_union_enum.cpp
+
+peace16_solver.cpp
+peace16_solver_bruteforce.cpp
+peace16_certificate.tsv
+peace16_certificate_bruteforce.tsv
+peace16_audit.py
+check_witness16.py
+  The earlier 677-job search and two completion-kernel outputs, retained as
+  secondary cross-checks.
+
+
+General-n finite searches
+-------------------------
+
+general_sweep/solver_b.cpp
+general_sweep/audit_b.py
+general_sweep/results/
+  A C++20 general-n exact enumerator, its independent standard-library
+  audit, and complete UNSAT records for the upper targets:
+
+    n=8, target=9
+    n=12, target=19
+    n=14, target=26
+    n=17, target=29
+    n=18, target=43
+
+Audit one result, for example:
+
+  cd general_sweep
+  python audit_b.py --n 17 --target 29 \
+    --records results/n17_t29_unsat.jsonl
+
+general_sweep/impl_a/
+  Source and frozen n=17 target-29 output from the second implementation.
+
+check_witness17.py
+  Direct cell-by-cell and pairwise check of the displayed 28+28 witness.
+
+
+Proof-object boundary
+---------------------
+
+The branch trees and support duals are standalone exact proof objects: their
+rational multipliers can be checked without solving an optimization problem.
+The finite-ladder records and exhaustive-search outputs are audit records.
+Their proofs are the short released source programs together with the
+reductions in the paper; rerunning those sources re-establishes the finite
+computations.

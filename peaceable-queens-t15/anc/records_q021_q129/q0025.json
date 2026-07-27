@@ -1,0 +1,167 @@
+{
+  "H(2q)": 326,
+  "algorithm": {
+    "arithmetic": "integer only after coefficient scaling",
+    "bounds": [
+      "integer linear-inequality propagation",
+      "separable bilinear McCormick interval upper bound",
+      "exact multi-affine corner maximum"
+    ],
+    "name": "canonical-integer-box branch-and-bound",
+    "threads": 1
+  },
+  "cut_library": {
+    "arithmetic_coefficient_scale": 12,
+    "common_denominator": 12,
+    "common_denominator_derivation": "LCM of every reduced rational coefficient in both cut files",
+    "file_sha256": {
+      "benders_cuts.json": "ad960316bc8099e4be3e0d585abb472c6a7e81d2963ee65f79457d7161d5a96a",
+      "new_dual_cuts.json": "a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94"
+    },
+    "loaded_count": 760
+  },
+  "envelope": {
+    "active_cut_count": 76,
+    "corner_candidate_limit": 6,
+    "cut_box_wins": {
+      "benders76:0": 483,
+      "benders76:1": 121,
+      "benders76:10": 322,
+      "benders76:11": 154,
+      "benders76:12": 3346,
+      "benders76:14": 59,
+      "benders76:15": 25,
+      "benders76:16": 49,
+      "benders76:17": 16,
+      "benders76:18": 2,
+      "benders76:19": 3,
+      "benders76:2": 543,
+      "benders76:20": 54,
+      "benders76:21": 31,
+      "benders76:23": 1,
+      "benders76:24": 79,
+      "benders76:25": 47,
+      "benders76:26": 57,
+      "benders76:27": 101,
+      "benders76:28": 471,
+      "benders76:29": 683,
+      "benders76:3": 177,
+      "benders76:31": 2,
+      "benders76:32": 17,
+      "benders76:33": 15,
+      "benders76:34": 8,
+      "benders76:35": 35,
+      "benders76:36": 186,
+      "benders76:37": 335,
+      "benders76:38": 164,
+      "benders76:39": 78,
+      "benders76:4": 60,
+      "benders76:40": 1,
+      "benders76:41": 1,
+      "benders76:46": 365,
+      "benders76:47": 130,
+      "benders76:48": 4,
+      "benders76:49": 1,
+      "benders76:5": 58,
+      "benders76:54": 1902,
+      "benders76:55": 1029,
+      "benders76:56": 1760,
+      "benders76:57": 874,
+      "benders76:58": 437,
+      "benders76:59": 384,
+      "benders76:60": 293,
+      "benders76:61": 162,
+      "benders76:62": 479,
+      "benders76:63": 466,
+      "benders76:64": 1177,
+      "benders76:65": 707,
+      "benders76:66": 919,
+      "benders76:67": 386,
+      "benders76:68": 703,
+      "benders76:69": 691,
+      "benders76:7": 49,
+      "benders76:70": 1206,
+      "benders76:71": 824,
+      "benders76:72": 3173,
+      "benders76:73": 1705,
+      "benders76:74": 1331,
+      "benders76:75": 765,
+      "benders76:8": 17,
+      "benders76:9": 138
+    },
+    "runtime_seconds": 19.974737207999993,
+    "stats": {
+      "certified_boxes": 29861,
+      "corner_certified_boxes": 27970,
+      "corners_inspected": 13781124,
+      "cut_center_evaluations": 4574127,
+      "cut_corner_calls": 281733,
+      "cut_interval_evaluations": 945421,
+      "interval_certified_boxes": 1812,
+      "max_depth": 37,
+      "max_stack": 18,
+      "nodes": 62147,
+      "point_boxes": 79,
+      "propagation_infeasible": 1213,
+      "survivor_count": 0
+    },
+    "survivors": [],
+    "threshold": {
+      "expression": "H(2q) + 1/2",
+      "integer_comparison_scale": 12,
+      "integer_threshold": 3918
+    },
+    "unfinished_stack_boxes": 0,
+    "verdict": "envelope_le_h_plus_half"
+  },
+  "h_computation": {
+    "literal_bruteforce_crosscheck": {
+      "match": true,
+      "optimizer": [
+        1,
+        18,
+        18,
+        2
+      ],
+      "performed": true,
+      "value": 326
+    },
+    "method": "crossing-O(q^3)",
+    "runtime_seconds": 0.08796424999999886
+  },
+  "h_optimizer": [
+    1,
+    18,
+    18,
+    2
+  ],
+  "n": 50,
+  "q": 25,
+  "schema": "peaceable-queens-e2e3-envelope-box-proof-v2",
+  "witness": {
+    "armies": {
+      "black": 326,
+      "cells_recounted": 2500,
+      "minimum": 326,
+      "overlap": 0,
+      "white": 329
+    },
+    "line_counts": {
+      "antidiagonals": 25,
+      "columns": 20,
+      "diagonals": 25,
+      "rows": 19,
+      "total": 89
+    },
+    "outer_profile": [
+      1,
+      18,
+      18,
+      2,
+      0,
+      25,
+      0,
+      25
+    ]
+  }
+}

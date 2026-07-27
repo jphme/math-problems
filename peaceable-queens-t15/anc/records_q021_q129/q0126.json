@@ -1,0 +1,185 @@
+{
+  "H(2q)": 8466,
+  "algorithm": {
+    "arithmetic": "signed 64-bit integer after checked q<=1000 scaling",
+    "backend": "independent C++17 exact box engine",
+    "bounds": [
+      "integer linear-inequality propagation",
+      "separable bilinear McCormick interval upper bound",
+      "exact multi-affine corner maximum"
+    ],
+    "compile_flags": [
+      "-std=c++17",
+      "-O3",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-pedantic"
+    ],
+    "engine_source": "peaceable_queens/envelope-ladder/e2e3/box_engine.cpp",
+    "engine_source_sha256": "ea916eb518261a3bbe9558bcb95ec8471d9a765e15667d767eafe35636af9ae2",
+    "integer_magnitude_preflight": {
+      "absolute_coefficient_sum_max": 360,
+      "pass": true,
+      "q_squared_product_bound": 5715360,
+      "signed_64_bit_max": 9223372036854775807
+    },
+    "name": "canonical-integer-box branch-and-bound",
+    "threads": 1,
+    "whole_record_runtime_seconds": 0.6201767499999988
+  },
+  "cut_library": {
+    "arithmetic_coefficient_scale": 12,
+    "common_denominator": 12,
+    "common_denominator_derivation": "LCM of every reduced rational coefficient in both cut files",
+    "file_sha256": {
+      "benders_cuts.json": "ad960316bc8099e4be3e0d585abb472c6a7e81d2963ee65f79457d7161d5a96a",
+      "new_dual_cuts.json": "a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94"
+    },
+    "loaded_count": 760
+  },
+  "envelope": {
+    "active_cut_count": 76,
+    "corner_candidate_limit": 6,
+    "cut_box_wins": {
+      "benders76:0": 2219,
+      "benders76:1": 169,
+      "benders76:10": 932,
+      "benders76:11": 573,
+      "benders76:12": 8950,
+      "benders76:14": 180,
+      "benders76:15": 83,
+      "benders76:16": 112,
+      "benders76:17": 83,
+      "benders76:18": 4,
+      "benders76:19": 8,
+      "benders76:2": 2068,
+      "benders76:20": 131,
+      "benders76:21": 74,
+      "benders76:22": 1,
+      "benders76:23": 7,
+      "benders76:24": 210,
+      "benders76:25": 132,
+      "benders76:26": 187,
+      "benders76:27": 222,
+      "benders76:28": 1267,
+      "benders76:29": 1796,
+      "benders76:3": 985,
+      "benders76:31": 2,
+      "benders76:32": 106,
+      "benders76:33": 70,
+      "benders76:34": 27,
+      "benders76:35": 100,
+      "benders76:36": 535,
+      "benders76:37": 909,
+      "benders76:38": 463,
+      "benders76:39": 159,
+      "benders76:4": 260,
+      "benders76:46": 1033,
+      "benders76:47": 390,
+      "benders76:48": 2,
+      "benders76:49": 2,
+      "benders76:5": 300,
+      "benders76:54": 6559,
+      "benders76:55": 3208,
+      "benders76:56": 6241,
+      "benders76:57": 2915,
+      "benders76:58": 1043,
+      "benders76:59": 849,
+      "benders76:60": 766,
+      "benders76:61": 347,
+      "benders76:62": 1057,
+      "benders76:63": 1225,
+      "benders76:64": 2697,
+      "benders76:65": 2072,
+      "benders76:66": 2183,
+      "benders76:67": 1045,
+      "benders76:68": 1703,
+      "benders76:69": 1891,
+      "benders76:7": 102,
+      "benders76:70": 2639,
+      "benders76:71": 2134,
+      "benders76:72": 8438,
+      "benders76:73": 4528,
+      "benders76:74": 3820,
+      "benders76:75": 2328,
+      "benders76:8": 17,
+      "benders76:9": 271
+    },
+    "runtime_seconds": 0.542329,
+    "stats": {
+      "certified_boxes": 84829,
+      "corner_certified_boxes": 77440,
+      "corners_inspected": 42557447,
+      "cut_center_evaluations": 12584081,
+      "cut_corner_calls": 789479,
+      "cut_interval_evaluations": 2809967,
+      "fallback_cut_point_evaluations": 0,
+      "fallback_full_library_points": 0,
+      "interval_certified_boxes": 7359,
+      "max_depth": 54,
+      "max_stack": 26,
+      "nodes": 174035,
+      "point_boxes": 30,
+      "propagation_infeasible": 2189,
+      "survivor_count": 0
+    },
+    "survivors": [],
+    "threshold": {
+      "expression": "H(2q) + 1/2",
+      "integer_comparison_scale": 12,
+      "integer_threshold": 101598
+    },
+    "unfinished_stack_boxes": 0,
+    "verdict": "envelope_le_h_plus_half"
+  },
+  "h_computation": {
+    "literal_bruteforce_crosscheck": {
+      "limit": 30,
+      "performed": false
+    },
+    "method": "exact monotone-box branch-and-bound",
+    "runtime_seconds": 0.04311374999999629,
+    "search_stats": {
+      "max_queue": 2060,
+      "nodes": 14849,
+      "pruned_children": 14850,
+      "unfinished_boxes_with_upper_above_H": 0
+    }
+  },
+  "h_optimizer": [
+    1,
+    92,
+    92,
+    2
+  ],
+  "n": 252,
+  "q": 126,
+  "schema": "peaceable-queens-e2e3-envelope-box-proof-v2",
+  "witness": {
+    "armies": {
+      "black": 8466,
+      "cells_recounted": 63504,
+      "minimum": 8466,
+      "overlap": 0,
+      "white": 8466
+    },
+    "line_counts": {
+      "antidiagonals": 126,
+      "columns": 94,
+      "diagonals": 126,
+      "rows": 93,
+      "total": 439
+    },
+    "outer_profile": [
+      1,
+      92,
+      92,
+      2,
+      0,
+      126,
+      0,
+      126
+    ]
+  }
+}
