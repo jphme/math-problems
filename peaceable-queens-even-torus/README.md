@@ -22,25 +22,29 @@ Thus every even value is determined and
 \]
 The same paper also proves \(t(15)=20\) and \(t(17)=28\).
 
-The four-parameter construction separates square parities and extends the
-plaid idea of Clinch, Drescher, Huynh and Saffidine. It is strictly larger
-than the classical two-parameter plaid family.
+The four-parameter construction refines the plaid idea of Clinch, Drescher,
+Huynh and Saffidine by separating row and column parity classes. The
+classical two-parameter plaid family is a subfamily and already gives the
+sharp even-order asymptotic density; the parity refinement is exact at each
+even order.
 
 ## Contents
 
-- [`peace_even_torus.pdf`](peace_even_torus.pdf): the 20-page paper.
+- [`peace_even_torus.pdf`](peace_even_torus.pdf): the 21-page paper.
 - [`peace_even_torus.tex`](peace_even_torus.tex): self-contained LaTeX source.
 - [`peace_even_torus-arxiv.tar.gz`](peace_even_torus-arxiv.tar.gz): source and
   ancillary files for submission or fresh extraction.
 - [`anc/README.txt`](anc/README.txt): proof-object inventory, exact
   environments, and full rerun commands.
 - [`anc/SHA256SUMS`](anc/SHA256SUMS): integrity manifest.
+- [`anc/LICENSE.txt`](anc/LICENSE.txt): MIT license for the released source.
 
 The ancillary bundle contains two exact rational branch trees and independent
-checkers, the complete 760-cut library and 122 finite-envelope records, two
-independently written \(n=15\) enumerators, a union-domain \(n=16\) search,
-the \(n=17\) and small-even sweep sources and frozen outputs, and direct
-witness checks.
+checkers, the complete 760-cut library, 122 compact finite-envelope run
+summaries, the exact C++17 finite engine and a separately written Python
+same-algorithm cross-check, two independently written \(n=15\) enumerators, a
+union-domain \(n=16\) search, the \(n=17\) and small-even sweep sources and
+frozen outputs, and direct witness checks.
 
 ## Quick audit
 
@@ -54,8 +58,11 @@ uv run --isolated --python 3.14.6 \
 
 The last command must end with
 `PEACEABLE_QUEENS_RELEASE_BUNDLE_OK`. It checks all portable exact proof
-objects and audits the frozen outputs of the multi-billion-case enumerations;
-the full recomputation commands are in `anc/README.txt`.
+objects, recompiles the C++17 finite engine and reruns all 122
+finite-envelope searches, verifies the separately implemented Python
+same-algorithm cross-check ledger, and audits the frozen outputs of the
+larger enumerations. Full rebuild
+commands for those larger computations are in `anc/README.txt`.
 
 An immutable snapshot of the released ancillary data is commit
 [`c55eb4858c15df01af6ffde5985aa4681244bbd3`](https://github.com/jphme/math-problems/tree/c55eb4858c15df01af6ffde5985aa4681244bbd3/peaceable-queens-even-torus/anc).

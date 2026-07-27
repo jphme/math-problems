@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Run the portable, non-enumerative checks for the released proof bundle.
+"""Run the released certificate replays, exact finite rerun, and audits.
 
-Invoke this script with a Python environment containing SymPy.  The long
-exhaustive C++ searches and a full recomputation of the finite ladder are not
-rerun here; their frozen outputs are audited.  See README.txt for commands
-that rerun those computations.
+Invoke this script with a Python environment containing SymPy and a C++17
+compiler available as ``g++``.  It reruns the complete 122-order finite
+cut-envelope computation.  The much larger n=15--18 board enumerations are
+represented here by fail-closed frozen-output audits; README.txt gives their
+full rebuild commands.
 """
 
 from __future__ import annotations
 
 import hashlib
+import os
 import subprocess
 import sys
 import tempfile
@@ -39,7 +41,12 @@ def verify_manifest() -> None:
     actual = {
         path.relative_to(HERE).as_posix()
         for path in HERE.rglob("*")
-        if path.is_file() and path != manifest
+        if (
+            path.is_file()
+            and path != manifest
+            and "__pycache__" not in path.parts
+            and path.suffix != ".pyc"
+        )
     }
     missing = sorted(set(expected) - actual)
     unlisted = sorted(actual - set(expected))
@@ -60,11 +67,15 @@ def verify_manifest() -> None:
 def run(*arguments: str, cwd: Path = HERE) -> None:
     command = [sys.executable, *arguments]
     print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=cwd, check=True)
+    environment = os.environ.copy()
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    subprocess.run(command, cwd=cwd, env=environment, check=True)
 
 
 def main() -> None:
     verify_manifest()
+
+    print("\n=== MODE: EXACT CERTIFICATE REPLAY ===", flush=True)
     run("verify_even_q_ge_130_bundle.py")
     run("verify_even_finite_independent.py")
     run("verify_even_finite_prose.py")
@@ -76,8 +87,16 @@ def main() -> None:
             str(target / "verification.json"),
             "--moment-output",
             str(target / "moment_model.json"),
+            "--recovered",
+            str(target / "recovered_benders_duals.json"),
         )
+
+    print("\n=== MODE: FULL EXACT COMPUTATION RERUN ===", flush=True)
+    run("replay_finite_envelope.py")
+
+    print("\n=== MODE: FROZEN-OUTPUT AND PROVENANCE AUDIT ===", flush=True)
     run("check_envelope_records.py")
+    run("check_finite_backend_crosscheck.py")
     run("peace15_audit.py")
     run("check_peace15_independent_results.py")
     run("check_witness15.py")

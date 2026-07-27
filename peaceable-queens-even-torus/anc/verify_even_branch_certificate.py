@@ -17,7 +17,7 @@ leaf, and every exact empty-chamber leaf using fractions only.
 Usage:
     python verify_even_branch_certificate.py CERT.json.gz [CERT2.json.gz ...]
 
-With no arguments it verifies both default files in /mnt/data.
+With no arguments it verifies both certificate files beside this script.
 """
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ I1111 = ATOMS.index((1, 1, 1, 1))
 I0000 = ATOMS.index((0, 0, 0, 0))
 TARGET = F(527, 1000)
 DELTA_FIELD = F(1, 20)
+HERE = Path(__file__).resolve().parent
 
 
 def rat(obj) -> F:
@@ -400,8 +401,8 @@ def main() -> None:
     args = [Path(x) for x in sys.argv[1:]]
     if not args:
         args = [
-            Path("/mnt/data/even_c527_sym_mc.json.gz"),
-            Path("/mnt/data/even_local_core_mc.json.gz"),
+            HERE / "even_c527_sym_mc.json.gz",
+            HERE / "even_local_core_mc.json.gz",
         ]
     for path in args:
         verify_one(path)

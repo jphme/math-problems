@@ -21,9 +21,13 @@ SHA256SUMS binds every other released file.  Verify it with:
 
   shasum -a 256 -c SHA256SUMS
 
+LICENSE.txt states the MIT license for the released Python and C++ source.
+The article and machine-readable proof/data objects retain their stated
+copyright status.
 
-One-command portable audit
---------------------------
+
+One-command release verification
+--------------------------------
 
 From this directory, run:
 
@@ -36,15 +40,28 @@ The final line is:
   PEACEABLE_QUEENS_RELEASE_BUNDLE_OK
 
 The recorded environment is CPython 3.14.6 and SymPy 1.14.0.  The other
-Python verifiers use only the standard library.  The C++ sources require
-C++20 unless their header comments state C++17.  Recorded rebuilds used
-Apple Clang 21.0.0; the n=16 union enumerator was also reproduced under
-GCC 14 with OpenMP and Clang 17 in serial mode.
+Python verifiers use only the standard library.  A C++17 compiler available
+as g++ is also required.  The released C++ sources use C++17 or C++20 as
+specified in the build commands below.  Recorded rebuilds used Apple
+Clang 21.0.0; the n=16 union enumerator was also reproduced under GCC 14
+with OpenMP and Clang 17 in serial mode.
 
-The one-command audit does not rerun the multi-billion-case C++ enumerations
-or recompute all finite-ladder trees.  It verifies their frozen outputs,
-coverage, input hashes, orbit counts, representative hashes, and witness
-counts.  The commands below rerun individual proof computations.
+The driver labels its actions explicitly:
+
+  EXACT CERTIFICATE REPLAY
+    rechecks the rational branch trees, support duals, and displayed algebra;
+
+  FULL EXACT COMPUTATION RERUN
+    compiles box_engine.cpp and repeats all 122 finite-envelope searches;
+
+  FROZEN-OUTPUT AND PROVENANCE AUDIT
+    checks the compact envelope summaries, the Python/C++ cross-check ledger,
+    and the outputs of the multi-billion-case board enumerations.
+
+The one-command verification therefore re-establishes finite-envelope domain
+coverage from source.  It does not rerun the much larger n=15--18 board
+enumerations; their audits check domains, orbit representatives, hashes,
+totals, and witnesses.  The commands below rerun individual computations.
 
 
 Even theorem for q >= 130
@@ -98,20 +115,64 @@ moment_model.json
   recovered witnesses and the derived moment model.
 
 envelope_checker.py
-  Portable exact integer-box engine.  Both cut inputs are resolved relative
-  to this directory; no research-tree path is required.
+  Portable Python exact integer-box engine.  Both cut inputs are resolved
+  relative to this directory; no research-tree path is required.
+
+box_engine.cpp
+run_cpp_ladder.py
+  Separately implemented C++17 engine and its Python driver.  The C++ source
+  has SHA-256
+
+    ea916eb518261a3bbe9558bcb95ec8471d9a765e15667d767eafe35636af9ae2
+
+  exactly as recorded by every q=61,...,129 summary.  The C++ and Python
+  programs implement the same exact box algorithm; agreement is an
+  implementation cross-check, not a conceptually different proof method.
 
 records_q003_q020/
 records_q021_q129/
-  Complete records for q=3,5 and q=10,...,129.
+  Compact run summaries for q=3,5 and q=10,...,129.  They contain status,
+  witnesses, input hashes, and aggregate search statistics, but not the
+  split nodes or terminal boxes.  The historical q<=60 summaries omit an
+  engine-source field; q=61,...,129 bind box_engine.cpp by SHA-256.
 
 check_envelope_records.py
-  Checks the exact coverage, terminal accounting, witnesses, and input
-  hashes of all 122 records.
+  Recomputes H exactly for every q and checks the order set, schemas, source
+  and input hashes, thresholds, witnesses, and aggregate node/leaf accounting
+  of all 122 summaries.  It does not reconstruct geometric coverage.
 
-Recompute selected orders into a fresh directory:
+replay_finite_envelope.py
+  Canonical full proof rerun.  It builds box_engine.cpp with
+
+    -std=c++17 -O3 -Wall -Wextra -Werror -pedantic
+
+  repeats every q=3,5,10,...,129 search, and compares all proof-relevant
+  non-runtime fields with the frozen summaries.  Run:
+
+    python replay_finite_envelope.py
+
+Recompute selected full records into a fresh directory:
 
   python envelope_checker.py 21 22 23 --records-dir fresh-records
+
+or with the C++ implementation:
+
+  python run_cpp_ladder.py 3 5 --start 10 --end 129 \
+    --records-dir fresh-cpp-records
+
+finite_envelope_python_crosscheck_q061_q129.json
+check_finite_backend_crosscheck.py
+  Frozen ledger of a complete q=61,...,129 rerun with the separately written
+  Python implementation, matching every proof-relevant C++ envelope field.
+  The checker audits the ledger, source and cut hashes, order coverage, and
+  normalized per-order digests; it does not rerun the Python searches.
+
+crosscheck_finite_backends.py
+  Recreates that slower second-language ledger.  Four parallel workers were
+  used for the released run:
+
+    python crosscheck_finite_backends.py --start 61 --end 129 --jobs 4 \
+      --output fresh-python-crosscheck.json
 
 
 The n=15 search
@@ -208,7 +269,8 @@ Proof-object boundary
 
 The branch trees and support duals are standalone exact proof objects: their
 rational multipliers can be checked without solving an optimization problem.
-The finite-ladder records and exhaustive-search outputs are audit records.
-Their proofs are the short released source programs together with the
-reductions in the paper; rerunning those sources re-establishes the finite
-computations.
+The finite-ladder JSON files and the exhaustive-search outputs are audit
+records, not serialized coverage certificates.  Their proofs are the short
+released source programs together with the reductions in the paper.  The
+one-command driver reruns the complete finite ladder; the larger board
+enumerations can be rerun with the commands in their sections above.

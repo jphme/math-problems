@@ -21,7 +21,10 @@ from dataclasses import dataclass
 from fractions import Fraction as F
 from pathlib import Path
 
-CUTS = Path(sys.argv[1] if len(sys.argv) > 1 else "/mnt/data/even_finite_support_cuts.json")
+HERE = Path(__file__).resolve().parent
+CUTS = Path(
+    sys.argv[1] if len(sys.argv) > 1 else HERE / "even_finite_support_cuts.json"
+)
 
 # Polynomial representation: monomial is a sorted tuple of variable indices.
 Poly = dict[tuple[int, ...], F]

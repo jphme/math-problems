@@ -12,7 +12,10 @@ import json
 import sys
 from pathlib import Path
 
-PATH = Path(sys.argv[1] if len(sys.argv) > 1 else "/mnt/data/counterexample_24prime.json")
+HERE = Path(__file__).resolve().parent
+PATH = Path(
+    sys.argv[1] if len(sys.argv) > 1 else HERE / "counterexample_24prime.json"
+)
 data = json.loads(PATH.read_text())
 q = int(data["q"])
 z = {k: int(v) for k, v in data["local_coordinates"].items()}

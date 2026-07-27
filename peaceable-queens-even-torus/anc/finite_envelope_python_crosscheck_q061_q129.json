@@ -1,0 +1,513 @@
+{
+  "comparisons": [
+    {
+      "H(2q)": 1980,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 116961,
+      "normalized_envelope_sha256": "3e82da3937410d336fde4fa0510fe330a3430a94ee4a38854e86373f10fabc86",
+      "q": 61
+    },
+    {
+      "H(2q)": 2046,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 122443,
+      "normalized_envelope_sha256": "00e54cc48a15b39363662659a8164c80fc7bdc072232017ce2b72c081cebe18d",
+      "q": 62
+    },
+    {
+      "H(2q)": 2116,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 115183,
+      "normalized_envelope_sha256": "58e2463eee0b3b26b95c3fc2c9577e6c2cde6b889add198a1780126551f9ee9b",
+      "q": 63
+    },
+    {
+      "H(2q)": 2176,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 126881,
+      "normalized_envelope_sha256": "f90ed38bb05cc86398ed234259d62c7dc882c696924be0439c151fdc13dd02e9",
+      "q": 64
+    },
+    {
+      "H(2q)": 2256,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 114969,
+      "normalized_envelope_sha256": "eac7c646f2620b8b8623639055d04434a45fed92f750695044d53d19f3440a1e",
+      "q": 65
+    },
+    {
+      "H(2q)": 2310,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 136839,
+      "normalized_envelope_sha256": "4c5432a7f0b626162a8ac08342f4c6bd89a1af479cf128a3ed223079943adca8",
+      "q": 66
+    },
+    {
+      "H(2q)": 2401,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 102887,
+      "normalized_envelope_sha256": "01da95ca68be6f5495b68b9703c8b229d524dca5aa0a571645d5c245f5b84b77",
+      "q": 67
+    },
+    {
+      "H(2q)": 2452,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 139229,
+      "normalized_envelope_sha256": "6c030601b85020427407975d579b36b86ba7c7fc1d0e9c28ab6dff0a64902f23",
+      "q": 68
+    },
+    {
+      "H(2q)": 2550,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 106093,
+      "normalized_envelope_sha256": "6fc4566a257c1c4d9e2dd290acf077f4f23a4784c78f3b43d56ab1e195d1c96d",
+      "q": 69
+    },
+    {
+      "H(2q)": 2603,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 136985,
+      "normalized_envelope_sha256": "68e8a5a0271eaba0eb0ed9113f64279f5199f52088089d0181f3cdad5312cae7",
+      "q": 70
+    },
+    {
+      "H(2q)": 2698,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 109241,
+      "normalized_envelope_sha256": "6a60c02d6f92d9d8b204ac16fb2e420bfa635ca1ae731a6d2ee941e99275dc7c",
+      "q": 71
+    },
+    {
+      "H(2q)": 2757,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 132853,
+      "normalized_envelope_sha256": "a316925feb5fd1b3c822f071d9f59f203379b3bd0ff4313d217f8ec49013d3c5",
+      "q": 72
+    },
+    {
+      "H(2q)": 2847,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 120373,
+      "normalized_envelope_sha256": "b9e29b0baec905c69a88dcd5757d115d17824ff30ac1f082c41264d48b9cdfef",
+      "q": 73
+    },
+    {
+      "H(2q)": 2917,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 129875,
+      "normalized_envelope_sha256": "5d68545ad99140c186507d889d54d83c42197a12fd554411723bac8f2aad79e7",
+      "q": 74
+    },
+    {
+      "H(2q)": 3000,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 123317,
+      "normalized_envelope_sha256": "9fa2386358265f06f46564ba84ab86b07c06260b3f17949669ed5f03cde8974e",
+      "q": 75
+    },
+    {
+      "H(2q)": 3080,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 129371,
+      "normalized_envelope_sha256": "620d751487d253f74bd8f711be75b218ab8e28df91742afbd9d2f91e04839f89",
+      "q": 76
+    },
+    {
+      "H(2q)": 3157,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 133803,
+      "normalized_envelope_sha256": "3509835ba20fe9b2471de2e03d435828bbe192263c64ffb02cf366291303c953",
+      "q": 77
+    },
+    {
+      "H(2q)": 3249,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 128941,
+      "normalized_envelope_sha256": "451bff8de6eaae68a5f5b549f08246837a9b9febac6ffc7fd0de5f6a6707201c",
+      "q": 78
+    },
+    {
+      "H(2q)": 3318,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 144715,
+      "normalized_envelope_sha256": "93c3da36666e100a5461140d763ed5d5c13703ca5e30e942586c7a9dc533fd41",
+      "q": 79
+    },
+    {
+      "H(2q)": 3422,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 127359,
+      "normalized_envelope_sha256": "ebf175e4f15a286d5bb0d380c3d89ad0d9513faa31732aa82544af1786c8961d",
+      "q": 80
+    },
+    {
+      "H(2q)": 3483,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 158585,
+      "normalized_envelope_sha256": "d221002ee814a42f4da1239870ab7058ba1678aacd77ed6ee75c878760b6e926",
+      "q": 81
+    },
+    {
+      "H(2q)": 3600,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 122923,
+      "normalized_envelope_sha256": "73914a29dee009be1af05500462259eb1b59e85778c9200069412755731e382f",
+      "q": 82
+    },
+    {
+      "H(2q)": 3662,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 145893,
+      "normalized_envelope_sha256": "1eeadaa23e9f2bcc163c02dda981aea9aebd13b86f1b714a858de5a652b1b145",
+      "q": 83
+    },
+    {
+      "H(2q)": 3780,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 124139,
+      "normalized_envelope_sha256": "b5ef639365e5b1956bde9cab348bb6327b55aecebd4e66be748989e59c8ebb6e",
+      "q": 84
+    },
+    {
+      "H(2q)": 3845,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 144487,
+      "normalized_envelope_sha256": "0574dc11ca5b7a1435b90ac96e52a30dd2699be171e3b37452ba8035391c938c",
+      "q": 85
+    },
+    {
+      "H(2q)": 3956,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 129005,
+      "normalized_envelope_sha256": "9c50849894c444142b8aff4639aa473506c04c61dbf89c72cd9917cc1d63e19f",
+      "q": 86
+    },
+    {
+      "H(2q)": 4033,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 138645,
+      "normalized_envelope_sha256": "3ded904e34c255d78121d0f17759c11b46beb67dab2513f11918b981113917a0",
+      "q": 87
+    },
+    {
+      "H(2q)": 4136,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 136223,
+      "normalized_envelope_sha256": "b356756f97c4ffb41df4e0a1a5d00a8b0976ac0af6c1deb369e3c83af48a25c1",
+      "q": 88
+    },
+    {
+      "H(2q)": 4225,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 142851,
+      "normalized_envelope_sha256": "df03345098ae1a72590c38971524a4485021615d5a4b667edbff5c6598852518",
+      "q": 89
+    },
+    {
+      "H(2q)": 4320,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 142295,
+      "normalized_envelope_sha256": "45929681bc1ffc62da303a7f920592de252e0cdcd17b3cc523b90fd344bf58f6",
+      "q": 90
+    },
+    {
+      "H(2q)": 4422,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 137255,
+      "normalized_envelope_sha256": "76a36a563bab471b9296345f2c01a9fd9580d65fa5700b21f37f0796d2dc1bf9",
+      "q": 91
+    },
+    {
+      "H(2q)": 4508,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 152501,
+      "normalized_envelope_sha256": "d87724a5cb8e9e7fc851f755c0e7640420afea82758f7c1a50c3547953bdb78e",
+      "q": 92
+    },
+    {
+      "H(2q)": 4624,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 135787,
+      "normalized_envelope_sha256": "4c6e6f2cd6a55deab3fc90cc9f1d12d177954cbcaa7aa4ab01bf38196b7d1a05",
+      "q": 93
+    },
+    {
+      "H(2q)": 4700,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 161483,
+      "normalized_envelope_sha256": "f638f5d7380a31ee211820b9b620b314b688b285033ef1136173c09de10733f2",
+      "q": 94
+    },
+    {
+      "H(2q)": 4830,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 136015,
+      "normalized_envelope_sha256": "1ae88ea6f5fc3fa90009a3aa95a65e1c5dc87b3820639eeb88cd87df0b72367d",
+      "q": 95
+    },
+    {
+      "H(2q)": 4902,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 164267,
+      "normalized_envelope_sha256": "81799d27b6883ccc86c22b5aa2c2828226021c91fdbbd15f6f18fafe3b62723c",
+      "q": 96
+    },
+    {
+      "H(2q)": 5041,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 134225,
+      "normalized_envelope_sha256": "6627a7f9904626bd83f562f27ca469aa6d7202ee7625457d82219d7195ad10c9",
+      "q": 97
+    },
+    {
+      "H(2q)": 5114,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 156871,
+      "normalized_envelope_sha256": "48ee69c78600a2180a969b4a0e9c64bb80fb1ec8581661617e1cbfe2fe69ab17",
+      "q": 98
+    },
+    {
+      "H(2q)": 5247,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 135033,
+      "normalized_envelope_sha256": "216a945465398a30c5001e16f6a05fd2e347c5f50e22522144564a39d202310a",
+      "q": 99
+    },
+    {
+      "H(2q)": 5330,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 154543,
+      "normalized_envelope_sha256": "c491b0e94ef632c3153089df36b3734332cd063e10f194996c3fb0395932a077",
+      "q": 100
+    },
+    {
+      "H(2q)": 5454,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 143039,
+      "normalized_envelope_sha256": "54da0fa37818f46c8086a33c11f4059a6491f5d69b5d28b5f63b70a7dc26a7ea",
+      "q": 101
+    },
+    {
+      "H(2q)": 5551,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 151237,
+      "normalized_envelope_sha256": "b6afdddbc9535e65d82b718eafcbe2274f3935687d5168c4f6c641e1b17908bb",
+      "q": 102
+    },
+    {
+      "H(2q)": 5665,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 144459,
+      "normalized_envelope_sha256": "1d9a048191c7e2d5ceec744b21060157736c0b8f607086bedb8d577c6f7672e6",
+      "q": 103
+    },
+    {
+      "H(2q)": 5776,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 151611,
+      "normalized_envelope_sha256": "d2cdf00eb406b317f832a324d7969fa8ef66762c922202f2eebbbcaab077b469",
+      "q": 104
+    },
+    {
+      "H(2q)": 5880,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 156937,
+      "normalized_envelope_sha256": "8a33240730cd12440bf1f0ef2283e44ad0a4fd9c6c7ae6bb24a7b81f958fc663",
+      "q": 105
+    },
+    {
+      "H(2q)": 6006,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 147471,
+      "normalized_envelope_sha256": "d1177b092cc229fb131054da1d35094d60ccfc7ad82aff5f1422ff52b2c7f493",
+      "q": 106
+    },
+    {
+      "H(2q)": 6099,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 160181,
+      "normalized_envelope_sha256": "390c39e2a05d7e85b58e337b6e2a9ad778338898add1e4aa138748450b9d53b6",
+      "q": 107
+    },
+    {
+      "H(2q)": 6241,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 145881,
+      "normalized_envelope_sha256": "e8b52b9766af8feeb67dddcf5848ee594d6abc9b5323002ae4e813064a9b0c02",
+      "q": 108
+    },
+    {
+      "H(2q)": 6322,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 167817,
+      "normalized_envelope_sha256": "96dc55661f4d9a723422e333ecc71a457e98914c58a5fa58d0197abf1fcbf602",
+      "q": 109
+    },
+    {
+      "H(2q)": 6480,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 144221,
+      "normalized_envelope_sha256": "8279bc082df97d74ac328552bc3954553a1582cd8b3806a1455bf8a9a5f12e03",
+      "q": 110
+    },
+    {
+      "H(2q)": 6563,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 165567,
+      "normalized_envelope_sha256": "5d814b6e3bd89f29d55bb91c55c1889977322e12fe36a13ed67528ba177ff4ea",
+      "q": 111
+    },
+    {
+      "H(2q)": 6720,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 145617,
+      "normalized_envelope_sha256": "dcd1400f20e4d522924136e0441268a3b66bc8a1299fcbe4052c8afadcc60d22",
+      "q": 112
+    },
+    {
+      "H(2q)": 6807,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 166681,
+      "normalized_envelope_sha256": "6cae45af365556d41c404a0598df9d1243d53862d279b6f684d6e444cf75d22f",
+      "q": 113
+    },
+    {
+      "H(2q)": 6954,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 149401,
+      "normalized_envelope_sha256": "83cb56473044302ec9f26c0e0225535d2334df1b5ece1186c08f84c7a71ed3a1",
+      "q": 114
+    },
+    {
+      "H(2q)": 7057,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 159379,
+      "normalized_envelope_sha256": "fd5d2ae8176a6b719e1e603214c92caedd29d4b6d3713c59b5d9fe8d45f58eff",
+      "q": 115
+    },
+    {
+      "H(2q)": 7192,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 155693,
+      "normalized_envelope_sha256": "b6cf4b6c96d49092c1eea5d0114d34db44b3745fcdb98095a487fadb4d04ac5e",
+      "q": 116
+    },
+    {
+      "H(2q)": 7310,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 157235,
+      "normalized_envelope_sha256": "3f90fd42c2e7a83baf0ac8ed48b87d2ff2b9634ff6deef34b0bc92711d5276d0",
+      "q": 117
+    },
+    {
+      "H(2q)": 7434,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 159941,
+      "normalized_envelope_sha256": "49d9fd47b64198c7ea1a3d57883ad86c95cb4d06a4d1413a1dd1fdf0740bbcc0",
+      "q": 118
+    },
+    {
+      "H(2q)": 7569,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 150593,
+      "normalized_envelope_sha256": "a80309ca07dee80ca8aab61a7424ecf04df68f02adca4c78231bad50b4ca333c",
+      "q": 119
+    },
+    {
+      "H(2q)": 7680,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 168097,
+      "normalized_envelope_sha256": "6635199d8fc9d54b16bacddd837197f91e9bd0d257452b968579a8f09fd8c142",
+      "q": 120
+    },
+    {
+      "H(2q)": 7832,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 154303,
+      "normalized_envelope_sha256": "545d34f8d293438695d3f50d590401c407c4e57a395d6cf654457647465e9639",
+      "q": 121
+    },
+    {
+      "H(2q)": 7930,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 172737,
+      "normalized_envelope_sha256": "da6ec49761d4c61b9a99629059ddc3ea398dc739f195e1df1a7ee626fc0a6000",
+      "q": 122
+    },
+    {
+      "H(2q)": 8100,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 150367,
+      "normalized_envelope_sha256": "6f6eb9b5e3a2e441fd8eeafeca0ca3c95085efc93917267c194ec2d9768f41e3",
+      "q": 123
+    },
+    {
+      "H(2q)": 8192,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 179035,
+      "normalized_envelope_sha256": "1c03fdc8b4580aeae279d5190dfce19e6149e05cd5efe024b8ce732f0c97e378",
+      "q": 124
+    },
+    {
+      "H(2q)": 8372,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 150339,
+      "normalized_envelope_sha256": "f1cc0a73a560ebc8742edc7b022985cb725ef7c40cb5cd61f33e860daba74ad5",
+      "q": 125
+    },
+    {
+      "H(2q)": 8466,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 174035,
+      "normalized_envelope_sha256": "31d848d138ddf0caa589fc230318a45cb9cb41d6adb1a9df48228363ea191110",
+      "q": 126
+    },
+    {
+      "H(2q)": 8636,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 152615,
+      "normalized_envelope_sha256": "bfeb5d34a26677529025c735a29650cf707133363a4595b83dd26e5bcafcb2da",
+      "q": 127
+    },
+    {
+      "H(2q)": 8743,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 172529,
+      "normalized_envelope_sha256": "6b47c471fcf705246311293ddbf088fe4eaa862cbcac8277ecc75a9dc1d41313",
+      "q": 128
+    },
+    {
+      "H(2q)": 8901,
+      "exact_nonruntime_envelope_match": true,
+      "nodes": 161729,
+      "normalized_envelope_sha256": "630d34f030c3509a665e1a42b035841562529bef68aea32d3f8ede29e8d61977",
+      "q": 129
+    }
+  ],
+  "computed_coefficient_lcm": 12,
+  "cpp_compile_flags": [
+    "-std=c++17",
+    "-O3",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-pedantic"
+  ],
+  "cpp_source": "box_engine.cpp",
+  "cpp_source_sha256": "ea916eb518261a3bbe9558bcb95ec8471d9a765e15667d767eafe35636af9ae2",
+  "cut_file_sha256": {
+    "benders_cuts.json": "ad960316bc8099e4be3e0d585abb472c6a7e81d2963ee65f79457d7161d5a96a",
+    "new_dual_cuts.json": "a15e01c27c67690745374c5ccc7f34f9d14392a7e79188c3a7c161e5b130be94"
+  },
+  "python_source": "envelope_checker.py",
+  "python_source_sha256": "3bbf82b8b4cd9a8a7cd68169e84ec25aba78ffe28da14cfd4c9b0b1ed0c17045",
+  "relation": "separately written Python and C++ implementations of the same exact integer-box algorithm",
+  "schema": "peaceable-queens-finite-envelope-crosscheck-v1",
+  "scope": {
+    "orders": 69,
+    "q_end": 129,
+    "q_start": 61
+  },
+  "total_nodes": 9910091,
+  "verdict": "exact non-runtime envelope match at every listed order"
+}
