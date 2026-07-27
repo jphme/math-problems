@@ -120,7 +120,7 @@ and $t(n)\le\lfloor(2-\sqrt3)n^2/2\rfloor$.
 \end{corollary}
 
 \begin{corollary}\label{cor:values}
-Every even value of A279405 is computable from \eqref{eq:Hdef}; for example,
+Every even-indexed term $t(2q)$ of A279405 is computable from \eqref{eq:Hdef}; for example,
 \[
 t(16)=32,\quad t(18)=42,\quad t(20)=51,\quad t(40)=210 .
 \]
@@ -130,8 +130,8 @@ t(16)=32,\quad t(18)=42,\quad t(20)=51,\quad t(40)=210 .
 $t(15)=20$ and $t(17)=28$.
 \end{theorem}
 
-Theorem~\ref{thm:main} says that an optimum always has a
-\emph{parity-separated} representative: the diagonal colours reserve one
+Theorem~\ref{thm:main} implies that there always exists an optimal
+\emph{parity-separated} line colouring: the diagonal colours reserve one
 square parity for each army, leaving the four row and column parity counts in
 \eqref{eq:Hdef}.  This family contains the classical plaids but is strictly
 larger; for example it gives $H(20)=51$, whereas direct optimization of the
@@ -394,7 +394,7 @@ These are $4\cdot10+2=42$ equations, whose right-hand sides involve exactly $22$
 \begin{proof}
 The normalization and the four marginals in \eqref{eq:mom1} hold because within $G_{ij}$ each of the four families' relevant parity classes is swept uniformly: for instance the map $G_{ij}\to(\Z_q)$, $(r,c)\mapsto$ (index of $r$ within its parity class), has all fibres of size $q$.
 
-For \eqref{eq:mom2} we need each pair of families other than $\{D,A\}$ to fibre uniformly over $G_{ij}$. Writing $r=2r'+i$, $c=2c'+j$ with $r',c'\in\Z_q$, the pair $(\text{row},\text{column})$ corresponds to $(r',c')$, the pair (row, diagonal) to $(r',r'-c')$, (row, antidiagonal) to $(r',r'+c')$, (column, diagonal) to $(c',r'-c')$ and (column, antidiagonal) to $(c',r'+c')$. Each of these is an invertible linear map $\Z_q^2\to\Z_q^2$ of determinant $\pm1$, hence a bijection; so all $q^2$ label pairs occur exactly once and the corresponding moment factorizes into the product of the two black-line densities.
+For \eqref{eq:mom2} we need each pair of families other than $\{D,A\}$ to fibre uniformly over $G_{ij}$. Writing $r=2r'+i$, $c=2c'+j$ with $r',c'\in\Z_q$, the pair $(\text{row},\text{column})$ corresponds to $(r',c')$, the pair (row, diagonal) to $(r',r'-c')$, (row, antidiagonal) to $(r',r'+c')$, (column, diagonal) to $(c',r'-c')$ and (column, antidiagonal) to $(c',r'+c')$. Each of these is, up to a block-dependent translation, an invertible linear map $\Z_q^2\to\Z_q^2$ of determinant $\pm1$, hence a bijection; so all $q^2$ label pairs occur exactly once and the corresponding moment factorizes into the product of the two black-line densities.
 
 The pair $\{D,A\}$ does not fibre uniformly within a block: $(r',c')\mapsto(r'-c',r'+c')$ has determinant $2$. But by Lemma~\ref{lem:inc} each pair $(d,a)$ of labels of equal parity $e$ meets in exactly two cells, and these two cells $(r,c)$, $(r+q,c+q)$ lie in the two blocks with $i\oplus j=e$ (in the same block iff $q$ is even, in different blocks otherwise --- in either case in the union). Summing over the two blocks therefore counts each equal-parity label pair exactly twice, giving \eqref{eq:mom3}. Finally \eqref{eq:BW} is the definition.
 \end{proof}
@@ -462,10 +462,42 @@ $8+22+64+1=95$ variables $(x,y,p,t)$ with $95$ non-bound inequality rows
 and $42$ equality rows, whose optimum dominates $\OPT(x)$ for every $x$ in
 the box.
 
+\begin{lemma}[Dual-leaf soundness]\label{lem:dualleaf}
+Consider the linear programme above on a box: maximize $t$ over
+$z=(x,y,p,t)$ subject to the inequality rows $Az\le b$ (McCormick, budget,
+chamber and the two objective rows), the $42$ moment equalities $Ez=e$, the
+box bounds on $(x,y)$, and $p\ge0$.  Let $\mu\le0$ and $\nu$ be rational
+multipliers for the inequality and the equality rows, and form the partial
+Lagrangian
+\[
+L(z)=t+\mu^{\mathsf T}(Az-b)+\nu^{\mathsf T}(Ez-e).
+\]
+Suppose that, after collecting terms, the coefficient of $t$ in $L$ vanishes
+and the coefficient vector $\omega$ of the atom variables satisfies
+$\omega\le0$, so that $L(z)=\ell_0+\ell(x,y)+\omega^{\mathsf T}p$ with
+$\ell_0=-\mu^{\mathsf T}b-\nu^{\mathsf T}e$ and $\ell$ linear.  (Here $b$,
+$e$ are the constraint right-hand sides, local to this lemma.)  Then every
+feasible $z$ satisfies
+\[
+t\ \le\ \ell_0+\max_{(x,y)\in\mathrm{box}}\ell(x,y),
+\]
+and the maximum is computed exactly by taking each coordinate at the box
+endpoint matching the sign of its coefficient in $\ell$.
+\end{lemma}
+
+\begin{proof}
+If $z$ is feasible then $\mu^{\mathsf T}(Az-b)\ge0$, because componentwise
+both factors are nonpositive, and $\nu^{\mathsf T}(Ez-e)=0$; hence
+$t\le L(z)$.  Since $\omega\le0$ and $p\ge0$, we get
+$L(z)\le\ell_0+\ell(x,y)$.
+Finally, a linear function on a product of intervals is maximized coordinate
+by coordinate at interval endpoints.
+\end{proof}
+
 A \emph{branch certificate} is a rooted binary tree. A split node carries a coordinate index and an exact rational cut, and its two children are the parent box intersected with $x_d\le c$ and with $x_d\ge c$ (the children overlap on the cutting hyperplane, which is harmless and gives an exhaustive cover). A leaf is one of three kinds:
 
 \begin{itemize}
-\item a \emph{McCormick-dual leaf}, carrying an exact rational multiplier vector for the inequality rows (nonpositive) and an unrestricted one for the equality rows, together with the resulting exact rational bound $u$. The verifier reconstructs the partial Lagrangian, checks that the reduced cost of $t$ vanishes and that the reduced costs of all $64$ atom variables are $\le0$ (so that the inner maximum over $p\ge0$ is finite), evaluates the outer and product variables at their better box endpoints, recomputes the bound itself, and checks that it equals the stored $u$ and satisfies the required threshold;
+\item a \emph{McCormick-dual leaf}, carrying an exact rational multiplier vector for the inequality rows (nonpositive) and an unrestricted one for the equality rows, together with the resulting exact rational bound $u$. The verifier reconstructs the partial Lagrangian, checks that the reduced cost of $t$ vanishes and that the reduced costs of all $64$ atom variables are $\le0$ (so that the inner maximum over $p\ge0$ is finite), evaluates the outer and product variables at their better box endpoints, recomputes the bound itself, and checks that it equals the stored $u$ and satisfies the required threshold --- that is, it verifies precisely the hypotheses of Lemma~\ref{lem:dualleaf}, whose conclusion certifies $u$ as an upper bound for the relaxation on the leaf box;
 \item an \emph{exact empty leaf}, carrying one of five reasons (\texttt{rsort}, \texttt{csort}, \texttt{rcsum}, \texttt{dasum}, \texttt{budget}). Each is a purely interval-arithmetic obstruction to the chamber inequalities: e.g.\ \texttt{rsort} asserts $\max(l_{r_1},l_{r_0})>u_{r_1}$, which contradicts $r_0\le r_1$; and \texttt{budget} asserts that the sum of the four group minima forced by the preceding steps exceeds $4$. These are exact rational emptiness tests, never solver infeasibility claims;
 \item a \emph{plaid leaf}, asserting that the box lies wholly inside one of the four rational plaid neighbourhoods. With $s=\sqrt3-1$, the four templates are obtained by choosing a square parity and a row parity; a box qualifies when, coordinate by coordinate, the template-$0$ coordinates have upper endpoint $\le\frac1{10}$, the template-$1$ coordinates have lower endpoint $\ge\frac{19}{20}$, and the two template-$s$ coordinates lie in $[\frac35,\frac78]$.
 \end{itemize}
@@ -522,7 +554,8 @@ Two programs sharing no code check these trees, both using only exact rational a
 \begin{proof}[Proof of Theorems~\ref{thm:cert1} and~\ref{thm:cert2}]
 The exact checks in Remark~\ref{rem:certverify} establish that every internal
 node makes the declared exhaustive split and that every leaf has the stated
-type.  In the first tree, the only exceptional leaves lie in \(N\); all other
+type.  By Lemma~\ref{lem:dualleaf}, the stored multipliers of each
+McCormick-dual leaf certify its bound $u$.  In the first tree, the only exceptional leaves lie in \(N\); all other
 leaves are empty or have relaxation value at most \(527/1000\).  In the
 second, the only exceptional leaves satisfy \eqref{eq:core}; all other leaves
 are empty or have relaxation value at most \(527/1000\).  Applying
@@ -583,25 +616,36 @@ e=d_1,\quad g=q-d_0,\quad f=a_1,\quad h=q-a_0,
 so $u,v,e,f,g,h$ are small ``defects'' and $R,C$ are close to $sq$. All eight are integers in $[0,q]$. Put
 \begin{equation}\label{eq:aggregates}
 \begin{aligned}
-\sigma&=R+C, & m&=u+v, & a&=e+f, & b&=g+h,\\
+\sigma&=R+C, & m&=u+v, & \delta&=e+f, & \zeta&=g+h,\\
 \alpha&=2q-\sigma-m, & \beta&=\sigma-q, & Q&=2ef+2gh,\\
 X&=uv+RC, & \multicolumn{4}{l}{Y=(q-u)(q-C)+(q-R)(q-v).}
 \end{aligned}
 \end{equation}
 The core \eqref{eq:core} reads
 \begin{equation}\label{eq:core2}
-\tfrac{36}{25}q\le\sigma\le\tfrac{37}{25}q,\qquad m\le\tfrac{9}{100}q,\qquad a\le\tfrac{9}{200}q,\qquad b\le\tfrac1{25}q ,
+\tfrac{36}{25}q\le\sigma\le\tfrac{37}{25}q,\qquad m\le\tfrac{9}{100}q,\qquad \delta\le\tfrac{9}{200}q,\qquad \zeta\le\tfrac1{25}q ,
 \end{equation}
 and the chamber \eqref{eq:chamber} gives, in these coordinates,
 \begin{equation}\label{eq:chamber2}
-u+R\le v+C,\qquad e+h\le f+g,\qquad \sigma+m+a-b\le2q .
+u+R\le v+C,\qquad e+h\le f+g,\qquad \sigma+m+\delta-\zeta\le2q .
 \end{equation}
 
-Two remarks on notation. First, $(X,Y)$ are exactly the two capacities of the $H$-profile $(r_0,r_1,c_0,c_1)=(u,R,C,v)$ in Definition~\ref{def:H}: indeed $r_0c_1+r_1c_0=uv+RC=X$ and $(q-r_0)(q-c_0)+(q-r_1)(q-c_1)=(q-u)(q-C)+(q-R)(q-v)=Y$. Hence
+Three remarks on notation.  First, from here to the end of the section $R$
+and $C$ denote the two integer counts of \eqref{eq:locvars}; the line sets of
+Section~\ref{sec:formula} are not referred to again before
+Section~\ref{sec:odd}.  Likewise the defect sums are written $\delta,\zeta$
+to avoid collision with the antidiagonal counts $a_0,a_1$ and with the
+right-hand side $b(x)$ of Section~\ref{sec:ladder}.  Second, $(X,Y)$ are
+exactly the two capacities of the $H$-profile
+$(r_0,r_1,c_0,c_1)=(u,R,C,v)$ in Definition~\ref{def:H}, in which the two
+column parity counts are \emph{exchanged} relative to the configuration's own
+quadruple $(u,R,v,C)$; the exchanged quadruple is again admissible in
+\eqref{eq:Hdef}, so its capacities are $r_0c_1+r_1c_0=uv+RC=X$ and
+$(q-r_0)(q-c_0)+(q-r_1)(q-c_1)=(q-u)(q-C)+(q-R)(q-v)=Y$, and
 \begin{equation}\label{eq:XYH}
 \min(X,Y)\ \le\ H(2q).
 \end{equation}
-Second, $\alpha$ and $\beta$ are the two ``slacks'' that the support cuts below will charge against.
+Third, $\alpha$ and $\beta$ are the two ``slacks'' that the support cuts below will charge against.
 
 \subsection{The two support cuts}
 
@@ -610,10 +654,10 @@ The proof uses exactly two members of an exactly certified library of $760$ supp
 \begin{lemma}[Cuts $609$ and $559$]\label{lem:cuts}
 For every configuration in the canonical chamber,
 \begin{equation}\label{eq:FB}
-B\ \le\ F_B:=X-\beta b+Q,
+B\ \le\ F_B:=X-\beta\zeta+Q,
 \end{equation}
 \begin{equation}\label{eq:FW}
-W\ \le\ F_W:=Y-\alpha a+Q .
+W\ \le\ F_W:=Y-\alpha\delta+Q .
 \end{equation}
 In particular, writing $T:=\min(F_B,F_W)$, we have $\min(B,W)\le T$.
 \end{lemma}
@@ -625,25 +669,25 @@ The two exact rational duals are shipped in \texttt{even\_\bs{}finite\_\bs{}supp
 \begin{lemma}\label{lem:basic}
 Under \eqref{eq:core2},
 \begin{equation}\label{eq:albe}
-\alpha\ \ge\ \tfrac{43}{100}q,\qquad \beta\ \ge\ \tfrac{11}{25}q,\qquad \alpha>a,\qquad\beta>b .
+\alpha\ \ge\ \tfrac{43}{100}q,\qquad \beta\ \ge\ \tfrac{11}{25}q,\qquad \alpha>\delta,\qquad\beta>\zeta .
 \end{equation}
 \end{lemma}
 
 \begin{proof}
-$\alpha=2q-\sigma-m\ge2q-\frac{37}{25}q-\frac{9}{100}q=\frac{200-148-9}{100}q=\frac{43}{100}q$, and $\beta=\sigma-q\ge\frac{36}{25}q-q=\frac{11}{25}q$. Finally $a\le\frac{9}{200}q<\frac{43}{100}q\le\alpha$ and $b\le\frac1{25}q<\frac{11}{25}q\le\beta$.
+$\alpha=2q-\sigma-m\ge2q-\frac{37}{25}q-\frac{9}{100}q=\frac{200-148-9}{100}q=\frac{43}{100}q$, and $\beta=\sigma-q\ge\frac{36}{25}q-q=\frac{11}{25}q$. Finally $\delta\le\frac{9}{200}q<\frac{43}{100}q\le\alpha$ and $\zeta\le\frac1{25}q<\frac{11}{25}q\le\beta$.
 \end{proof}
 
 \begin{lemma}[Defect dichotomy]\label{lem:dichotomy}
 Under \eqref{eq:core2},
 \begin{equation}\label{eq:dicho}
-2Q=4ef+4gh\ \le\ a^2+b^2\ \le\ \alpha a+\beta b,
+2Q=4ef+4gh\ \le\ \delta^2+\zeta^2\ \le\ \alpha\delta+\beta\zeta,
 \qquad\text{hence}\qquad
-Q\le\max(\alpha a,\ \beta b).
+Q\le\max(\alpha\delta,\ \beta\zeta).
 \end{equation}
 \end{lemma}
 
 \begin{proof}
-$4ef\le(e+f)^2=a^2$ and $4gh\le(g+h)^2=b^2$. By Lemma~\ref{lem:basic}, $a^2\le\alpha a$ and $b^2\le\beta b$. Finally $Q\le\frac12(\alpha a+\beta b)\le\max(\alpha a,\beta b)$.
+$4ef\le(e+f)^2=\delta^2$ and $4gh\le(g+h)^2=\zeta^2$. By Lemma~\ref{lem:basic}, $\delta^2\le\alpha\delta$ and $\zeta^2\le\beta\zeta$. Finally $Q\le\frac12(\alpha\delta+\beta\zeta)\le\max(\alpha\delta,\beta\zeta)$.
 \end{proof}
 
 This dichotomy is the only case distinction the local proof needs. We treat the two orderings of $X$ and $Y$ separately.
@@ -655,21 +699,21 @@ If $X\le Y$ then $T\le H(2q)$.
 \end{proposition}
 
 \begin{proof}
-If $Q\le\beta b$ then $F_B\le X$ by \eqref{eq:FB}, so $T\le X=\min(X,Y)\le H(2q)$ by \eqref{eq:XYH}.
+If $Q\le\beta\zeta$ then $F_B\le X$ by \eqref{eq:FB}, so $T\le X=\min(X,Y)\le H(2q)$ by \eqref{eq:XYH}.
 
 Assume therefore
 \begin{equation}\label{eq:A17}
-Q>\beta b .
+Q>\beta\zeta .
 \end{equation}
-By Lemma~\ref{lem:dichotomy}, $Q\le\alpha a$.
+By Lemma~\ref{lem:dichotomy}, $Q\le\alpha\delta$.
 
-\emph{Step 1: a bound on $F_B$.} Since $b\le q/25$,
+\emph{Step 1: a bound on $F_B$.} Since $\zeta\le q/25$,
 \begin{equation}\label{eq:A21a}
-2gh\le\frac{b^2}{2}\le\frac{qb}{50}\le\beta b ,
+2gh\le\frac{\zeta^2}{2}\le\frac{q\zeta}{50}\le\beta\zeta ,
 \end{equation}
 the last step by Lemma~\ref{lem:basic}. Hence
 \begin{equation}\label{eq:A21}
-F_B=X-\beta b+2ef+2gh\ \le\ X+2ef .
+F_B=X-\beta\zeta+2ef+2gh\ \le\ X+2ef .
 \end{equation}
 
 \emph{Step 2: four switched profiles.} Consider the four $H$-profiles
@@ -683,14 +727,14 @@ All coordinates lie in $[0,q]$: inside $N$ we have $u,v\le q/10$ and $e,f\le q/1
 \end{equation}
 since $u,v,x,y\ge0$ and each of the four choices in \eqref{eq:A18} has $xy=2ef$. Combining with \eqref{eq:A21}, each of the four profiles has black capacity at least $F_B$.
 
-The white capacity of \eqref{eq:A18} is $(q-u-x)(q-C)+(q-R)(q-v-y)=Y-\bigl(x(q-C)+y(q-R)\bigr)$, so the \emph{white loss} is $x(q-C)+y(q-R)$. Put $L=2q-\sigma$. Over the four choices in \eqref{eq:A18} the values of $x$ sum to $3(e+f)=3a$ and so do the values of $y$; hence the average white loss is exactly
+The white capacity of \eqref{eq:A18} is $(q-u-x)(q-C)+(q-R)(q-v-y)=Y-\bigl(x(q-C)+y(q-R)\bigr)$, so the \emph{white loss} is $x(q-C)+y(q-R)$. Put $L=2q-\sigma$. Over the four choices in \eqref{eq:A18} the values of $x$ sum to $3(e+f)=3\delta$ and so do the values of $y$; hence the average white loss is exactly
 \begin{equation}\label{eq:A22}
-\frac{3a}{4}\bigl((q-C)+(q-R)\bigr)=\frac34\,aL .
+\frac{3\delta}{4}\bigl((q-C)+(q-R)\bigr)=\frac34\,\delta L .
 \end{equation}
 
 \emph{Step 3: the averaged loss is affordable.} We claim
 \begin{equation}\label{eq:A23}
-Q\ \le\ a\Bigl(\frac L4-m\Bigr).
+Q\ \le\ \delta\Bigl(\frac L4-m\Bigr).
 \end{equation}
 First, by \eqref{eq:core2},
 \begin{equation}\label{eq:A24}
@@ -698,19 +742,19 @@ First, by \eqref{eq:core2},
 \end{equation}
 Second, from \eqref{eq:A17}, Lemma~\ref{lem:basic} and \eqref{eq:A21a},
 \[
-2ef=Q-2gh>\beta b-\frac{qb}{50}\ \ge\ \frac{11}{25}qb-\frac{qb}{50}=\frac{21}{50}\,qb .
+2ef=Q-2gh>\beta\zeta-\frac{q\zeta}{50}\ \ge\ \frac{11}{25}q\zeta-\frac{q\zeta}{50}=\frac{21}{50}\,q\zeta .
 \]
-Since $2ef\le a^2/2$, this gives $b<\dfrac{25a^2}{21q}$, and therefore
+Since $2ef\le\delta^2/2$, this gives $\zeta<\dfrac{25\delta^2}{21q}$, and therefore
 \begin{equation}\label{eq:A25}
-Q\le\frac{a^2+b^2}{2}\le\frac{a^2}{2}+\frac{qb}{50}<\frac{a^2}{2}+\frac{q}{50}\cdot\frac{25a^2}{21q}=\frac{11}{21}a^2\le\frac{11}{21}\cdot\frac{9q}{200}\,a=\frac{33}{1400}\,aq<\frac{1}{25}aq ,
+Q\le\frac{\delta^2+\zeta^2}{2}\le\frac{\delta^2}{2}+\frac{q\zeta}{50}<\frac{\delta^2}{2}+\frac{q}{50}\cdot\frac{25\delta^2}{21q}=\frac{11}{21}\delta^2\le\frac{11}{21}\cdot\frac{9q}{200}\,\delta=\frac{33}{1400}\,\delta q<\frac{1}{25}\delta q ,
 \end{equation}
-using $b^2/2\le qb/50$ (valid as $b\le q/25$) and $a\le9q/200$. Comparing \eqref{eq:A24} and \eqref{eq:A25} proves \eqref{eq:A23}.
+using $\zeta^2/2\le q\zeta/50$ (valid as $\zeta\le q/25$) and $\delta\le9q/200$. Comparing \eqref{eq:A24} and \eqref{eq:A25} proves \eqref{eq:A23}.
 
 \emph{Step 4: conclusion.} Since $\alpha=L-m$, inequality \eqref{eq:A23} is equivalent to
 \begin{equation}\label{eq:A26}
-\frac34\,aL\ \le\ a(L-m)-Q=\alpha a-Q .
+\frac34\,\delta L\ \le\ \delta(L-m)-Q=\alpha\delta-Q .
 \end{equation}
-By \eqref{eq:A22} at least one of the four profiles has white loss at most $\frac34aL$, hence white capacity at least $Y-(\alpha a-Q)=F_W$. By \eqref{eq:A20} and \eqref{eq:A21} its black capacity is at least $F_B$. That profile therefore has $H$-value at least $\min(F_B,F_W)=T$, and so $T\le H(2q)$.
+By \eqref{eq:A22} at least one of the four profiles has white loss at most $\frac34\delta L$, hence white capacity at least $Y-(\alpha\delta-Q)=F_W$. By \eqref{eq:A20} and \eqref{eq:A21} its black capacity is at least $F_B$. That profile therefore has $H$-value at least $\min(F_B,F_W)=T$, and so $T\le H(2q)$.
 \end{proof}
 
 \subsection{Case \texorpdfstring{$Y\le X$}{Y <= X}}\label{ssec:caseB}
@@ -720,38 +764,38 @@ If $Y\le X$ and $q\ge130$, then $T\le H(2q)$.
 \end{proposition}
 
 \begin{proof}
-If $Q\le\alpha a$ then $F_W\le Y$ by \eqref{eq:FW}, so $T\le Y=\min(X,Y)\le H(2q)$ by \eqref{eq:XYH}.
+If $Q\le\alpha\delta$ then $F_W\le Y$ by \eqref{eq:FW}, so $T\le Y=\min(X,Y)\le H(2q)$ by \eqref{eq:XYH}.
 
 Assume therefore
 \begin{equation}\label{eq:B28}
-Q>\alpha a .
+Q>\alpha\delta .
 \end{equation}
-By Lemma~\ref{lem:dichotomy}, $Q\le\beta b$.
+By Lemma~\ref{lem:dichotomy}, $Q\le\beta\zeta$.
 
 \emph{Step 1: the integrality step.} We claim $gh>0$.  If $gh=0$, then
-\eqref{eq:B28} forces $a>0$: otherwise Lemma~\ref{lem:basic} gives
-$e=f=0$, and hence $Q=0$, contradicting $Q>\alpha a=0$.  Using
-$a\le\frac{9}{200}q$ and Lemma~\ref{lem:basic}, we then have
+\eqref{eq:B28} forces $\delta>0$: otherwise Lemma~\ref{lem:basic} gives
+$e=f=0$, and hence $Q=0$, contradicting $Q>\alpha\delta=0$.  Using
+$\delta\le\frac{9}{200}q$ and Lemma~\ref{lem:basic}, we then have
 \[
-Q=2ef\le\frac{a^2}{2}\le\frac{9q}{400}\,a<\frac{43}{100}q\,a\le\alpha a ,
+Q=2ef\le\frac{\delta^2}{2}\le\frac{9q}{400}\,\delta<\frac{43}{100}q\,\delta\le\alpha\delta ,
 \]
 contradicting \eqref{eq:B28}. Since $g$ and $h$ are integer counts, $g\ge1$ and $h\ge1$, so
 \begin{equation}\label{eq:B29}
-b=g+h\ \ge\ 2 .
+\zeta=g+h\ \ge\ 2 .
 \end{equation}
 This is the only point in the whole argument where integrality of the counts is used; it is also exactly the point at which the continuous relaxation is provably insufficient (Remark~\ref{rem:integrality}).
 
 \emph{Step 2: averaging the two cuts.} By \eqref{eq:FB} and \eqref{eq:FW},
 \begin{equation}\label{eq:B30}
-T\ \le\ \frac{F_B+F_W}{2}=\frac{X+Y}{2}-\frac{\alpha a+\beta b-2Q}{2}.
+T\ \le\ \frac{F_B+F_W}{2}=\frac{X+Y}{2}-\frac{\alpha\delta+\beta\zeta-2Q}{2}.
 \end{equation}
 By \eqref{eq:dicho},
 \begin{equation}\label{eq:B31}
-\alpha a+\beta b-2Q\ \ge\ \alpha a+\beta b-(a^2+b^2)=a(\alpha-a)+b(\beta-b)\ \ge\ b(\beta-b),
+\alpha\delta+\beta\zeta-2Q\ \ge\ \alpha\delta+\beta\zeta-(\delta^2+\zeta^2)=\delta(\alpha-\delta)+\zeta(\beta-\zeta)\ \ge\ \zeta(\beta-\zeta),
 \end{equation}
-since $a(\alpha-a)\ge0$ by Lemma~\ref{lem:basic}. On the range $2\le b\le q/25$ the function $b\mapsto b(\beta-b)$ is increasing, because its derivative $\beta-2b\ge\frac{11}{25}q-\frac{2}{25}q=\frac9{25}q>0$. Hence by \eqref{eq:B29},
+since $\delta(\alpha-\delta)\ge0$ by Lemma~\ref{lem:basic}. On the range $2\le\zeta\le q/25$ the function $\zeta\mapsto\zeta(\beta-\zeta)$ is increasing, because its derivative $\beta-2\zeta\ge\frac{11}{25}q-\frac{2}{25}q=\frac9{25}q>0$. Hence by \eqref{eq:B29},
 \begin{equation}\label{eq:B32}
-\frac{\alpha a+\beta b-2Q}{2}\ \ge\ \frac{2(\beta-2)}{2}=\beta-2 .
+\frac{\alpha\delta+\beta\zeta-2Q}{2}\ \ge\ \frac{2(\beta-2)}{2}=\beta-2 .
 \end{equation}
 
 \emph{Step 3: the balanced-plaid baseline.} We claim
@@ -847,12 +891,76 @@ $760$ cuts.
 
 \subsection{The cut envelope at a fixed order}
 
-For fixed $q$, evaluate each cut at integer outer counts, with constants
-scaled by $q^2$ and linear terms by $q$.  Their minimum is the
-\emph{cut envelope}.  The checker searches boxes in $\{0,\ldots,q\}^8$,
-propagates the chamber and budget inequalities, and bounds each multi-affine
-cut by exact McCormick bounds followed, when needed, by its exact corner
-maximum.
+For fixed $q$, evaluate each cut $P$ at integer outer counts.  Let $s$ be
+the least common multiple of $2$ and of all coefficient denominators of the
+library; in the released library $s=12$.  The engine stores the integer
+coefficients of $sP$, scales constants by $q^2$ and linear terms by $q$, and
+performs every comparison as the exact integer test
+$s\,P(x)\le s\,H(2q)+s/2$, so the threshold $H(2q)+\frac12$ is represented
+without rounding.  The minimum of the cuts is the \emph{cut envelope}.  The
+engine explores boxes $[l,u]\subseteq\{0,\ldots,q\}^8$ starting from the full
+cube, prunes and tightens by the four chamber and the budget inequalities,
+and discharges a box when one cut is certified to stay at most
+$H(2q)+\frac12$ on it, by a term-wise interval bound or by an exact corner
+maximum; one-point boxes are discharged by direct evaluation.  The following
+lemma records why each of these operations is sound.
+
+\begin{lemma}[Box-discharge soundness]\label{lem:boxops}
+Throughout the search $0\le l\le u\le q$ coordinatewise, and:
+\begin{enumerate}
+\item[(i)] \emph{Propagation.}  Each of the five canonical inequalities has
+coefficients in $\{0,\pm1\}$.  A box is pruned only when the minimum of a
+row over the whole box, evaluated coordinatewise at endpoints, exceeds its
+right-hand side; and a bound is tightened only to a value implied by the row
+for every point of the box satisfying it.  Hence no integer point satisfying
+the inequalities is ever discarded.  Since the root box is the full cube,
+every canonical profile is covered; points violating the chamber are covered
+as well, which is harmless.
+\item[(ii)] \emph{Multi-affinity.}  Every cut polynomial is multi-affine:
+its quadratic monomials use only products of two distinct coordinates
+(the $22$ admissible pairs), never a square, so it is affine in each
+coordinate separately.  The engine rejects any other input shape at parse
+time.
+\item[(iii)] \emph{Corner maximum.}  A multi-affine function attains its
+maximum over a real box at a vertex.  The corner test enumerates all
+vertices in the coordinates that occur in the cut and are undetermined in
+the box; if none exceeds the threshold, the cut is at most the threshold on
+the whole real box, in particular at every integer point.
+\item[(iv)] \emph{Interval bound.}  Since $0\le l\le x\le u$, each bilinear
+term $c_{ij}x_ix_j$ is at most $c_{ij}u_iu_j$ for $c_{ij}>0$ and at most
+$c_{ij}l_il_j$ for $c_{ij}<0$, and each linear term is bounded at its
+matching endpoint; the term-wise sum is therefore a valid upper bound for
+the cut on the box.
+\item[(v)] \emph{Splitting.}  A split at $c=\lfloor(l_i+u_i)/2\rfloor$ into
+$x_i\le c$ and $x_i\ge c+1$ partitions the integer points of the parent box.
+\item[(vi)] \emph{No overflow.}  All engine arithmetic is signed $64$-bit.
+Let $S$ be the maximum over the library of the sum of the absolute values of
+all scaled coefficients of one cut; the driver recomputes $S$ before every
+run and aborts unless $Sq^2<2^{63}$.  In the released library $S=360$, and
+every intermediate quantity of the engine is bounded in absolute value by
+$2Sq^2$, which even at the engine's input cap $q\le1000$ is
+$7.2\cdot10^{8}\ll2^{63}$; every comparison is therefore exact.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) The minimum of a row over the box is attained coordinatewise at
+endpoints because the row is linear; if it exceeds the right-hand side, no
+point of the box satisfies the row.  Otherwise, for a coordinate with
+coefficient $+1$, every satisfying point obeys
+$x_i\le\mathrm{rhs}-(\text{minimum of the remaining terms over the box})$,
+which is an integer since all coefficients are $\pm1$; tightening $u_i$ to
+it (and $l_i$ symmetrically for coefficient $-1$) keeps every satisfying
+point.  (ii) is structural in the stored cut files and is reverified by the
+audits.  (iii) Fixing all but one coordinate, a multi-affine function is
+affine, hence maximized at an endpoint; induct on the dimension.
+(iv) All coordinates are nonnegative because $l$ only ever increases from
+$0$, so the displayed per-term extrema are exact.  (v) is immediate.
+(vi) For $x\in[0,q]^8$ every term of $sP$ is bounded by its absolute
+coefficient times $q^2$, so partial sums are bounded by $Sq^2$; the corner
+test's incremental updates combine at most two such sums.  The stated
+values of $s$ and $S$ are recomputed by the release audit.
+\end{proof}
 
 \begin{lemma}[Integer-box inference]\label{lem:boxsound}
 Suppose such a search ends with no survivor and every nonempty terminal box
@@ -861,9 +969,13 @@ $t(2q)\le H(2q)$.
 \end{lemma}
 
 \begin{proof}
-Every split partitions the integer points of its parent, so induction on the
-tree shows that every canonical integer profile belongs to a discharged
-terminal box.  Lemma~\ref{lem:cutsound} gives
+By Lemma~\ref{lem:boxops}(v) every split partitions the integer points of
+its parent, and by Lemma~\ref{lem:boxops}(i) pruning discards only boxes
+containing no canonical integer profile; so induction on the tree shows
+that every canonical integer profile belongs to a discharged terminal box.
+By Lemma~\ref{lem:boxops}(iii), (iv) --- or by direct evaluation for
+one-point boxes --- the discharging cut is at most $H(2q)+\frac12$ at that
+profile, and Lemma~\ref{lem:cutsound} gives
 $\min(B,W)\le H(2q)+\frac12$ there.  Both $\min(B,W)$ and $H(2q)$ are
 integers, hence $\min(B,W)\le H(2q)$.
 \end{proof}
@@ -880,7 +992,8 @@ domain.  Consequently $t(2q)=H(2q)$ for these orders.
 \begin{proof}
 We ran the released C++17 exact box engine on all $122$ listed orders.  Every
 search exhausted its stack with no survivor, visiting $13{,}379{,}092$ nodes
-in total.  The release verifier recompiles that engine, repeats every search,
+in total; every discharge used one of the $76$ legacy cuts, and the fallback
+sweep of the full library at one-point boxes was never invoked.  The release verifier recompiles that engine, repeats every search,
 recomputes $H(2q)$ and compares every proof-relevant output field; thus it
 re-establishes the domain coverage required by Lemma~\ref{lem:boxsound}.
 
@@ -1179,7 +1292,17 @@ For $q\in\{1,2,4,6,7,8,9\}$, one has $t(2q)=H(2q)$.
 \end{proposition}
 
 \begin{proof}
-The cases $q=1,2$ follow by inspection.  For $q=4,6,7,9$, the first,
+For $q=1$, any two distinct cells of the $2\times2$ torus share a row, a
+column or a diagonal, so no black--white pair coexists and
+$t(2)=0=H(2)$.  For $q=2$, suppose $\min(B,W)\ge3$ for some line colouring
+of the $4\times4$ torus.  For each of the pairs $(R,C)$, $(R,D)$, $(C,D)$
+and $(R,A)$ --- none of which is the pair $\{D,A\}$ --- Lemma~\ref{lem:inc}
+matches the label pairs bijectively with cells, so with $x,y$ the two black
+sizes, $xy\ge3$ and $(4-x)(4-y)\ge3$; the only integer solutions have
+$x+y=4$.  The first three pairs force $|R|=|C|=|D|=2$, and the fourth then
+gives $|A|=2$.  The triple identity \eqref{eq:triple} for $R,C,D$ now reads
+$U+U'=16-4\cdot6+3\cdot4=4<6\le|\Bl|+|\Wh|$, a contradiction.  Hence
+$t(4)\le2=H(4)$.  For $q=4,6,7,9$, the first,
 second, third and fifth rows of the campaign table exclude
 $H(2q)+1$ queens of each colour.  Proposition~\ref{prop:t16sweep} does the
 same for $q=8$.  Proposition~\ref{prop:lower} supplies every lower bound.
@@ -1233,7 +1356,10 @@ The work of Clinch, Drescher, Huynh and Saffidine provided the decisive plaid
 starting point and the previous asymptotic bounds.  I also thank the
 contributors who have maintained OEIS A279405 and the reviewer whose
 incidence correction and union-domain verification materially strengthened
-this paper.
+this paper.  A second independent referee replayed the exact certificates and
+the complete finite ladder, prompted the formal dual-leaf and box-discharge
+inference lemmas, and caught a packaging defect in a distributed copy of the
+ancillary archive.
 
 \appendix
 
@@ -1241,7 +1367,10 @@ this paper.
 
 \sloppy
 
-The complete ancillary archive is bound by \texttt{SHA256SUMS}.  An immutable
+The complete ancillary archive is bound by \texttt{SHA256SUMS}.  The archive
+is packaged without platform metadata files, and the manifest check of the
+release verifier is two-sided: it fails on any missing, altered or unlisted
+file, ignoring only byte-code caches.  An immutable
 public snapshot is available at
 \begin{center}
 \url{https://github.com/jphme/math-problems/tree/459046273420a61d51bac18f3a260b4317ec2e62/peaceable-queens-even-torus}.
@@ -1340,9 +1469,21 @@ together with the second $n=17$ implementation and output.
 The rational branch trees and support duals are standalone proof objects.
 The ladder summaries and exhaustive-search outputs are audit records: their
 logical force is the corresponding short source together with the reductions
-proved in Sections~\ref{sec:ladder} and~\ref{sec:odd}.  The release command
-reruns the complete ladder; the larger board enumerations are reproducible
-with the commands in \texttt{README.txt}.
+proved in Sections~\ref{sec:ladder} and~\ref{sec:odd}.  The audits establish
+the necessary profile domains, the orbit and representative coverage, the
+candidate-space totals, the consistency and uniqueness of the output records,
+and the positive witnesses; they do not certify each individual completion
+test of the large enumerations.  Among the proof-critical campaigns, $n=15$
+and $n=17$ were decided twice by independently written enumerators, and
+$n=16$ additionally by the older two-kernel programs; the $n=8,12,14,18$
+sweeps rest on the single audited implementation
+\texttt{general\_\bs{}sweep/solver\_\bs{}b.cpp}.  The release command reruns
+the complete ladder; the larger board enumerations are reproducible with the
+complete build and run commands in \texttt{README.txt}, which also records
+the machine, compiler, per-campaign case totals and wall-clock data, and the
+SHA-256 digests of the frozen outputs.  Emitting independently checkable
+UNSAT certificates for these enumerations, and a second implementation for
+the $n=18$ sweep, remain natural hardening steps.
 
 \fussy
 
