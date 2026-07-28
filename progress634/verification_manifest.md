@@ -1,9 +1,13 @@
 # Verification manifest
 
 This manifest records the exact computations used for the positive tiling
-certificates, the \(N=33\) exhaustion, and the arithmetic audit suite in the
+certificates, the \(N=33\) exhaustion, the refutation certificates and their
+independent checker, and the arithmetic audit suite in the
 manuscript.  It was prepared on 2026-07-27 (CEST) from repository state based
-on commit `0c44c70d9ba2b31c96e6fcadbc369cb6150c0faf`; the SHA-256 inventory below,
+on commit `0c44c70d9ba2b31c96e6fcadbc369cb6150c0faf` and extended on
+2026-07-28 for the major revision (refutation certificates, independent
+checker, explicit branch-reduction proposition, imported-statement pins);
+the SHA-256 inventory below,
 rather than the commit alone, identifies every load-bearing artifact.
 
 Commands and paths beginning with `erdos634_universal/` or
@@ -33,16 +37,25 @@ For the other repository-root commands below, remove the literal
 files under `/tmp`; they do not append to or overwrite the hash-inventoried
 records.
 
-The circulation artifacts built after the report-7 audit, the final
-proof-surface corrections, and the 2026-07-27 referee pass (two wording-level
-edits: the abstract now defines $\mathcal S$ over integers $N>1$, matching the
-introduction, and Section 2 states the side--angle convention explicitly; no
-mathematical content changed) are:
+The circulation artifacts built after the report-7 audit, the 2026-07-27
+referee pass, and the 2026-07-28 major revision (version 0.4: refutation
+certificates with independent checker, explicit $N=33$ branch-reduction
+proposition and disposition tables, imported statements pinned and collected
+in a dependency ledger, rotation-system subtraction proof, fit-test and
+pruning necessity lemmas, run-status and memoization semantics, trapezoid
+theorem split, explicit Laurent isomorphism with universal-property
+corollary, $60^\circ$ unit lemma, Eisenstein-square lemma, and
+$\gamma=2\alpha$ angle-representation lemma) are:
 
 | artifact | SHA-256 |
 |---|---|
-| `erdos634_universal/paper/progress634.tex` | `9b2cb91faafdae090ebed008499f18d7398d2dcda9b4a2ed34bc8aff9835bde5` |
-| `erdos634_universal/paper/progress634.pdf` | `737a46e12aaab3c218a8f7ec6fe2159be781850d04794ca43704f5a5dbd62a71` |
+| `erdos634_universal/paper/progress634.tex` | `ba3b615677be07e561f471a1eab034d9972171526a2a700f5cf99a6abcec8128` |
+| `erdos634_universal/paper/progress634.pdf` | `2df8f4a85a8d1905b44213c2d9425adb86cb97a5799e08a174aae601310ba08d` |
+
+The 2026-07-27 referee-pass artifacts (tex
+`9b2cb91faafdae090ebed008499f18d7398d2dcda9b4a2ed34bc8aff9835bde5`, pdf
+`737a46e12aaab3c218a8f7ec6fe2159be781850d04794ca43704f5a5dbd62a71`) are
+superseded by the above.
 
 ## Environment for the 2026-07-27 reruns
 
@@ -224,6 +237,85 @@ All four report `EXHAUSTED`.  They have not been reproduced with a separately
 implemented searcher, which is why the paper keeps them in the more qualified
 “further audited exclusions” row.
 
+## Refutation certificates and the independent checker (2026-07-28)
+
+The negative results for \(N=33\) and for the 21-ray at \(n=1\) are now
+carried by exported refutation certificates validated by an independently
+written checker; the format is fixed normatively in
+`computation/tiling_search/CERT_SPEC.md`, and the paper's
+Appendix on refutation certificates states the soundness theorem.  The
+export runs use the reduced pruning configuration with memoization and
+canonicalization disabled (tree mode).  All commands below were run from
+`erdos634_universal/computation/tiling_search/` under CPython 3.14.6
+(`uv run python`), standard library only.
+
+Reduced-configuration baselines (memoized, no export):
+
+```sh
+uv run python searcher2.py --instance N33 --no-prune-segment --no-prune-invariant --json results/certificates/certruns.jsonl --tag N33_reduced_memo_baseline
+uv run python searcher2.py --group1 --shape 5 --pq 1 2 --N 21 --no-prune-segment --no-prune-invariant --json results/certificates/certruns.jsonl --tag N21_reduced_memo_baseline
+```
+
+Both report `EXHAUSTED` with zero warnings: 22,850 and 674 nodes.
+
+Certificate exports:
+
+```sh
+uv run python searcher2.py --instance N33 --no-prune-segment --no-prune-invariant --export-cert results/certificates/N33_refutation.jsonl.gz --cert-instance N33 --max-rss-mb 12000 --json results/certificates/certruns.jsonl --tag N33_cert_export
+uv run python searcher2.py --group1 --shape 5 --pq 1 2 --N 21 --no-prune-segment --no-prune-invariant --export-cert results/certificates/N21_refutation.jsonl.gz --cert-instance N21 --max-rss-mb 12000 --json results/certificates/certruns.jsonl --tag N21_cert_export
+```
+
+Both report `EXHAUSTED` with zero warnings and zero rollbacks:
+
+- `N33_refutation.jsonl.gz`: 23,157 nodes (16,516 branched; prunes
+  307 budget, 5,561 wedge, 773 short-edge), 1,217,374 bytes, export wall
+  time 27.3 s.  The tree node count equals the memoized baseline plus the
+  307 budget-pruned children materialized per the specification (zero
+  memoization sharing occurred in this search).
+- `N21_refutation.jsonl.gz`: 887 nodes (625 branched; prunes 111 budget,
+  104 wedge, 47 short-edge), 50,323 bytes, export wall time 0.7 s.  The
+  tree node count equals 674 baseline nodes plus 111 budget children plus
+  102 states the memo cache had shared.
+
+The gzip containers are written with `mtime=0` and no stored filename, so
+the digests are byte-reproducible.
+
+Independent checker runs:
+
+```sh
+uv run python check_refutation.py results/certificates/N21_refutation.jsonl.gz
+uv run python check_refutation.py results/certificates/N33_refutation.jsonl.gz
+```
+
+Verdicts: `ACCEPT N21 nodes=887` in 1.11 s and `ACCEPT N33 nodes=23157` in
+58.5 s (wall times machine-dependent).  On \(N=33\) the checker made
+198,192 candidate containment decisions by exact intersection area and
+verified 418 multi-child coverage decompositions, including the
+boundary-support (union-coverage) obligation; on \(N=21\), 6,614 rejected
+and 886 expanded candidates.  The checker was written from
+`CERT_SPEC.md` alone, shares no code with the searcher or the
+positive-certificate verifier, and imports only the Python standard
+library; its test suite
+(`tests_check_refutation.py`, 1,410 checks) accepts three synthetic valid
+certificates and rejects 44 synthetic mutants and 7 mutants of the real
+\(N=21\) certificate, including an artificial-chord subdivision caught
+only by the boundary-support check.
+
+SHA-256 digests:
+
+| artifact | SHA-256 |
+|---|---|
+| `results/certificates/N33_refutation.jsonl.gz` | `613c52ddf436aea2abffe0a1d62e7cb40f65f9ab5b792dcdd7bf4c099cc21919` |
+| `results/certificates/N21_refutation.jsonl.gz` | `7063333609b6075fc677b8cee4a130c2db301e4339809344bbb83607829eaf76` |
+| `computation/tiling_search/check_refutation.py` | `52d74ab383892ce53c10d14d9daa541263589abd8d4b0f7eabf10851ea7fd99c` |
+| `computation/tiling_search/tests_check_refutation.py` | `de71dbba20e7b2156fd12d8e014bbc8d33cc1377836c162939a4f6ccd384e81c` |
+| `computation/tiling_search/CERT_SPEC.md` | `ffaa8396c0bb0f83ea64567786e1755c067a9d4c29226a1656840b5412883bc7` |
+| `computation/tiling_search/RELAUNCH_certificates.md` | `95ee1abfcbe5aa65805166c2fd3e21bb8693cdfb6d52a611b0c53ccfe783f9dd` |
+
+The deferred certificate campaigns for the \(N=56\), \(N=70\), and
+trapezoid exhaustions, with commands, size estimates, and prerequisites,
+are recorded in `computation/tiling_search/RELAUNCH_certificates.md`.
+
 ## Arithmetic and invariant audit suite
 
 The complete suite was rerun on 2026-07-27 with these commands:
@@ -243,10 +335,15 @@ python3 erdos634_universal/computation/sieve_120rows.py 200
 The Laurent/character script ran under CPython 3.14.6 with SymPy 1.14.0 and
 mpmath 1.3.0.  The other seven scripts use only the standard library and ran
 under the CPython 3.9.6 environment identified above.  The results were,
-respectively: all strict invariant checks passed; 23/23, 76/76, 37/37, 18/18,
-53/53, 27/27, and 29/29 checks passed.  The report-3 total is 76 rather than
-the earlier 70 because its fixed-\(N\) audit now explicitly records the
-complete branch reductions for \(21,30,33,55,\) and \(66\).  The report-6
+respectively: all strict invariant checks passed; 23/23, 90/90, 37/37, 18/18,
+53/53, 27/27, and 29/29 checks passed.  The report-3 total is 90 rather than
+the earlier 76 because, in addition to the fixed-\(N\) branch reductions for
+\(21,30,33,55,\) and \(66\) added earlier, the script now carries
+section~H (2026-07-28, rerun under CPython 3.14.6): the equation-only sweep
+of Beeson's five Table-6 tiling equations at \(N=33\) over \(q\le400\),
+validated against all 53 printed rows of that paper's Tables~1--5, ending
+with the branch-empty verdicts quoted in the paper's disposition table.
+The script now exits nonzero on any failure.  The report-6
 script checks only the arithmetic consequences of the proposed forced-layer
 induction; it does not verify the missing geometric induction and is not used
 to promote any forced-layer-dependent statement.  The report-7 script performs bounded
@@ -289,7 +386,13 @@ The captured outputs are:
 | file | SHA-256 |
 |---|---|
 | `computation/tiling_search/verify_tiling.py` | `6561003dad004da2539fe3dd1c068ca2876976594f13f0772295a15af3ca008a` |
-| `computation/tiling_search/searcher2.py` | `b33ae49032f15ec851e45ebce03d02eafdec271cabc60552e1d0558aa482bc94` |
+| `computation/tiling_search/searcher2.py` (with certificate exporter, 2026-07-28) | `3eceb14e432f918a84f32c5fc3723ce1a03bfb4de477a13e48ec6cc4317dd1a8` |
+| `computation/tiling_search/searcher2.py` (pre-exporter edition used for the 2026-07-27 records) | `b33ae49032f15ec851e45ebce03d02eafdec271cabc60552e1d0558aa482bc94` |
+| `computation/tiling_search/check_refutation.py` | `52d74ab383892ce53c10d14d9daa541263589abd8d4b0f7eabf10851ea7fd99c` |
+| `computation/tiling_search/tests_check_refutation.py` | `de71dbba20e7b2156fd12d8e014bbc8d33cc1377836c162939a4f6ccd384e81c` |
+| `computation/tiling_search/CERT_SPEC.md` | `ffaa8396c0bb0f83ea64567786e1755c067a9d4c29226a1656840b5412883bc7` |
+| `computation/tiling_search/results/certificates/N33_refutation.jsonl.gz` | `613c52ddf436aea2abffe0a1d62e7cb40f65f9ab5b792dcdd7bf4c099cc21919` |
+| `computation/tiling_search/results/certificates/N21_refutation.jsonl.gz` | `7063333609b6075fc677b8cee4a130c2db301e4339809344bbb83607829eaf76` |
 | `computation/tiling_search/independent/erdos634_exact_search.py` | `298f0a49d1fa1b09584d085365e9726ea4addca6e9b569633a5515f712d49d3f` |
 | `computation/tiling_search/independent/README.md` | `e1b9cc3c23852f2a18453aef06d8dc981cb25d6ae4e7aa9b6c2d58741d34b421` |
 | `computation/tiling_search/independent/long_edge_reflex_witness.json` | `3da7e405917ede37958f3f7d588ce451f2858676dbd03a0cb9931096d4817dcb` |
@@ -298,7 +401,7 @@ The captured outputs are:
 | `computation/tiling_search/results/followup.jsonl` | `303ab9abe831f732ef31b1b993b552994b4f817ec44e8c7bef49dcf63a19f3c4` |
 | `computation/tiling_search/results/verification_20260727.jsonl` | `a03046c4c7ce7287577e553686dd4aa3d76c944bbe0bb824e623ab3799eb5ea0` |
 | `computation/tiling_search/results/verification_N33_no_seg_inv_20260727.jsonl` | `b014c99894f9b758de32a69453f2e1684e414c7172ce7840e1137e1e43e4e19d` |
-| `paper/replay_environment.toml` | `1048641a6d2b8162a1f6c817813c5672b1118032ae93e143e9e1446d08e974cc` |
+| `paper/replay_environment.toml` | `834688acfa4c1f5b59156d9ea080490eec27ac5296f7e57bbaade13134f1b157` |
 | `computation/tiling_search/results/group1.jsonl` | `7077e2c6443ef20aae8b5c7992a52e29d3c3a08b1a5ff59fda09df952f72de74` |
 | `computation/tiling_search/results/group2_frontier.jsonl` | `18c4f3d04e271ef6ea099bd96363565d8be01d8f4918103890dd7c1a93af6a77` |
 | `computation/tiling_search/jobs/trapezoid_357.tsv` | `28a6f5a9ef1880da1d2c66568cf3785704080024c19adf03f9ba2d84c618ebb2` |
@@ -311,7 +414,7 @@ The captured outputs are:
 |---|---|
 | `computation/verify_phi_invariants.py` | `816f0a235e1a04598c791a5902a78e6944f766d255911b187018c0ed4be22ade` |
 | `computation/verify_parallel_track_claims.py` | `709ccd536766ed42d2269c636d6f89381bcd785371b4884a67d5c28055fbf092` |
-| `computation/verify_theory_report3_claims.py` | `4f5460cafb600bb57ec8c25321c07e641c6ef7d9d6d10c110876191ba9a7d6e5` |
+| `computation/verify_theory_report3_claims.py` (with section H, 2026-07-28) | `45a062eddccb6efbc588b6c3e6fae5b781e5fb9178898c7ac018085272bec897` |
 | `computation/verify_theory_report4_claims.py` | `46a4bf6f5b451d5d6867c26e3a9c577df21daa3cf87c28ccb492ab80b058ebe7` |
 | `computation/verify_theory_report5_claims.py` | `3721d52f631559b35bb30d4ead80c4524004a0c9b326167dd747ff222b389f1e` |
 | `computation/verify_theory_report5_2_claims.py` | `6a1267416067b6040f49ce16d56658f762045bf70fc808463661d0671fa308a3` |
@@ -364,4 +467,5 @@ public identifier as of this manifest date.
 | `erdos634_universal/sources/adjacent_methods_2026-07-25/pdfs/Beeson_2019_Triangle_Tiling_3alpha_2beta_arXiv1206.2229v3.pdf` | `3511913efd16c4deebd6659f7db8f0b00c18546ca539cd3616de2442eafaebae` |
 | `erdos634_universal/sources/beeson_IsoscelesTilings_michaelbeeson.com_edition.pdf` | `95d41234e23aff2d4607a73484187778f7bb81c0b7a69ac6488996bf649daec7` |
 | `https://arxiv.org/pdf/1206.1974v7` (61-page arXiv PDF fetched 2026-07-27) | `e0a1059554bf1c9f51e7bbf33ffe7243e58e4994793462765636e30183958b4b` |
+| `erdos634_universal/sources/blz_2604.03609v2_solution_erdos633.pdf` (fetched 2026-07-28; Theorem~9 verified verbatim for the dependency ledger) | `8e9657b4557ca1e68159583f04e21c9cbd5637e98c0c3ad8905f81a250f1a145` |
 | `erdos634_universal/sources/zhang_2512.22696v4_tiling_triangles_2pi3.pdf` | `fcfeb2b70737ae6ff15fd3ff3eacde794438f2128a7b1d76231769f6ebac2d56` |

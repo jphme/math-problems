@@ -26,6 +26,12 @@ Sections:
      (which the new theorems + the completed N56 row-E exhaustion decide).
   F. Frontier candidate lists below 200 recomputed under the new theorems.
   G. Cross-checks against stored search verdicts (results/*.jsonl).
+  H. Group-1 equation-only sweep at N = 33: the five tiling equations of
+     Beeson 1206.2229v3 Table 6 are validated against that paper's own
+     Tables 1-5, then swept at N = 33.  Shapes 1, 2, 3, 5 are empty and the
+     shape-4 solutions die to the exact ray plus q | m, so the E-33 Group-1
+     exclusion does not depend on any of that paper's auxiliary divisibility
+     clauses (in particular not on the false printed g | M of its Thm 19).
 
 A note on rigor of the "grid-proof" checks: each polynomial identity checked
 has total degree <= 6 in each variable; verifying it on an integer grid larger
@@ -779,7 +785,155 @@ check("G5: N21 shape-5 (1,2) EXHAUSTED (paranoid re-run) -- 21 IS the (1,2) ray 
       fu.get("xchk_g1_N21", (None,))[0] == "EXHAUSTED")
 
 # ----------------------------------------------------------------------------
+# H. Group-1 equation-only sweep at N = 33
+# ----------------------------------------------------------------------------
+# The E-33 audit above excludes the five Group-1 shapes using the exact ray
+# forms of invariants.md section 5.  Those ray forms consume auxiliary
+# divisibility clauses of Beeson 1206.2229v3 (K | M^2 for shape 1, g | M for
+# shape 3, and for shape 5 our own b | C insertion, since that paper's printed
+# g | M is false -- see section 8 of STATUS.md).  This section shows the
+# exclusion does not need them: at N = 33 the five *tiling equations* of
+# 1206.2229v3 Table 6 already have no solution for shapes 1, 2, 3 and 5, and
+# the solutions they do have for shape 4 are killed by the exact shape-4 ray
+# plus q | m alone.
+#
+# Convention: s = a/c = p/q with 0 < p < q, gcd(p,q) = 1, primitive tile
+# (a,b,c) = (pq, q^2-p^2, q^2).  Table 6's printed shape-1 entry reads
+# N/M^2 = 2s^2 - 1 under a caption declaring s = a/c; that is inverted -- the
+# form forced by Theorem 4 (M^2 + N = 2K^2, s = M/K = a/c) and reproduced by
+# that paper's own Table 1 is N/M^2 = 2(c/a)^2 - 1 = 2/s^2 - 1.  H1e records
+# the discrepancy explicitly rather than silently patching it.
+print("== H. Group-1 equation-only sweep at N=33 ==")
+
+B2229_EQ_NAMES = ("s1", "s2", "s3", "s4", "s5")
+
+
+def b2229_equations(p, q, shape1_as_printed=False):
+    """Beeson 1206.2229v3 Table 6: the ratio N/M^2 for each of the five
+    shapes, as an exact Fraction, at s = a/c = p/q."""
+    s = Fraction(p, q)
+    s1 = (2 * s * s - 1) if shape1_as_printed else (2 / (s * s) - 1)
+    return {
+        "s1": s1,
+        "s2": (2 - s * s) * (3 - s * s) / ((1 - s) ** 2 * (2 + s) ** 2),
+        "s3": (3 - s * s) / (1 + s) ** 2,
+        "s4": (1 + s) / (1 - s),
+        "s5": (1 + s) * (2 - s * s) / ((1 - s) * (2 + s) ** 2),
+    }
+
+
+def pq_of_tile(a, b, c):
+    """(p,q) for a primitive Group-1 tile (pq, q^2-p^2, q^2); None if the
+    triple does not have that form."""
+    q = isqrt(c)
+    if q * q != c or q == 0 or a % q != 0:
+        return None
+    p = a // q
+    if not (0 < p < q) or gcd(p, q) != 1 or b != q * q - p * p:
+        return None
+    return p, q
+
+
+def eq_holds(shape, N, M, tile, shape1_as_printed=False):
+    pq = pq_of_tile(*tile)
+    if pq is None or M <= 0:
+        return False
+    eqs = b2229_equations(*pq, shape1_as_printed=shape1_as_printed)
+    return Fraction(N, M * M) == eqs[shape]
+
+
+def eq_solutions(shape, N, qmax):
+    """All (p,q,M) with 0<p<q<=qmax, gcd(p,q)=1, solving N = M^2 * f_shape(p/q)
+    in positive integers M."""
+    out = []
+    for q in range(2, qmax + 1):
+        for p in range(1, q):
+            if gcd(p, q) != 1:
+                continue
+            f = b2229_equations(p, q)[shape]
+            if f <= 0:
+                continue
+            r = Fraction(N) / f
+            if r.denominator == 1 and is_square(r.numerator):
+                out.append((p, q, isqrt(r.numerator)))
+    return sorted(out)
+
+
+# The five printed tables of 1206.2229v3 (read from the versioned PDF), used
+# here only to validate that b2229_equations is the source's equation set.
+B2229_TABLE1 = [(28, 2, (2, 3, 4)), (112, 4, (2, 3, 4)), (126, 6, (6, 5, 9)),
+                (153, 3, (3, 8, 9)), (252, 6, (2, 3, 4)), (368, 12, (12, 7, 16)),
+                (448, 8, (2, 3, 4)), (496, 4, (4, 15, 16))]
+B2229_TABLE2 = [(77, 5, (2, 3, 4)), (308, 10, (2, 3, 4)), (322, 8, (6, 5, 9)),
+                (442, 14, (3, 8, 9)), (693, 15, (2, 3, 4)), (897, 11, (12, 7, 16)),
+                (1232, 20, (2, 3, 4)), (1288, 16, (6, 5, 9)), (1457, 27, (4, 15, 16)),
+                (1768, 28, (3, 8, 9)), (1925, 25, (2, 3, 4))]
+B2229_TABLE3 = [(44, 6, (2, 3, 4)), (176, 12, (2, 3, 4)), (207, 15, (6, 5, 9)),
+                (234, 12, (3, 8, 9)), (396, 18, (2, 3, 4)), (624, 28, (12, 7, 16)),
+                (704, 24, (2, 3, 4)), (752, 20, (4, 15, 16)), (828, 30, (6, 5, 9)),
+                (936, 24, (3, 8, 9))]
+B2229_TABLE4 = [(45, 3, (6, 5, 9)), (48, 4, (2, 3, 4)), (64, 4, (15, 16, 25)),
+                (72, 6, (3, 8, 9)), (81, 3, (20, 9, 25)), (90, 6, (21, 40, 49)),
+                (96, 4, (35, 24, 49)), (100, 5, (15, 16, 25)), (108, 6, (2, 3, 4))]
+B2229_TABLE5 = [(21, 5, (2, 3, 4)), (34, 7, (3, 8, 9)), (70, 8, (6, 5, 9)),
+                (84, 10, (2, 3, 4)), (136, 14, (3, 8, 9)), (161, 11, (12, 7, 16)),
+                (164, 13, (15, 16, 25)), (189, 15, (2, 3, 4)), (280, 16, (6, 5, 9)),
+                (294, 22, (5, 24, 25)), (306, 14, (20, 9, 25)), (306, 21, (3, 8, 9)),
+                (336, 20, (2, 3, 4)), (438, 19, (35, 24, 49)), (465, 27, (4, 15, 16))]
+
+for tag, shape, table in [("H1a", "s1", B2229_TABLE1), ("H1b", "s2", B2229_TABLE2),
+                          ("H1c", "s3", B2229_TABLE3), ("H1d", "s4", B2229_TABLE4),
+                          ("H1e", "s5", B2229_TABLE5)]:
+    bad = [row for row in table if not eq_holds(shape, *row)]
+    check(f"{tag}: every printed row of 1206.2229v3 Table {shape[-1]} satisfies the "
+          f"{shape} tiling equation exactly ({len(table)} rows)", not bad, str(bad))
+
+check("H1f: Table 6's printed shape-1 entry 2s^2-1 (with s = a/c) does NOT reproduce "
+      "Table 1, while 2/s^2-1 does -- the printed entry is inverted",
+      all(not eq_holds("s1", N, M, t, shape1_as_printed=True) for N, M, t in B2229_TABLE1)
+      and all(eq_holds("s1", N, M, t) for N, M, t in B2229_TABLE1))
+
+QMAX_33 = 400
+SOLS_33 = {sh: eq_solutions(sh, 33, QMAX_33) for sh in B2229_EQ_NAMES}
+for tag, shape in [("H2a", "s1"), ("H2b", "s2"), ("H2c", "s3"), ("H2d", "s5")]:
+    check(f"{tag}: the {shape} tiling equation has NO solution at N=33 "
+          f"(q <= {QMAX_33}) -- exclusion needs no divisibility clause",
+          SOLS_33[shape] == [], str(SOLS_33[shape]))
+
+SHAPE4_33 = [(4, 7, 3), (16, 17, 1), (4, 29, 5), (29, 37, 2), (17, 49, 4)]
+check(f"H2e: the shape-4 tiling equation at N=33 (q <= {QMAX_33}) has exactly the "
+      "solutions (p,q,M) = (4,7,3), (16,17,1), (4,29,5), (29,37,2), (17,49,4)",
+      SOLS_33["s4"] == sorted(SHAPE4_33), str(SOLS_33["s4"]))
+
+
+def shape4_killed(p, q, N=33):
+    """(reason, killed?) for a shape-4 equation solution: the exact ray is
+    N = (q^2-p^2) m^2, and Proposition prop:group1 adds q | m."""
+    b = q * q - p * p
+    if N % b != 0 or not is_square(N // b):
+        return f"({p},{q}): ray {b}m^2 never equals {N}", True
+    m = isqrt(N // b)
+    if m % q != 0:
+        return f"({p},{q}): m={m} but q={q} does not divide m", True
+    return f"({p},{q}): SURVIVES with m={m}", False
+
+
+kills = [shape4_killed(p, q) for p, q, _ in SHAPE4_33]
+check("H3: every shape-4 equation solution at N=33 is killed by the exact ray "
+      "N=(q^2-p^2)m^2 together with q | m  [" + "; ".join(r for r, _ in kills) + "]",
+      all(k for _, k in kills))
+check("H3b: two of them are killed by q | m and three by the ray itself",
+      sum(1 for r, _ in kills if "does not divide" in r) == 2
+      and sum(1 for r, _ in kills if "never equals" in r) == 3)
+check("H4: the equation-only sweep agrees with the ray-based E-33 verdict: the whole "
+      "Group-1 branch is empty at N=33",
+      all(SOLS_33[sh] == [] for sh in ("s1", "s2", "s3", "s5"))
+      and all(k for _, k in kills)
+      and [h for h in a33["group1"] if h[0] != "s4"] == [])
+
+# ----------------------------------------------------------------------------
 print()
 print(f"SUMMARY: {len(OK)} passed, {len(FAIL)} failed")
 for name, det in FAIL:
     print("  FAILED:", name, det)
+raise SystemExit(1 if FAIL else 0)

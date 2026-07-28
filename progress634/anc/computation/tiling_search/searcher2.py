@@ -35,10 +35,14 @@ Pure Python 3 stdlib.  Run with:  uv run python searcher2.py ...
 """
 
 import sys
+import os
 import time
 import json
+import gzip
+import hashlib
 import argparse
 import resource
+from array import array
 from fractions import Fraction as Fr
 from math import isqrt, gcd, sqrt as _fsqrt
 
@@ -1057,6 +1061,621 @@ def _progress(ctx, depth):
 
 
 # ---------------------------------------------------------------------------
+# Refutation-certificate export  (CERT_SPEC.md, format erdos634-refutation-v1)
+#
+# Everything in this section is reached only through --export-cert; the ordinary
+# search path above is untouched.  The exporter is a *dedicated* per-component
+# DFS (`_cert_node`) with exactly the tree semantics of CERT_SPEC sec.3/4 --
+# memoization and canonicalization off, every node explicit in absolute
+# coordinates, ALL child components of an expanded placement listed but only ONE
+# of them recursed into -- reusing this file's geometric primitives
+# (edge_data, enumerate_placements, fit_test, subtract).
+#
+# Prune -> witness mapping (CERT_SPEC sec.3.2), reduced configuration:
+#   budget_of(area) is None                       -> {"kind": "budget"}
+#   convex corner angle < smallest tile angle      -> {"kind": "wedge", "vertex": i}
+#   selected corner's outgoing edge shorter than
+#     every tile side, far endpoint also convex    -> {"kind": "short_edge", "edge": ci}
+# The segment-semigroup and boundary-invariant prunes are forced off.  The two
+# remaining rejection paths of solve_component are handled as follows: a child
+# with non-integral area budget is NOT used to reject the placement (the
+# placement is exported as `expanded` and that child becomes a `budget`-pruned
+# node), and the tile-area / area-conservation checks are diagnostics that must
+# never fire (they are counted as warnings, as in the search path).
+# ---------------------------------------------------------------------------
+CERT_FORMAT = "erdos634-refutation-v1"
+
+
+def cert_point(p):
+    """CERT_SPEC sec.2 point: [[x,0],[0,w]] for the internal point (x, w*sqrt(D))."""
+    return [[str(p[0]), "0"], ["0", str(p[1])]]
+
+
+def cert_poly(poly):
+    return [cert_point(v) for v in poly]
+
+
+def _decode_point(pt):
+    """Inverse of cert_point; rejects anything the exporter cannot have written."""
+    (xa, xb), (ya, yb) = pt
+    if Fr(xb) != 0 or Fr(ya) != 0:
+        raise ValidationError("certificate point not in exporter normal form: %r" % (pt,))
+    return (Fr(xa), Fr(yb))
+
+
+def _decode_poly(poly):
+    return [_decode_point(p) for p in poly]
+
+
+def canonical_12(P, u):
+    """The CERT_SPEC sec.3.3 candidate list at corner P with ray direction u.
+
+    Order: i ascending over the tile angles (theta_i opposite side s_i, with
+    (s1,s2,s3) = (a,b,c)), then (along, other) = ((s_j,s_k),(s_k,s_j)) with
+    j < k, then chirality eps = +1 before eps = -1.
+    """
+    sides = (TILE.a, TILE.b, TILE.c)
+    out = []
+    for i, (cs, sw, sA, sB) in enumerate(TILE.angles):
+        expect = tuple(sides[j] for j in range(3) if j != i)
+        if (sA, sB) != expect:
+            raise ValidationError("tile angle table order does not match CERT_SPEC "
+                                  "sec.3.3: angle %d adjacent %r, expected %r"
+                                  % (i + 1, (sA, sB), expect))
+        for (along, other) in ((sA, sB), (sB, sA)):
+            for eps in (1, -1):
+                v = rot_ccw(u, cs, sw if eps > 0 else -sw)
+                out.append((P, padd(P, pscale(u, along)), padd(P, pscale(v, other))))
+    return out
+
+
+class CertExport:
+    """Node sink.  Nodes are *reserved* in depth-first preorder (so ids are
+    preorder ids and every refuted_child id exceeds its parent's) but *emitted*
+    only once their subtrees are done, because a branched line names the ids of
+    its refuted children.  Lines therefore land in the scratch file in
+    completion order; `finish` re-reads them by id and writes the gzipped file in
+    preorder.  A savepoint/rollback pair discards the nodes of a subtree that
+    turned out to be tileable (id range and byte range are both suffixes)."""
+
+    def __init__(self, path):
+        self.path = path
+        self.tmp = path + ".nodes.tmp"
+        self.fh = open(self.tmp, "w+b")
+        self.off = array("q")
+        self.ln = array("q")
+        self.n = 0                  # certificate nodes currently retained
+        self.visited = 0            # DFS nodes entered, including rolled-back ones
+        self.rolled = 0
+
+    def savepoint(self):
+        return (self.n, self.fh.tell())
+
+    def rollback(self, sp):
+        n, pos = sp
+        if n > self.n:
+            raise ValidationError("certificate rollback to a future savepoint")
+        self.rolled += self.n - n
+        del self.off[n:]
+        del self.ln[n:]
+        self.n = n
+        self.fh.seek(pos)
+        self.fh.truncate(pos)
+
+    def reserve(self):
+        i = self.n
+        self.n += 1
+        self.off.append(-1)
+        self.ln.append(0)
+        return i
+
+    def emit(self, node_id, obj):
+        data = (json.dumps(obj, separators=(",", ":")) + "\n").encode()
+        pos = self.fh.tell()
+        self.fh.write(data)
+        self.off[node_id] = pos
+        self.ln[node_id] = len(data)
+
+    def finish(self, header):
+        header["node_count"] = self.n
+        self.fh.flush()
+        # filename="" and mtime=0: the gzip container carries no metadata, so the
+        # file's SHA-256 is a function of the certificate content alone and a
+        # re-export of the same instance reproduces it byte for byte.
+        with open(self.path, "wb") as raw, gzip.GzipFile(
+                filename="", mode="wb", fileobj=raw, compresslevel=6, mtime=0) as gz:
+            gz.write((json.dumps(header, separators=(",", ":")) + "\n").encode())
+            for i in range(self.n):
+                if self.off[i] < 0:
+                    raise ValidationError("node %d was reserved but never emitted" % i)
+                self.fh.seek(self.off[i])
+                data = self.fh.read(self.ln[i])
+                if len(data) != self.ln[i] or not data.endswith(b"\n"):
+                    raise ValidationError("scratch record %d truncated" % i)
+                gz.write(data)
+        self.fh.close()
+        os.remove(self.tmp)
+        return self.n
+
+    def abort(self):
+        try:
+            self.fh.close()
+        finally:
+            if os.path.exists(self.tmp):
+                os.remove(self.tmp)
+
+
+def _export_progress(ctx, depth):
+    ex = ctx["ex"]
+    stats = ctx["stats"]
+    el = time.monotonic() - stats.start
+    sys.stderr.write(
+        "[export] visited=%d kept=%d rolled=%d depth=%d warns=%d "
+        "prunes(budget=%d wedge=%d short_edge=%d) t=%.1fs %.0f n/s rss=%.0fMB\n"
+        % (ex.visited, ex.n, ex.rolled, depth, stats.warnings, stats.cut_area,
+           stats.cut_wedge, stats.cut_corner, el,
+           ex.visited / el if el else 0, rss_mb()))
+    sys.stderr.flush()
+
+
+def _cert_node(comp, depth, ctx):
+    """Emit the certificate subtree proving `comp` untileable and return its node
+    id, or return None (emitting nothing) if `comp` turns out to be TILEABLE.
+
+    The candidate order, the corner choice and the prune order are the same as
+    solve_component's, so the retained tree is the memoization-free unfolding of
+    the reduced-pruning search.
+    """
+    ex = ctx["ex"]
+    stats = ctx["stats"]
+    sp = ex.savepoint()
+    ex.visited += 1
+    stats.nodes += 1
+    if depth > stats.max_depth:
+        stats.max_depth = depth
+    if ex.visited % 20000 == 0:
+        _export_progress(ctx, depth)
+    if ctx["max_nodes"] is not None and ex.visited > ctx["max_nodes"]:
+        raise LimitReached("max-nodes")
+    if ctx["max_seconds"] is not None and (time.monotonic() - stats.start) > ctx["max_seconds"]:
+        raise LimitReached("max-seconds")
+    if (ctx["max_rss_mb"] is not None and ex.visited % 1000 == 0
+            and rss_mb() > ctx["max_rss_mb"]):
+        raise LimitReached("max-rss-mb (%.0f MB)" % rss_mb())
+
+    nid = ex.reserve()
+    region = cert_poly(comp)
+
+    def pruned(prune):
+        ex.emit(nid, {"type": "node", "id": nid, "region": region,
+                      "status": "pruned", "prune": prune})
+        return nid
+
+    a2 = signed_area2(comp)
+    if a2 <= 0:
+        raise ValidationError("non-positive area component reached in export")
+    B = budget_of(a2)
+    if B is None:
+        stats.cut_area += 1
+        return pruned({"kind": "budget"})
+
+    edir, elen = edge_data(comp)
+    n = len(comp)
+    conv = [orient(comp[i - 1], comp[i], comp[(i + 1) % n]) > 0 for i in range(n)]
+
+    for i in range(n):
+        if conv[i] and dot(edir[i], pneg(edir[i - 1])) > TILE.cos_min:
+            stats.cut_wedge += 1
+            return pruned({"kind": "wedge", "vertex": i})
+
+    ci = None
+    best = None
+    for i in range(n):
+        if conv[i] and (best is None or comp[i] < best):
+            best = comp[i]
+            ci = i
+    if ci is None:
+        raise ValidationError("component with no convex vertex")
+    P = comp[ci]
+    d = edir[ci]
+    cosw = dot(d, pneg(edir[ci - 1]))
+
+    if conv[(ci + 1) % n] and elen[ci] < TILE.min_side:
+        stats.cut_corner += 1
+        return pruned({"kind": "short_edge", "edge": ci})
+
+    # --- what the searcher accepts at this corner, keyed by vertex set --------
+    accepted = {}
+    for (Q, R) in enumerate_placements(P, d, cosw):
+        if not fit_test(P, Q, R, comp):
+            continue
+        ta = signed_area2((P, Q, R))
+        if ta != TILE.tw2 and ta != -TILE.tw2:
+            stats.warnings += 1
+            _warn(ctx, comp, ci, Q, R, "tile area %s != %s" % (ta, TILE.tw2))
+            continue
+        try:
+            sub = subtract(comp, ci, Q, R)
+        except (ValidationError, OffLattice) as exc:
+            stats.warnings += 1
+            _warn(ctx, comp, ci, Q, R, "subtract: %s" % exc)
+            continue
+        total = ZERO
+        for cc in sub:
+            total += signed_area2(cc)
+        if total != a2 - TILE.tw2:
+            stats.warnings += 1
+            _warn(ctx, comp, ci, Q, R,
+                  "area not conserved: %s != %s" % (total, a2 - TILE.tw2))
+            continue
+        key = frozenset((P, Q, R))
+        if key in accepted:
+            raise ValidationError("two accepted placements with the same vertex set")
+        accepted[key] = sub
+
+    cands = canonical_12(P, d)
+    keys = [frozenset(t) for t in cands]
+    if len(set(keys)) != 12:
+        raise ValidationError(
+            "the 12 CERT_SPEC sec.3.3 candidates are not pairwise distinct at "
+            "corner %d (tile with two equal adjacent-side pairs); the format "
+            "cannot express this node" % ci)
+    for k in accepted:
+        if k not in keys:
+            sys.stderr.write("[FATAL] a placement the searcher expands is not one of "
+                             "the 12 CERT_SPEC sec.3.3 candidates.\n"
+                             "        comp = %s\n        corner index %d\n"
+                             % (" ".join("%s,%s" % (p[0], p[1]) for p in comp), ci))
+            sys.stderr.flush()
+            raise ValidationError("branching-lemma mapping falsified: accepted "
+                                  "placement outside the canonical 12")
+
+    entries = []
+    tileable = False
+    for tri, key in zip(cands, keys):
+        sub = accepted.get(key)
+        if sub is None:
+            entries.append({"tri": cert_poly(tri), "verdict": "rejected"})
+            continue
+        if not sub:
+            tileable = True            # the tile exactly fills the component
+            break
+        ridx = None
+        rid = None
+        for j, cc in enumerate(sub):
+            csp = ex.savepoint()
+            r = _cert_node(cc, depth + 1, ctx)
+            if r is not None:
+                ridx, rid = j, r
+                break
+            if ex.savepoint() != csp:
+                raise ValidationError("tileable subtree was not rolled back")
+        if ridx is None:
+            tileable = True            # every child tileable => comp is tileable
+            break
+        entries.append({"tri": cert_poly(tri), "verdict": "expanded",
+                        "children": [cert_poly(cc) for cc in sub],
+                        "refuted_index": ridx, "refuted_child": rid})
+
+    if tileable:
+        ex.rollback(sp)
+        return None
+    ex.emit(nid, {"type": "node", "id": nid, "region": region, "status": "branched",
+                  "corner": ci, "ray": "succ", "candidates": entries})
+    return nid
+
+
+def check_standard_position(poly):
+    """CERT_SPEC sec.3.1: longest side from (0,0) to (base,0), apex(es) above."""
+    n = len(poly)
+    lens = [seg_len(poly[i], poly[(i + 1) % n]) for i in range(n)]
+    if poly[0] != (ZERO, ZERO):
+        return "vertex 0 is %s, not the origin" % pretty(poly[0])
+    if poly[1][1] != 0 or poly[1][0] != lens[0]:
+        return "vertex 1 is %s, not (%s, 0)" % (pretty(poly[1]), lens[0])
+    if lens[0] != max(lens):
+        return "edge 0 has length %s, the longest side is %s" % (lens[0], max(lens))
+    for v in poly[2:]:
+        if v[1] <= 0:
+            return "vertex %s is not strictly above the x-axis" % pretty(v)
+    return None
+
+
+def standardize_target(poly):
+    """Return `poly` in CERT_SPEC sec.3.1 standard position (CCW).  Already-standard
+    targets are returned verbatim; a triangle that is not is rebuilt from its side
+    lengths (an exact rigid motion, applied once)."""
+    why = check_standard_position(poly)
+    if why is None:
+        return poly
+    if len(poly) != 3:
+        raise ValidationError("target is not in standard position (%s) and is not a "
+                              "triangle, so the exporter cannot place it" % why)
+    L = sorted((seg_len(poly[i], poly[(i + 1) % 3]) for i in range(3)), reverse=True)
+    base, s1, s2 = L                              # base = longest side
+    # apex X from the law of cosines; Y from the area, both exact in Q(sqrt(D))
+    x = (base * base + s2 * s2 - s1 * s1) / (2 * base)
+    y2 = s2 * s2 - x * x
+    w = rational_sqrt(y2 / FIELD_D)
+    if w is None or w <= 0:
+        raise ValidationError("standard position of the target is not in Q(sqrt(%d)): "
+                              "apex height^2 = %s" % (FIELD_D, y2))
+    out = [(ZERO, ZERO), (base, ZERO), (x, w)]
+    got = sorted((seg_len(out[i], out[(i + 1) % 3]) for i in range(3)), reverse=True)
+    if got != L or signed_area2(out) <= 0:
+        raise ValidationError("rebuilt standard-position triangle is not congruent")
+    sys.stderr.write("[export] target moved to standard position (%s)\n" % why)
+    return out
+
+
+# instances the checker is expected to know (CERT_SPEC sec.1 / obligation 1);
+# the exporter cross-checks the geometry against the name before writing it
+CERT_INSTANCES = {
+    "N33": lambda: build_instance("N33"),
+    "N21": lambda: build_group1_target(5, 1, 2, 21),
+}
+
+
+def _verify_cert_instance(name, target, N):
+    """Re-build the named instance from scratch and compare with what we are about
+    to certify, so a wrong --cert-instance cannot be attached to a certificate."""
+    if name not in CERT_INSTANCES:
+        sys.stderr.write("[warn] instance %r is not in CERT_INSTANCES; the checker "
+                         "must be taught it before this certificate can be "
+                         "validated\n" % name)
+        return
+    ident = (TILE.group, TILE.a, TILE.b, TILE.c, FIELD_D)
+    poly, gotN, _ = CERT_INSTANCES[name]()
+    if (TILE.group, TILE.a, TILE.b, TILE.c, FIELD_D) != ident:
+        raise ValidationError("instance %r rebuilds a different tile/field: %r != %r"
+                              % (name, (TILE.group, TILE.a, TILE.b, TILE.c, FIELD_D),
+                                 ident))
+    want = standardize_target(ensure_ccw(normalize_cycle(poly)))
+    if gotN != N or want != target:
+        raise ValidationError("instance %r rebuilds a different target (N %s vs %s)"
+                              % (name, gotN, N))
+
+
+def run_export_cert(poly, N, label, path, instance_name,
+                    max_nodes=None, max_seconds=None, max_rss_mb=None):
+    """Export a CERT_SPEC refutation certificate for `poly` to `path`."""
+    target = standardize_target(ensure_ccw(normalize_cycle(poly)))
+    assert_simple(target)
+    a2 = signed_area2(target)
+    got = budget_of(a2)
+    print("Tile: %s" % TILE.label)
+    print("Target: %s" % label)
+    print("Target vertices: %s" % "  ".join(pretty(v) for v in target))
+    print("Target twice-area/sqrt(D) = %s;  N = %s;  area/tile = %s" % (a2, N, got))
+    print("Certificate: format %s, instance %s, D = %d, tile sides (%d,%d,%d)"
+          % (CERT_FORMAT, instance_name, FIELD_D, TILE.a, TILE.b, TILE.c))
+    print("Certificate mode: tree (no memoization, no canonicalization); "
+          "prunes = budget, wedge, short_edge")
+    if got != N:
+        raise ValidationError("target area/tile = %s != N = %s; the root would be a "
+                              "budget-pruned node, which is a degenerate certificate"
+                              % (got, N))
+    _verify_cert_instance(instance_name, target, N)
+
+    ex = CertExport(path)
+    ctx = {"stats": Stats(), "ex": ex, "max_nodes": max_nodes,
+           "max_seconds": max_seconds, "max_rss_mb": max_rss_mb}
+    stats = ctx["stats"]
+    verdict = None
+    root = None
+    try:
+        root = _cert_node(target, 0, ctx)
+    except LimitReached as e:
+        ex.abort()
+        verdict = "UNDECIDED"
+        print("UNDECIDED (limit reached: %s) -- no certificate written" % e)
+    except BaseException:
+        ex.abort()
+        raise
+    el = time.monotonic() - stats.start
+    sha = None
+    if verdict is None:
+        if root is None:
+            ex.abort()
+            verdict = "FOUND"
+            print("A TILING EXISTS: the target is tileable, there is nothing to "
+                  "certify -- no certificate written")
+        else:
+            if root != 0:
+                raise ValidationError("root node id is %d, not 0" % root)
+            header = {"type": "header", "format": CERT_FORMAT,
+                      "instance": instance_name, "D": FIELD_D,
+                      "tile_sides": [str(TILE.a), str(TILE.b), str(TILE.c)],
+                      "target": cert_poly(target),
+                      "config": {"prunes": ["budget", "wedge", "short_edge"]}}
+            nodes = ex.finish(header)
+            verdict = "EXHAUSTED"
+            h = hashlib.sha256()
+            with open(path, "rb") as fh:
+                for chunk in iter(lambda: fh.read(1 << 20), b""):
+                    h.update(chunk)
+            sha = h.hexdigest()
+            print("EXHAUSTED: NO TILING EXISTS")
+            print("certificate: %s  (%d nodes, %d bytes)"
+                  % (path, nodes, os.path.getsize(path)))
+            print("sha256: %s" % sha)
+    print("export stats: cert_nodes=%d visited=%d rolled_back=%d max_depth=%d "
+          "warns=%d prunes(budget=%d wedge=%d short_edge=%d) wall=%.2fs"
+          % (ex.n, ex.visited, ex.rolled, stats.max_depth, stats.warnings,
+             stats.cut_area, stats.cut_wedge, stats.cut_corner, el))
+    out = {"verdict": verdict, "mode": "export-cert", "cert_path": path,
+           "cert_nodes": ex.n, "nodes": ex.visited, "rolled_back": ex.rolled,
+           "max_depth": stats.max_depth, "warns": stats.warnings,
+           "wall": round(el, 2), "rss_mb": round(rss_mb()),
+           "cut_area": stats.cut_area, "cut_wedge": stats.cut_wedge,
+           "cut_corner": stats.cut_corner, "cut_seg": 0, "cut_inv": 0,
+           "inv_miss": 0, "N": N, "label": label, "instance": instance_name,
+           "tile": TILE.label, "prune_inv": False, "prune_seg": False}
+    if sha:
+        out["cert_sha256"] = sha
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Internal structural pass over an exported certificate.
+#
+# This is NOT the independent checker of CERT_SPEC sec.5 -- it shares this file's
+# arithmetic and its notion of what the exporter meant, so it can only catch
+# exporter bugs (bad book-keeping, broken tree, lost node), never a wrong
+# mathematical claim.  check_refutation.py remains the arbiter.
+# ---------------------------------------------------------------------------
+def validate_cert_file(path):
+    with gzip.open(path, "rb") as fh:
+        lines = fh.read().decode().splitlines()
+    if not lines:
+        raise ValidationError("empty certificate")
+    hdr = json.loads(lines[0])
+    for k in ("type", "format", "instance", "D", "tile_sides", "target", "config",
+              "node_count"):
+        if k not in hdr:
+            raise ValidationError("header lacks %r" % k)
+    if hdr["type"] != "header" or hdr["format"] != CERT_FORMAT:
+        raise ValidationError("bad header type/format")
+    if hdr["config"] != {"prunes": ["budget", "wedge", "short_edge"]}:
+        raise ValidationError("unexpected config %r" % (hdr["config"],))
+    if hdr["instance"] in CERT_INSTANCES:
+        CERT_INSTANCES[hdr["instance"]]()               # (re)installs TILE and D
+    if TILE is None:
+        raise ValidationError("no tile: instance %r is unknown, cannot validate"
+                              % hdr["instance"])
+    if [str(TILE.a), str(TILE.b), str(TILE.c)] != list(hdr["tile_sides"]):
+        raise ValidationError("header tile_sides %r != tile (%d,%d,%d)"
+                              % (hdr["tile_sides"], TILE.a, TILE.b, TILE.c))
+    if int(hdr["D"]) != FIELD_D:
+        raise ValidationError("header D = %s != field D = %d" % (hdr["D"], FIELD_D))
+    nodes = [json.loads(s) for s in lines[1:]]
+    if hdr["node_count"] != len(nodes):
+        raise ValidationError("node_count %s != %d node lines"
+                              % (hdr["node_count"], len(nodes)))
+    target = _decode_poly(hdr["target"])
+    if check_standard_position(target) is not None:
+        raise ValidationError("header target is not in standard position: %s"
+                              % check_standard_position(target))
+
+    def poly_ok(poly, where):
+        if len(poly) < 3:
+            raise ValidationError("%s: polygon with %d vertices" % (where, len(poly)))
+        if signed_area2(poly) <= 0:
+            raise ValidationError("%s: polygon is not CCW / has no area" % where)
+        m = len(poly)
+        for i in range(m):
+            if peq(poly[i], poly[(i + 1) % m]):
+                raise ValidationError("%s: repeated vertex" % where)
+            if orient(poly[i - 1], poly[i], poly[(i + 1) % m]) == 0:
+                raise ValidationError("%s: collinear consecutive vertices" % where)
+        assert_simple(poly)
+
+    regions = {}
+    refs = {}
+    branched = 0
+    pruned = {"budget": 0, "wedge": 0, "short_edge": 0}
+    for idx, nd in enumerate(nodes):
+        if nd.get("type") != "node" or nd.get("id") != idx:
+            raise ValidationError("node line %d has id %r" % (idx, nd.get("id")))
+        reg = _decode_poly(nd["region"])
+        poly_ok(reg, "node %d region" % idx)
+        regions[idx] = reg
+        if nd["status"] == "pruned":
+            kind = nd["prune"]["kind"]
+            if kind not in pruned:
+                raise ValidationError("node %d: unknown prune kind %r" % (idx, kind))
+            pruned[kind] += 1
+            if kind == "wedge" and not (0 <= nd["prune"]["vertex"] < len(reg)):
+                raise ValidationError("node %d: wedge vertex out of range" % idx)
+            if kind == "short_edge" and not (0 <= nd["prune"]["edge"] < len(reg)):
+                raise ValidationError("node %d: short_edge index out of range" % idx)
+            if set(nd) != {"type", "id", "region", "status", "prune"}:
+                raise ValidationError("node %d: unexpected fields %r" % (idx, set(nd)))
+            continue
+        if nd["status"] != "branched":
+            raise ValidationError("node %d: bad status %r" % (idx, nd["status"]))
+        branched += 1
+        if set(nd) != {"type", "id", "region", "status", "corner", "ray",
+                       "candidates"}:
+            raise ValidationError("node %d: unexpected fields %r" % (idx, set(nd)))
+        ci = nd["corner"]
+        m = len(reg)
+        if not (0 <= ci < m):
+            raise ValidationError("node %d: corner out of range" % idx)
+        if orient(reg[ci - 1], reg[ci], reg[(ci + 1) % m]) <= 0:
+            raise ValidationError("node %d: corner %d is not convex" % (idx, ci))
+        if nd["ray"] != "succ":
+            raise ValidationError("node %d: ray %r (exporter only uses succ)"
+                                  % (idx, nd["ray"]))
+        if len(nd["candidates"]) != 12:
+            raise ValidationError("node %d: %d candidates, expected 12"
+                                  % (idx, len(nd["candidates"])))
+        want = canonical_12(reg[ci], unit_dir(reg[ci], reg[(ci + 1) % m]))
+        ra2 = signed_area2(reg)
+        for j, ent in enumerate(nd["candidates"]):
+            tri = _decode_poly(ent["tri"])
+            if len(tri) != 3 or [tuple(t) for t in tri] != [tuple(t) for t in want[j]]:
+                raise ValidationError("node %d candidate %d: tri does not match the "
+                                      "canonical order" % (idx, j))
+            if ent["verdict"] == "rejected":
+                if set(ent) != {"tri", "verdict"}:
+                    raise ValidationError("node %d candidate %d: extra fields"
+                                          % (idx, j))
+                continue
+            if ent["verdict"] != "expanded":
+                raise ValidationError("node %d candidate %d: bad verdict" % (idx, j))
+            if set(ent) != {"tri", "verdict", "children", "refuted_index",
+                            "refuted_child"}:
+                raise ValidationError("node %d candidate %d: bad fields" % (idx, j))
+            kids = [_decode_poly(c) for c in ent["children"]]
+            if not kids:
+                raise ValidationError("node %d candidate %d: expanded with no children"
+                                      % (idx, j))
+            tot = ZERO
+            for t, kid in enumerate(kids):
+                poly_ok(kid, "node %d candidate %d child %d" % (idx, j, t))
+                tot += signed_area2(kid)
+            if tot + TILE.tw2 != ra2:
+                raise ValidationError("node %d candidate %d: child areas %s + tile %s "
+                                      "!= region %s" % (idx, j, tot, TILE.tw2, ra2))
+            ri = ent["refuted_index"]
+            if not (0 <= ri < len(kids)):
+                raise ValidationError("node %d candidate %d: refuted_index out of range"
+                                      % (idx, j))
+            rc = ent["refuted_child"]
+            if not isinstance(rc, int) or rc <= idx or rc >= len(nodes):
+                raise ValidationError("node %d candidate %d: refuted_child %r is not a "
+                                      "later node" % (idx, j, rc))
+            if rc in refs:
+                raise ValidationError("node %d is referenced twice (%r and %r)"
+                                      % (rc, refs[rc], (idx, j)))
+            refs[rc] = (idx, j)
+            if kids[ri] != regions.get(rc, _decode_poly(nodes[rc]["region"])):
+                raise ValidationError("node %d candidate %d: children[%d] != region of "
+                                      "node %d" % (idx, j, ri, rc))
+    if regions[0] != target:
+        raise ValidationError("root region != header target")
+    missing = [i for i in range(1, len(nodes)) if i not in refs]
+    if missing:
+        raise ValidationError("%d nodes are not referenced as a refuted_child: %s"
+                              % (len(missing), missing[:10]))
+    if 0 in refs:
+        raise ValidationError("the root is referenced as a refuted_child")
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    print("[internal-ok] %s: instance %s, D=%d, tile (%s), %d nodes "
+          "(%d branched, budget=%d wedge=%d short_edge=%d), sha256 %s"
+          % (path, hdr["instance"], hdr["D"], ",".join(hdr["tile_sides"]),
+             len(nodes), branched, pruned["budget"], pruned["wedge"],
+             pruned["short_edge"], h.hexdigest()))
+    print("[internal-ok] NOT a substitute for check_refutation.py (CERT_SPEC sec.5)")
+    return {"nodes": len(nodes), "branched": branched, "pruned": pruned,
+            "sha256": h.hexdigest(), "instance": hdr["instance"]}
+
+
+# ---------------------------------------------------------------------------
 # Target construction
 # ---------------------------------------------------------------------------
 def tri_from_two_sides(ab, ac, cs, sw):
@@ -1398,6 +2017,18 @@ def main(argv):
     ap.add_argument("--quiet", action="store_true", help="do not print a found tiling")
     ap.add_argument("--warn-detail", action="store_true",
                     help="dump every skipped placement (completeness diagnostics)")
+    ap.add_argument("--export-cert", type=str, metavar="PATH",
+                    help="instead of searching, export a refutation certificate "
+                         "(CERT_SPEC.md, erdos634-refutation-v1) to PATH "
+                         "(.jsonl.gz).  Forces tree mode: memoization and "
+                         "canonicalization off, segment-semigroup and boundary-"
+                         "invariant pruning off")
+    ap.add_argument("--cert-instance", type=str, metavar="NAME",
+                    help="instance name written into the certificate header "
+                         "(default: --instance); must be one the checker knows")
+    ap.add_argument("--validate-cert", type=str, metavar="PATH",
+                    help="run the internal structural pass over an existing "
+                         "certificate and exit (NOT the independent checker)")
     args = ap.parse_args(argv)
 
     if args.paranoid:
@@ -1409,6 +2040,10 @@ def main(argv):
 
     if args.selftest:
         run_selftests()
+        return 0
+
+    if args.validate_cert:
+        validate_cert_file(args.validate_cert)
         return 0
 
     if args.reptile:
@@ -1450,10 +2085,24 @@ def main(argv):
     if args.mcap != 16 and TILE.inv is not None:
         TILE.inv = BoundaryInvariant(TILE.a, TILE.b, TILE.c,
                                      TILE.angles[0][0], TILE.angles[0][1], args.mcap)
-    rec = run_search(poly, N, label, args.max_nodes, args.max_seconds,
-                     prune_inv=not args.no_prune_invariant, quiet=args.quiet,
-                     prune_seg=not args.no_prune_segment,
-                     max_rss_mb=args.max_rss_mb or None)
+    if args.export_cert:
+        name = args.cert_instance or args.instance
+        if not name:
+            ap.error("--export-cert needs --cert-instance NAME (or --instance)")
+        if not (args.no_prune_segment and args.no_prune_invariant):
+            print("[export] reduced pruning configuration forced: the segment-"
+                  "semigroup and boundary-invariant prunes are off")
+        rec = run_export_cert(poly, N, label, args.export_cert, name,
+                              max_nodes=args.max_nodes,
+                              max_seconds=args.max_seconds,
+                              max_rss_mb=args.max_rss_mb or None)
+        if rec["verdict"] == "EXHAUSTED":
+            validate_cert_file(args.export_cert)
+    else:
+        rec = run_search(poly, N, label, args.max_nodes, args.max_seconds,
+                         prune_inv=not args.no_prune_invariant, quiet=args.quiet,
+                         prune_seg=not args.no_prune_segment,
+                         max_rss_mb=args.max_rss_mb or None)
     if args.json:
         rec["argv"] = argv
         rec["tag"] = args.tag or ""

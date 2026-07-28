@@ -56,8 +56,10 @@ Let $\Sset$ be the set of integers $N>1$ for which some nondegenerate
 Euclidean triangle can be tiled by $N$ congruent triangles.  This paper
 continues the determination of the prime members of $\Sset$ and develops a
 framework for the full Erd\H{o}s Problem~634.  We give exact-coordinate
-certificates proving $88,189\in\Sset$, and an exact computer-assisted
-exhaustion proving $33\notin\Sset$.  The $189$-tiling settles the first unknown
+certificates proving $88,189\in\Sset$, and an
+exact computer-assisted exhaustion proving $33\notin\Sset$ whose complete
+branch tree is exported as a finite refutation certificate and validated by
+an independently written checker.  The $189$-tiling settles the first unknown
 multiplier on the Group~1 ray $21n^2$ and, with known constructions, shows that
 every multiplier $n\ge2$ occurs on that ray.
 
@@ -110,8 +112,9 @@ does not decide which multipliers $m$ are geometrically realizable.  The three
 principal contributions of this paper are:
 \begin{enumerate}[leftmargin=2.2em]
 \item exact, independently checkable certificates for the new counts $88$
-      and $189$, together with a carefully scoped computer-assisted exclusion
-      of $33$;
+      and $189$, together with an exclusion of $33$ whose complete search
+      tree is exported as a finite refutation certificate and validated by
+      an independently written checker;
 \item a single Laurent quotient that closes the
       $\chi(j,m)=(-1)^jz^m$ ideal-membership programme for $120^\circ$ tiles;
       and
@@ -123,33 +126,176 @@ and identify the remaining geometric obstruction.
 
 \paragraph{Evidence levels.}
 A result labelled \emph{proved} has a mathematical proof here or in a cited
-source.  A \emph{computer-assisted theorem} depends on an exact exhaustive
-search whose completeness argument and reproducibility data are given in
-Appendix~\ref{app:verification}.  A \emph{verified certificate} is a positive
-tiling rechecked from exact coordinates, independently of the search history.
-The label \emph{conditional} is reserved for consequences of the unfinished
-forced-layer lemma in Appendix~\ref{app:conditional}.  No conditional statement
-is used to prove an unconditional result.
+source.  An \emph{independently certified computer-assisted theorem} depends
+on an exact exhaustive search whose complete branch tree has been exported as
+a finite refutation certificate and accepted by a checker written from the
+certificate specification alone, sharing no code with the search
+(Appendix~\ref{app:certificates}).  For such a result the search program is
+not part of the proof surface: the certificate, the checker, and the lemmas
+of Appendix~\ref{app:negative} are.  A plain \emph{computer-assisted theorem}
+depends on an exact exhaustive search for which no such certificate has been
+exported, so it rests on one implementation, and its completeness argument
+and reproducibility data in Appendix~\ref{app:verification} are the proof
+surface.  A \emph{verified certificate} is a positive tiling rechecked from
+exact coordinates, independently of the search history.  The label
+\emph{conditional} is reserved for consequences of the unfinished
+forced-layer lemma in Appendix~\ref{app:conditional}.  No conditional
+statement is used to prove an unconditional result.
 
 \section{The classified branches and the prime case}\label{sec:framework}
 
-We use the classification in the same form as \cite{HarriesPrime}.  If the
-tile has incommensurable angles and the tiled triangle is neither a reptile nor
-covered by the isosceles or equilateral classifications, the non-similar
-possibilities lie in two groups:
+We use the classification in the same form as \cite{HarriesPrime}, but we
+now state the imported statements on which every arithmetic branch of this
+paper rests.  Throughout, $T$ is the tiled triangle and $R$ the tile, with
+angles $\alpha,\beta,\gamma$ opposite the sides $a,b,c$; \emph{commensurable
+angles} means that all three tile angles are rational multiples of $\pi$;
+reflections are allowed and no tiling is assumed edge-to-edge.  All
+statements below are quoted or transcribed from the cited versions; the
+version pins and the logical role of each are collected in the dependency
+ledger, Tables~\ref{tab:ledger} and~\ref{tab:ledgerb}.
+
+\subsection{Imported classification statements}\label{sec:imports}
+
+The classification splits by the shape of the target, not by the tile.  We
+use it in four pieces.
+
+\begin{theorem}[Imported; reptilings, {\cite{SWW91}}, as restated in
+{\cite[Thm.~4]{BLZ633}} and tabulated in {\cite[Table~3]{Beeson7}}]
+\label{thm:imp-reptile}
+If $T$ is similar to $R$, then $N\in\{n^2\}\cup\{e^2+f^2\}\cup\{3n^2\}$, the
+second family occurring exactly for right tiles and the third for the
+$(\pi/6,\pi/3,\pi/2)$ tile; every value in these families occurs.
+\end{theorem}
+
+\begin{theorem}[Imported; commensurable tiles, {\cite[Thm.~3 and Table~3]{Beeson7}}]
+\label{thm:imp-comm}
+If all three angles of $R$ are rational multiples of $\pi$, then the pair
+$(T,R)$ and $N$ correspond to one of the eight lines of
+\cite[Table~3]{Beeson7}; in particular
+\[
+   N\in\{n^2\}\cup\{e^2+f^2\}\cup\{2n^2\}\cup\{3n^2\}\cup\{6n^2\}.
+\]
+\end{theorem}
+
+\begin{theorem}[Imported; non-isosceles targets, Laczkovich,
+{\cite[Thm.~4.1]{Lacz95}}, as tabulated in {\cite[Table~4]{Beeson7}} and
+restated in {\cite[Thm.~9]{BLZ633}}]
+\label{thm:imp-nonisosceles}
+Suppose $T$ is not isosceles, $T$ is not similar to $R$, and the angles of
+$R$ are not all rational multiples of $\pi$.  Then, after possibly
+interchanging $(\alpha,a)$ with $(\beta,b)$, exactly one of the following
+holds:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $3\alpha+2\beta=\pi$ and $T$ has angles $(2\alpha,\beta,\alpha+\beta)$
+      or $(2\alpha,\alpha,2\beta)$ \textup{(Group 1, shapes 1--2)};
+\item $\gamma=2\pi/3$ and $T$ has angles $(\alpha,2\alpha,3\beta)$,
+      $(\alpha,2\beta,2\alpha+\beta)$, $(\alpha,\alpha+\beta,\alpha+2\beta)$
+      or $(2\alpha,2\beta,\alpha+\beta)$ \textup{(Group 2, rows II--V)}.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Imported; isosceles non-equilateral targets,
+{\cite[Thm.~3]{BeesonPrime}}]\label{thm:imp-isosceles}
+Let $T$ be isosceles and not equilateral, $N$-tiled by $R$, and suppose $T$
+is not similar to $R$.  Then, possibly after renaming $\alpha$ and $\beta$:
+\textup{(i)} $\gamma=2\alpha$, or $\gamma=\pi/2$, or $\gamma=2\pi/3$, or
+$3\alpha+2\beta=\pi$; \textup{(ii)} unless $\gamma=\pi/2$, the angles of $R$
+are incommensurable; \textup{(iii)} the base angles of $T$ are $\alpha$,
+$\beta$, or $\alpha+\beta$.
+\end{theorem}
+
+\begin{theorem}[Imported; equilateral targets, Laczkovich,
+{\cite[Thm.~3.3]{Lacz12}}]\label{thm:imp-equilateral}
+Let $T$ be equilateral and $N$-tiled by $R$.  If $\alpha$ is not a rational
+multiple of $\pi$, then $\gamma=\pi/3$ or $\gamma=2\pi/3$.  If $\alpha$ is a
+rational multiple of $\pi$, then $R$ is equilateral, or the right triangle
+with a $\pi/6$ angle, or the isosceles triangle with a $\pi/6$ apex.
+\end{theorem}
+
+\noindent The statement above is the form in which \cite[Thm.~3.3]{Lacz12}
+is invoked in the proof of \cite[Thm.~11]{BeesonPrime}, which is the source
+we read; the 2012 paper's own wording was not re-verified here.  Note also
+that \cite[Lemma~7.1]{Lacz12} is the step patched in the appendix of
+\cite{BZRat}.
+
+\begin{theorem}[Imported; right tiles, {\cite[Thm.~7.10]{BeesonIso}}]
+\label{thm:imp-right}
+Let $N>1$ and let $R$ be right-angled with angles $(\alpha,\beta,\pi/2)$.
+Then an isosceles $T$ is $N$-tileable by $R$ only in the following cases:
+$N/2$ is a square (any isosceles $T$); $N/2=r^2+p^2$ (base angles $\beta$
+with $\tan\beta=r/p$, and this is an equivalence); $N$ is a square (right
+isosceles $T$); $N=6k^2$ (base angles $\pi/6$).  If none of these applies,
+no isosceles $T$ can be $N$-tiled by any right tile.
+\end{theorem}
+
+\subsection{Imported rationality and parametrization statements}
+\label{sec:imports-rat}
+
+Each branch needs its own licence to normalize the tile to an integer
+triple.  There are three such licences and they are logically independent.
+
+\begin{theorem}[Imported; Beeson--Zhang rationality,
+{\cite[Thm.~1.2]{BZRat}}, quoted as {\cite[Thm.~1]{Zhang25}}]
+\label{thm:imp-rat}
+Let $T$ be tiled by $R$ with $R$ not similar to $T$, $R$ not a right
+triangle, and $R$ having incommensurable angles.  Then $R$ has commensurable
+sides.
+\end{theorem}
+
+Theorem~\ref{thm:imp-rat} is what licenses the integer normalization of the
+Group~2 tile recorded in \eqref{eq:eisenstein} below.  For Group~1 we do not
+need it: rationality there is internal to \cite{Beeson2229}.
+
+\begin{theorem}[Imported; rational Group-1 tile,
+{\cite[Thm.~3]{Beeson2229}}]\label{thm:imp-g1rat}
+Let $T$ be $N$-tiled by a tile with sides $(a,b,c)$ and angles
+$(\alpha,\beta,\gamma)$, let $3\alpha+2\beta=\pi$, and suppose $T$ is not
+similar to the tile.  Then the tile is rational; specifically $s=a/c$ and
+$b/c$ are rational.
+\end{theorem}
+
+With $s=a/c=p/q$ in lowest terms, $0<p<q$, and $b/c=1-s^2$
+\cite[Lemma~2]{Beeson2229}, the tile is a positive rational multiple of
+$(pq,\,q^2-p^2,\,q^2)$, and that triple is primitive: a prime dividing $q^2$
+and $pq$ divides $q$, hence divides $q^2-p^2$ and therefore $p$, contrary to
+$\gcd(p,q)=1$.  This is the normalization used in
+Section~\ref{sec:otherbranches}.
+
+\begin{theorem}[Imported; the $\gamma=2\alpha$ branch,
+{\cite[Thm.~10.5, Lemma~11.2, Lemma~11.4]{BeesonIso}}]
+\label{thm:imp-g2a}
+Let $T$ be isosceles with base angles $\alpha$, $\alpha/\pi\notin\Q$, and
+let $T$ be $N$-tiled by a tile with angles $(\alpha,\beta,2\alpha)$.  Then
+the tile is rational; after scaling, its sides are integers without a common
+factor and
+\[
+   (a,b,c)=(u^2,\ v^2-u^2,\ uv)
+\]
+for coprime integers $u,v$ with $u<v<2u$; and the equal side $X$ of $T$
+satisfies the area equation $X^2=Nab$.
+\end{theorem}
+
+\noindent The area equation is elementary---both areas carry the factor
+$\sin(\alpha+\beta)$---so only the rationality and the parametrization are
+genuine imports.
+
+\subsection{The two groups}\label{sec:twogroups}
+
+Putting the pieces together, the branches that survive for a target that is
+neither a reptile nor covered by the commensurable or right-tile lists are
+the two groups
 \[
   3\alpha+2\beta=\pi \quad\text{(Group 1)},\qquad
-  \gamma=\frac{2\pi}{3}\quad\text{(Group 2)}.
+  \gamma=\frac{2\pi}{3}\quad\text{(Group 2)},
 \]
-Beeson--Zhang rationality then makes the relevant tile sides commensurable
-\cite{BZRat}.  The Group~2 tile can consequently be scaled to a primitive
+together with the two isolated branches $\gamma=2\alpha$ (isosceles target)
+and $\gamma=\pi/3$ (equilateral target).  Proposition~\ref{prop:reduction33}
+below carries out the resulting case division in full for $N=33$.  The Group~2 tile can consequently be scaled to a primitive
 integer triple
 \begin{equation}\label{eq:eisenstein}
        c^2=a^2+ab+b^2,\qquad \gcd(a,b,c)=1,
 \end{equation}
-where $c$ is opposite the $120^\circ$ angle.  Throughout the paper, the tile
-angles $\alpha,\beta,\gamma$ are opposite the tile sides $a,b,c$,
-respectively.
+where $c$ is opposite the $120^\circ$ angle.
 
 \begin{lemma}[Arithmetic of primitive Group~2 triples]\label{lem:g2-units}
 For a primitive positive solution of \eqref{eq:eisenstein}, the integers
@@ -169,6 +315,48 @@ whereas $c^2\equiv0\pmod9$, a contradiction.  Hence $3\nmid c$.  Finally,
 pairwise coprimality gives $\gcd(a-b,ab)=1$, and
 $(a-b)^2\equiv c^2\not\equiv0\pmod3$ gives $3\nmid(a-b)$.  The stated unit
 claims follow.
+\end{proof}
+
+\begin{lemma}[Arithmetic of primitive $60^\circ$ triples]\label{lem:g60-units}
+Let $a,b,c$ be positive integers with
+\[
+       c^2=a^2-ab+b^2,\qquad\gcd(a,b,c)=1 .
+\]
+Then $a,b,c$ are pairwise coprime, $3\nmid c$, $3\nmid(a+b)$, and both
+$c$ and $a+b$ are units modulo $3ab$.
+\end{lemma}
+
+\begin{proof}
+If a prime $\ell$ divides two of $a,b,c$, then the norm equation in the
+forms
+\[
+ c^2=a^2-ab+b^2,\qquad b^2=c^2-a^2+ab,\qquad a^2=c^2+ab-b^2
+\]
+makes $\ell$ divide the square of the third, hence the third, contrary to
+primitivity.  Thus the triple is pairwise coprime.
+
+Next, $a^2-ab+b^2=(a+b)^2-3ab$, so
+\[
+             c^2\equiv(a+b)^2\pmod3,
+\]
+and therefore $3\mid c$ if and only if $3\mid(a+b)$.  (Equivalently: among the
+nine residue pairs $(a,b)$ modulo $3$, exactly the three with
+$a+b\equiv0\pmod3$ make $a^2-ab+b^2$ divisible by $3$.)  Suppose
+$3\mid(a+b)$, hence $3\mid c$.  Then $3\nmid a$, since $3\mid a$ together with
+$3\mid(a+b)$ would give $3\mid b$, contradicting $\gcd(a,b)=1$.  Write
+$b=-a+3k$ with $k\in\Z$; then
+\[
+ c^2=a^2-a(-a+3k)+(-a+3k)^2=3a^2-9ak+9k^2 .
+\]
+As $3\nmid a$ we have $a^2\equiv1\pmod3$, so $c^2\equiv3a^2\equiv3\pmod9$,
+whereas $3\mid c$ forces $9\mid c^2$.  This contradiction gives
+$3\nmid(a+b)$ and $3\nmid c$.
+
+Finally, pairwise coprimality gives $\gcd(c,ab)=1$, and with $3\nmid c$ the
+residue of $c$ is a unit modulo $3ab$.  Likewise
+$\gcd(a+b,a)=\gcd(b,a)=1$ and $\gcd(a+b,b)=\gcd(a,b)=1$, so
+$\gcd(a+b,ab)=1$; with $3\nmid(a+b)$ the residue of $a+b$ is a unit modulo
+$3ab$ as well.
 \end{proof}
 
 The six Group~2 target shapes are listed in Table~\ref{tab:group2}.  We use
@@ -211,6 +399,13 @@ delegating the other branches to the cited classification papers.  We do not
 repeat that proof.  Its role here is to close one slice of $\Sset$ and to fix
 the imported framework on which the composite investigation rests.
 
+None of the prime-case results is used in any proof in this paper.
+Theorem~\ref{thm:no33}, Proposition~\ref{prop:reduction33} and the ledger of
+Appendix~\ref{app:ledger} import only the classification, rationality and
+construction statements of Sections~\ref{sec:imports}--\ref{sec:imports-rat}
+and of Tables~\ref{tab:ledger} and~\ref{tab:ledgerb}; the prime classification enters solely as
+context and as the corroborating rows of that ledger.
+
 \section{New exact tilings and the exclusion of 33}\label{sec:newcounts}
 
 \begin{theorem}[Verified exact certificates]\label{thm:88189}
@@ -229,8 +424,10 @@ The exact vertex coordinates are the certificates identified in
 Appendix~\ref{app:positive}.  For each certificate, an exact checker verifies
 the three squared side lengths of every tile, containment in the target,
 pairwise interior-disjointness by rational polygon clipping, and equality of
-the exact total area with the target area.  This proves that the listed
-triangles are the union of the listed congruent tiles.  Subdividing every tile
+the exact total area with the target area.  By Lemma~\ref{lem:coverage} these
+four checks force the union of the listed tiles to be exactly the
+reconstructed target, so that target is tiled by the listed congruent copies.
+Subdividing every tile
 quadratically into $m^2$ similar copies gives the final assertion.
 \end{proof}
 
@@ -247,7 +444,10 @@ quadratically into $m^2$ similar copies gives the final assertion.
 \par\smallskip{\small $189$ copies of $(2,3,4)$ tile $(36,36,63)$.}
 \end{minipage}
 \caption{The two new tilings.  These images are renderings of the exact
-coordinate certificates, not geometric evidence in place of them.}
+coordinate certificates, not geometric evidence in place of them; the
+certificates rendered here have SHA-256 digests beginning
+\texttt{163327fc} ($N=88$) and \texttt{28f33084} ($N=189$), printed in full
+in Appendix~\ref{app:positive}.}
 \label{fig:newtilings}
 \end{figure}
 
@@ -262,36 +462,333 @@ $21n^2$; see Section~\ref{sec:otherbranches}.  The known $84$- and
 $336$-tilings give multipliers $2$ and $4$ \cite{Beeson2229}, while the new
 tiling gives multiplier $3$.  The addition theorem below therefore yields:
 
-\begin{corollary}[Computer-assisted]\label{cor:21ray}
-On the Group~1 shape-5 ray $21n^2$, a tiling exists exactly for $n\ge2$.
+\begin{corollary}[The ray $21n^2$]\label{cor:21ray}
+Let the target be the Group~1 shape-5 triangle for $(p,q)=(1,2)$ at
+multiplier $n$, tiled by the tile $(2,3,4)$; at $n=1$ this is the triangle
+with side lengths $(12,12,21)$.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \textup{(proved, from verified certificates)} For every $n\ge2$ a
+      tiling exists.
+\item \textup{(computer-assisted, independently certified)} For $n=1$ no
+      tiling exists.
+\end{enumerate}
+Hence a tiling on this ray exists exactly for $n\ge2$, and
+$21n^2\in\Sset$ exactly for $n\ge2$.
 \end{corollary}
 
 \begin{proof}
-Beeson's Table~5 reports $n=1$ as negative on the basis of a computer boundary
-search \cite{Beeson2229}.  Our exact polygon search supplies the documented
-proof surface: it exhausts the $21$-tile shape-5 target in $415$ states.
-The multipliers $2$ and $3$ occur, and
-Proposition~\ref{prop:addition} makes the multiplier set additively closed.
-Since $\langle2,3\rangle=\{n\ge2\}$, every remaining multiplier occurs.
+(i) The known $84$- and $336$-tilings give the multipliers $2$ and $4$
+\cite{Beeson2229}, and Theorem~\ref{thm:88189}(ii) gives the multiplier $3$
+as an exact coordinate certificate.  The corner data of
+Appendix~\ref{app:addition} verify the hypotheses of
+Proposition~\ref{prop:addition} for this shape, so the multiplier set is
+additively closed; since $\langle2,3\rangle=\{n\ge2\}$, every $n\ge2$ occurs.
+
+(ii) The exporter of Appendix~\ref{app:certificates}, run on this instance,
+produced the refutation certificate \pathcode{N21_refutation.jsonl.gz} with
+$887$ nodes and SHA-256 \texttt{70633336\ldots9eaf76}, which the independent
+checker (SHA-256 \texttt{52d74ab3\ldots7fd99c}) accepts.  By
+Theorem~\ref{thm:cert-sound} the target admits no tiling by $(2,3,4)$.
+Corroboration, not used in the proof: the primary exact polygon search
+exhausts the same instance in $415$ states with no skipped placement, a
+replay with the general segment-semigroup table and boundary-invariant
+pruning disabled exhausts it in $674$ states, both in the sense of
+Definition~\ref{def:runstatus}; and Beeson's
+Table~5 reports $n=1$ as negative on the basis of a computer boundary
+search \cite{Beeson2229}.
 \end{proof}
 
-\begin{theorem}[Computer-assisted]\label{thm:no33}
+Before excluding $33$ we record the branch reduction in full.  The point of
+the next proposition is that the initial list is exhaustive for a reason that
+can be checked line by line against named statements of named versions,
+rather than by a global appeal to a collection of classification papers.
+
+\begin{proposition}[Complete branch reduction for $N=33$]
+\label{prop:reduction33}
+Let $T$ be a nondegenerate Euclidean triangle tiled by $33$ triangles
+congruent to a common tile $R$; reflections are allowed and the tiling is
+not assumed edge-to-edge.  Then, after possibly interchanging
+$(\alpha,a)$ with $(\beta,b)$ and possibly reflecting, exactly one of the
+following mutually exhaustive cases holds.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.6em]
+\item $T$ is similar to $R$ \textup{(reptiling)}.
+\item $T$ is not similar to $R$ and all three angles of $R$ are rational
+      multiples of $\pi$.
+\item $T$ is not similar to $R$, $\gamma=\pi/2$, and $T$ is isosceles.
+\item $3\alpha+2\beta=\pi$ and $T$ has angles
+      $(2\alpha,\beta,\alpha+\beta)$ \textup{(shape 1)}.
+\item $3\alpha+2\beta=\pi$ and $T$ has angles $(2\alpha,\alpha,2\beta)$
+      \textup{(shape 2)}.
+\item $3\alpha+2\beta=\pi$ and $T$ is isosceles with base angles $\beta$,
+      i.e.\ $T=(\beta,\beta,3\alpha)$ \textup{(shape 3)}.
+\item $3\alpha+2\beta=\pi$ and $T$ is isosceles with base angles
+      $\alpha+\beta$, i.e.\ $T=(\alpha+\beta,\alpha+\beta,\alpha)$
+      \textup{(shape 4)}.
+\item $3\alpha+2\beta=\pi$ and $T$ is isosceles with base angles $\alpha$,
+      i.e.\ $T=(\alpha,\alpha,\alpha+2\beta)$ \textup{(shape 5)}.
+\item $\gamma=2\alpha$ and $T$ is isosceles with base angles $\alpha$, i.e.\
+      $T=(\alpha,\alpha,\pi-2\alpha)$.
+\item $\gamma=2\pi/3$ and $T$ is isosceles with base angles $\alpha$, i.e.\
+      $T=(\alpha,\alpha,\alpha+3\beta)$ \textup{(row I)}.
+\item $\gamma=2\pi/3$ and $T=(\alpha,2\alpha,3\beta)$ \textup{(row II)}.
+\item $\gamma=2\pi/3$ and $T=(\alpha,2\beta,2\alpha+\beta)$
+      \textup{(row III)}.
+\item $\gamma=2\pi/3$ and $T=(\alpha,\alpha+\beta,\alpha+2\beta)$
+      \textup{(row IV)}.
+\item $\gamma=2\pi/3$ and $T=(2\alpha,2\beta,\alpha+\beta)$
+      \textup{(row V)}.
+\item $\gamma=2\pi/3$ and $T$ is equilateral \textup{(row E)}.
+\item $\gamma=\pi/3$ and $T$ is equilateral.
+\end{enumerate}
+In cases \textup{(iv)--(xvi)} the tile is not similar to $T$ and its angles
+are incommensurable, so it may be normalized to a primitive integer triple:
+to $(pq,q^2-p^2,q^2)$ with $0<p<q$, $\gcd(p,q)=1$ in cases
+\textup{(iv)--(viii)} by Theorem~\ref{thm:imp-g1rat}; to
+$(u^2,v^2-u^2,uv)$ with $u<v<2u$, $\gcd(u,v)=1$ in case \textup{(ix)} by
+Theorem~\ref{thm:imp-g2a}; and to a solution of \eqref{eq:eisenstein} in
+cases \textup{(x)--(xv)} by Theorem~\ref{thm:imp-rat}.  In case
+\textup{(xvi)} the same argument applies with $c^2=a^2-ab+b^2$.
+
+Tables~\ref{tab:disposition33} and~\ref{tab:disposition33b} dispose of every case except
+\textup{(x)}, and case \textup{(x)} leaves exactly one instance: the tile
+$(a,b,c)=(5,3,7)$ at scale $k=bm=3$, that is, the target with sides
+$(21,21,33)$.  The eliminations use only
+Lemma~\ref{lem:boundary-integrality}, Corollary~\ref{cor:rows},
+Proposition~\ref{prop:group1}, Proposition~\ref{prop:gamma2alpha},
+Remark~\ref{rem:boundaryscope} and the imported statements of
+Section~\ref{sec:imports}.
+\end{proposition}
+
+\begin{proof}
+Exhaustiveness of \textup{(i)--(xvi)}.  If $T$ is similar to $R$ we are in
+case~(i).  Otherwise, if the tile angles are all rational multiples of $\pi$
+we are in case~(ii).  So assume $T$ is not similar to $R$ and the tile angles
+are incommensurable, and split on the shape of $T$.
+
+If $T$ is not isosceles, Theorem~\ref{thm:imp-nonisosceles} gives shapes 1--2
+of Group~1 and rows II--V of Group~2, i.e.\ cases (iv), (v) and
+(xi)--(xiv).
+
+If $T$ is isosceles and not equilateral, Theorem~\ref{thm:imp-isosceles}(i)
+leaves $\gamma\in\{2\alpha,\pi/2,2\pi/3\}$ or $3\alpha+2\beta=\pi$.  The
+value $\gamma=\pi/2$ is case~(iii).  Part~(iii) of that theorem restricts the
+base angles of $T$ to $\alpha$, $\beta$ or $\alpha+\beta$.  For
+$3\alpha+2\beta=\pi$ these three options are exactly shapes 5, 3 and 4, i.e.\
+cases (viii), (vi) and (vii).  For $\gamma=2\pi/3$ one has
+$\alpha+\beta=\pi/3$, so base angles $\alpha+\beta$ would make $T$
+equilateral, contrary to assumption; base angles $\alpha$ or $\beta$ give
+row~I, i.e.\ case (x), after the interchange $(\alpha,a)\leftrightarrow
+(\beta,b)$.  For $\gamma=2\alpha$, the pairing of target shape with tile in
+\cite[Table~4]{Beeson7} (Laczkovich's second table,
+\cite[Thm.~4.1]{Lacz95}) is $T=(\alpha,\alpha,\pi-2\alpha)$, i.e.\ base
+angles $\alpha$; this is case (ix).
+
+If $T$ is equilateral, Theorem~\ref{thm:imp-equilateral} gives
+$\gamma\in\{\pi/3,2\pi/3\}$, i.e.\ cases (xvi) and (xv).
+
+The cases are mutually exclusive because the tile angle families
+$\gamma=2\alpha$, $\gamma=\pi/2$, $\gamma=2\pi/3$, $\gamma=\pi/3$ and
+$3\alpha+2\beta=\pi$ are pairwise incompatible for a tile with
+incommensurable angles, and because the listed target shapes are pairwise
+non-similar for such a tile.
+
+Dispositions.  These are the entries of Tables~\ref{tab:disposition33} and~\ref{tab:disposition33b};
+each is a finite arithmetic check on $N=33$, and all of them are executable
+in \pathcode{computation/verify_theory_report3_claims.py}.
+\end{proof}
+
+\begin{remark}
+Three hypotheses are load-bearing in the exhaustiveness argument and are
+therefore stated in the proposition rather than assumed silently:
+reflections are allowed, no tiling is edge-to-edge, and the case division is
+by the shape of $T$ and not by the tile.  The incommensurability of the tile
+angles is \emph{not} a standing hypothesis of the proposition; it is the
+complement of case~(ii).  Case~(iii) is the only case in which the tile
+angles may be commensurable while $T$ is not similar to $R$
+\textup{(}Theorem~\ref{thm:imp-isosceles}(ii)\textup{)}, which is why the
+right-tile branch is disposed of by Theorem~\ref{thm:imp-right} rather than
+by an arithmetic ray.
+\end{remark}
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.145\linewidth}
+>{\raggedright\arraybackslash}p{0.185\linewidth}
+>{\raggedright\arraybackslash}p{0.375\linewidth}
+>{\raggedright\arraybackslash}p{0.165\linewidth}@{}}
+\toprule
+branch & source theorem & $N=33$ arithmetic & disposition \\
+\midrule
+(i) reptile
+ & Thm.~\ref{thm:imp-reptile}
+ & $33$ is not a square; $33=3\cdot11$ with $11\equiv3\ (4)$ to an odd
+   power, so not $e^2+f^2$; $33/3=11$ is not a square
+ & excluded \\
+(ii) commensurable tile
+ & Thm.~\ref{thm:imp-comm}
+ & $33\notin\{n^2,e^2+f^2,2n^2,3n^2,6n^2\}$: $33$ is odd, and
+   $33/3=11$, $33/6\notin\Z$
+ & excluded \\
+(iii) right tile, $T$ isosceles
+ & Thm.~\ref{thm:imp-right}
+ & $33$ is odd, so $N/2\notin\Z$; $33$ is not a square; $33\ne6k^2$
+ & excluded by the last clause \\
+(iv) G1 shape 1
+ & {\cite[Thm.~4]{Beeson2229}}; Cor.~\ref{cor:shape1ray}
+ & $N=t^2(2q^2-p^2)$ with $t\in\N$; $t^2\mid33$ forces $t=1$, and
+   $2q^2-p^2=33$ with $p<q$ gives $q^2<33$, i.e.\ $q\le5$, where no $p$
+   solves it
+ & excluded: $33$ is not of the form $t^2(2q^2-p^2)$ \\
+(v) G1 shape 2
+ & {\cite[Thm.~9, Table~2]{Beeson2229}}; Table~\ref{tab:group1}
+ & the ray value $(2q^2-p^2)(3q^2-p^2)n^2$ is minimized at $(p,q)=(1,2)$,
+   giving $7\cdot11=77>33$
+ & excluded: $33$ is below the smallest shape-2 count \\
+(vi) G1 shape 3
+ & {\cite[Thm.~14, Cor.~2]{Beeson2229}}; Table~\ref{tab:group1}
+ & the equation is $N(q+p)^2=M^2(3q^2-p^2)$, and
+   $\gcd\bigl((q+p)^2,3q^2-p^2\bigr)$ forces $(q+p)\mid M$, so
+   $N=u^2(3q^2-p^2)$ with $M=(q+p)u$; then $u^2\mid33$ gives $u=1$ and
+   $3q^2-p^2=33$, where $2q^2<33<3q^2$ leaves only $q=4$, $p^2=15$
+ & excluded: $33$ is not of the form $u^2(3q^2-p^2)$ \\
+(vii) G1 shape 4
+ & Prop.~\ref{prop:group1}; App.~\ref{app:rowalgebra}
+ & the exact ray is $N=(q^2-p^2)m^2$; $m=1$ and $q^2-p^2=33$ give
+   $(p,q)=(4,7)$ and $(16,17)$
+ & excluded: $q\nmid m$ (Prop.~\ref{prop:group1}) \\
+(viii) G1 shape 5
+ & Prop.~\ref{prop:group1}; App.~\ref{app:rowalgebra}
+ & $N=(q^2-p^2)(2q^2-p^2)n^2$; $n=1$ and the factorizations $33=1\cdot33
+   =3\cdot11$ give $q^2-p^2\in\{1,3\}$, and $(p,q)=(1,2)$ has
+   $2q^2-p^2=7\ne11$
+ & excluded: $33$ is not on any shape-5 ray \\
+(ix) $\gamma=2\alpha$
+ & Prop.~\ref{prop:gamma2alpha}
+ & $N=(v^2-u^2)r^2$; $r=1$ and $v^2-u^2=33$ give $(u,v)=(4,7)$ and
+   $(16,17)$
+ & excluded: $r\ge2$ (Prop.~\ref{prop:gamma2alpha}) \\
+\bottomrule
+\end{tabular}
+\caption{Disposition of the branches of Proposition~\ref{prop:reduction33}
+at $N=33$, part I: preliminaries, Group~1, and $\gamma=2\alpha$.  Since
+$33=3\cdot11$ is squarefree, every ray equation of the form $N=Cm^2$ forces
+$m=1$ and $C=33$; this is used silently in rows (iv)--(xvi) of both parts.
+Rows (iv)--(vi) are stated in the strongest available form: the exclusion
+uses only the tiling equation of the cited theorem and needs none of that
+paper's auxiliary divisibility clauses.  Every row of both parts is an
+executable check in
+\pathcode{computation/verify_theory_report3_claims.py}.}
+\label{tab:disposition33}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.145\linewidth}
+>{\raggedright\arraybackslash}p{0.185\linewidth}
+>{\raggedright\arraybackslash}p{0.375\linewidth}
+>{\raggedright\arraybackslash}p{0.165\linewidth}@{}}
+\toprule
+branch & source theorem & $N=33$ arithmetic & disposition \\
+\midrule
+(x) G2 row I
+ & Cor.~\ref{cor:rows}
+ & $N=m^2bU$ with $U=a+2b$; $bU=33$ has the unique primitive solution
+   $(a,b,c)=(5,3,7)$, $U=11$, at $m=1$, hence $k=bm=3$
+ & \textbf{survives}: row I, $(5,3,7)$, $k=3$, target $(21,21,33)$ \\
+(xi) G2 row II
+ & Cor.~\ref{cor:rows}
+ & $N=3m^2UW$ with $U=a+2b$, $W=a+b$; the least value of $UW$ over
+   primitive triples is $11\cdot8=88$, at $(a,b)=(5,3)$, so
+   $3UW\ge264>33$
+ & excluded: $33$ is below the smallest row-II count \\
+(xii) G2 row III
+ & Cor.~\ref{cor:rows}
+ & $N=m^2VW$ with $V=2a+b$; the least value of $VW$ over primitive triples
+   is $11\cdot8=88>33$, at $(a,b)=(3,5)$
+ & excluded: $33$ is below the smallest row-III count \\
+(xiii) G2 row IV
+ & Cor.~\ref{cor:rows}
+ & $N=m^2bW$; the least value of $bW$ is $3\cdot8=24$, so $m=1$ and
+   $bW=33$; the factorizations $(b,W)=(1,33),(3,11)$ give $a=W-b=32,8$ and
+   $c^2=1057,\,97$, neither a square
+ & excluded: no primitive triple has $bW=33$ \\
+(xiv) G2 row V
+ & Cor.~\ref{cor:rows}
+ & $N=m^2UV$; the least value of $UV$ over primitive triples is
+   $11\cdot13=143>33$
+ & excluded: $33$ is below the smallest row-V count \\
+(xv) G2 row E
+ & Cor.~\ref{cor:rows} ($ab\mid L$)
+ & $N=m^2ab$; $m=1$ and $ab=33$ give $(a,b)=(1,33),(3,11)$ with
+   $c^2=1123,\,163$, neither a square
+ & excluded: no primitive triple has $ab=33$ \\
+(xvi) $\gamma=\pi/3$, $T$ equilateral
+ & Rem.~\ref{rem:boundaryscope}
+ & $N=m^2ab$ with $c^2=a^2-ab+b^2$; $m=1$ and $ab=33$ give
+   $c^2=1057,\,97$, neither a square
+ & excluded: no primitive $60^\circ$ triple has $ab=33$ \\
+\bottomrule
+\end{tabular}
+\caption{Disposition of the branches of Proposition~\ref{prop:reduction33}
+at $N=33$, part II: Group~2 and the $60^\circ$ equilateral branch.}
+\label{tab:disposition33b}
+\end{table}
+
+\noindent Two independent cross-checks of the Group~1 rows are available in
+the same source.  First, $33$ occurs in none of
+\cite[Tables~1--5]{Beeson2229}, and each of those tables is asserted
+complete to a bound exceeding $33$: shape~1 to $N\le500$
+\cite[Cor.~1]{Beeson2229}, shape~2 to $N\le2000$ \cite[Table~2]{Beeson2229},
+shape~3 to $N\le1000$ \cite[Cor.~2]{Beeson2229}, shape~4 to $N\le108$
+\cite[Cor.~4]{Beeson2229}, and shape~5 to $N\le200$
+\cite[Cor.~5]{Beeson2229}.\footnote{The range of the last of these is
+printed as $N\le200$ in the statement of \cite[Cor.~5]{Beeson2229} and as
+$N\le500$ in the caption of that paper's Table~5, and the corollary is
+labelled ``(to Theorem 14)'' where Theorem~19 is meant.  Both bounds exceed
+$33$, so the discrepancy is immaterial here.}  Second, a direct sweep of the
+five tiling equations of \cite[Table~6]{Beeson2229} over
+$s=p/q$ with $q\le400$ shows that shapes 1, 2, 3 and 5 admit no solution at
+all with $N=33$, and that shape~4 admits only $(p,q,M)\in\{(4,7,3),(16,17,1),
+(4,29,5),(29,37,2),(17,49,4)\}$, all of which fail the exact shape-4 ray
+$N=(q^2-p^2)m^2$ except the first two, which fail $q\mid m$.  This sweep is
+section~H of the executable audit
+\pathcode{computation/verify_theory_report3_claims.py}, which also validates
+the transcribed equation set against all $53$ printed rows of
+\cite[Tables~1--5]{Beeson2229}.
+
+\begin{theorem}[Computer-assisted, independently certified]\label{thm:no33}
 $33\notin\Sset$.
 \end{theorem}
 
 \begin{proof}
-The published classification, Corollary~\ref{cor:rows},
-Propositions~\ref{prop:group1} and~\ref{prop:gamma2alpha}, and the finite
-branch audit in Appendix~\ref{app:negative} reduce a hypothetical
-$33$-tiling to one target: the isosceles triangle $(21,21,33)$ tiled by
-$(5,3,7)$; this agrees with Beeson's effective isosceles enumeration
-\cite{BeesonIso}.  The primary exact polygon search exhausts this instance in
-$6479$ states.  A replay with the general segment-semigroup table and
-boundary-invariant pruning disabled also returns \texttt{EXHAUSTED}, in
-$22850$ states; feasible-wedge and short-convex-edge tests remain.  The
-convex-corner branching lemma and exact subtraction argument in
-Appendix~\ref{app:negative} prove that the search tree is complete.  No
-second implementation is used in this proof.
+By Proposition~\ref{prop:reduction33}, a hypothetical $33$-tiling reduces to
+exactly one target: the isosceles triangle $(21,21,33)$ tiled by $(5,3,7)$,
+which is row I of Table~\ref{tab:group2} at $k=3$; this agrees with Beeson's
+effective isosceles enumeration \cite{BeesonIso}.
+
+For that instance the exporter of Appendix~\ref{app:certificates} produced
+the refutation certificate \pathcode{N33_refutation.jsonl.gz} with
+$23157$ nodes and SHA-256 \texttt{613c52dd\ldots c21919}.  The independent checker
+(SHA-256 \texttt{52d74ab3\ldots7fd99c}) accepts it in under one minute.  The checker was
+written from the certificate specification alone and shares no code with the
+search; the export run disables memoization and canonicalization, so the
+certificate is a tree of regions in absolute coordinates, and it uses only
+the three reduced pruning rules, so it depends on neither
+Theorem~\ref{thm:laurent} nor the general form of
+Lemma~\ref{lem:convex-segment}.  By Theorem~\ref{thm:cert-sound} the target
+admits no tiling by $(5,3,7)$.
+
+Two earlier exhaustions of the same instance corroborate this and are not
+used in the proof: the primary exact polygon search exhausts it in $6479$
+states with all pruning enabled, and a replay with the general
+segment-semigroup table and the boundary-invariant pruning disabled returns
+\texttt{EXHAUSTED} in $22850$ states.  Both runs are exhausted in the sense
+of Definition~\ref{def:runstatus}, and both come from the same
+implementation.
 \end{proof}
 
 \begin{remark}
@@ -311,13 +808,22 @@ tile edges.
 \end{lemma}
 
 \begin{proof}
-Let $\ell$ support one side of the polygon.  Every tile lies in the same
-closed half-plane bounded by $\ell$.  Hence a tile meeting the relative
-interior of that side in a nondegenerate segment meets $\ell$ in a face, and
-that face must be a complete tile edge.  Distinct such edges have disjoint
-relative interiors, while finitely many of them cover the polygon side.
-Their integer lengths therefore add to its length.  No edge-to-edge
-hypothesis is used.
+Let $P$ be the convex polygon, $S$ one of its sides, and $\ell$ the supporting
+line of $S$, so that $P$ lies in one closed half-plane bounded by $\ell$ and
+\[
+                          P\cap\ell=S,
+\]
+because the face of $P$ cut out by the supporting line of a side is that side.
+Let a tile $\Delta$ meet the relative interior of $S$ in a nondegenerate
+segment.  Then $\ell$ supports $\Delta$ as well, so $\Delta\cap\ell$ is a face
+of $\Delta$; it has positive dimension, hence is a complete edge of $\Delta$.
+Moreover $\Delta\cap\ell\subseteq P\cap\ell=S$, so that edge cannot extend
+beyond either endpoint of $S$.  Distinct such edges have disjoint relative
+interiors.  Every point of $S$ lies in some tile; a tile that does not
+contribute one of the edges just described meets $\ell$ in at most one point,
+and there are finitely many tiles, so those edges cover $S$ up to a finite
+set.  Their union is closed, hence equals $S$, and their integer lengths add to
+the length of $S$.  No edge-to-edge hypothesis is used.
 \end{proof}
 
 In a Group~2 tiling, every directed edge direction has a unique expression
@@ -329,6 +835,15 @@ after an anchor is chosen; here $\alpha/\pi$ is irrational
 \[
        \chi(j,m)=(-1)^jz^m\in\Z[z,z^{-1}]^\times.
 \]
+The pair $(j,m)$ is determined by $\theta$.  Indeed, if
+$j\pi/3+m\alpha\equiv j'\pi/3+m'\alpha\pmod{2\pi}$, then
+$(m-m')\alpha\in\pi\Q$, so $m=m'$ because $\alpha/\pi$ is irrational, and then
+$(j-j')\pi/3\in2\pi\Z$ gives $j\equiv j'\pmod6$.  The irrationality used here
+is proved in Appendix~\ref{app:ordered}: $2\cos\alpha=U/c$ is rational and
+lies strictly between $1$ and $2$, so it is not a rational integer, whereas
+$\alpha/\pi\in\Q$ would force it to be one; see also \cite{BZRat}.  We
+therefore write $\chi(\theta)$ for $\chi(j,m)$.
+
 For a directed segment $PQ$ of direction $\theta$, set
 $B(PQ)=|PQ|\chi(\theta)$, initially in
 $\mathbb R[z,z^{-1}]$, and extend $B$ additively to oriented polygonal
@@ -337,25 +852,28 @@ boundaries have integral coefficients.
 
 \begin{theorem}[Laurent boundary quotient]\label{thm:laurent}
 Let a triangle be tiled by a primitive Group~2 tile satisfying
-\eqref{eq:eisenstein}.  Then
+\eqref{eq:eisenstein}, and write $R=\Z[z,z^{-1}]$ and
+$\pi_I:R\to R/I$ for the quotient map.  Then
 \begin{equation}\label{eq:ideal}
-       B(\partial T)\in I=(d+cz,\ d+cz^{-1})
-       \subseteq\Z[z,z^{-1}],
+       B(\partial T)\in I=(d+cz,\ d+cz^{-1})\subseteq R,
 \end{equation}
-and
+and $3ab\in I$.  Moreover the following two maps are mutually inverse ring
+isomorphisms:
 \begin{equation}\label{eq:quotient}
-       \Z[z,z^{-1}]/I\cong\Z/(3ab),
-       \qquad z\longmapsto-dc^{-1}.
+\begin{aligned}
+ \overline\varepsilon&:R/I\longrightarrow\Z/(3ab),
+  &&\text{induced by }\ \varepsilon:R\to\Z/(3ab),\quad z\longmapsto-dc^{-1},\\
+ \overline\iota&:\Z/(3ab)\longrightarrow R/I,
+  &&\text{induced by }\ \Z\hookrightarrow R\xrightarrow{\ \pi_I\ }R/I .
+\end{aligned}
 \end{equation}
-Thus \eqref{eq:ideal} is equivalent to the single evaluation
+Here $\varepsilon$ is well defined because $c$ and $d$ are units modulo $3ab$
+(Lemma~\ref{lem:g2-units}), and $\overline\iota$ is well defined because
+$I\cap\Z=(3ab)$.  Consequently \eqref{eq:ideal} is equivalent to the single
+evaluation
 \begin{equation}\label{eq:eval}
        B(\partial T)\big|_{z=-dc^{-1}}\equiv0\pmod{3ab}.
 \end{equation}
-Every ideal-membership obstruction obtained by applying a signed,
-root-of-unity, or other ring specialization to this $\chi$-based invariant
-is a specialization of \eqref{eq:ideal}.  This statement does not include
-the stronger requirement that a boundary be represented by exactly $N$
-allowed tile terms.
 \end{theorem}
 
 \begin{proof}
@@ -371,21 +889,88 @@ side, so it occurs twice with opposite orientations and cancels.  This proves
 \eqref{eq:ideal}; no edge-to-edge hypothesis is being imposed.
 
 Since $c^2-d^2=3ab$,
-\[
+\begin{equation}\label{eq:3ab-in-I}
  c(d+cz)-dz(d+cz^{-1})=(c^2-d^2)z=3abz,
+\end{equation}
+and $z$ is a unit of $R$, so $3ab\in I$.
+
+By Lemma~\ref{lem:g2-units} the residues of $c$ and $d$ are units modulo
+$3ab$, so $-dc^{-1}$ is a unit there and $\varepsilon$ is a well-defined ring
+homomorphism.  It kills both generators of $I$:
+\[
+ \varepsilon(d+cz)=d-c\,dc^{-1}=0,\qquad
+ \varepsilon(d+cz^{-1})=d-c^2d^{-1}=-3ab\,d^{-1}=0 .
 \]
-and $z$ is a unit, so $3ab\in I$.  Moreover $c$ and $d$ are invertible
-modulo $3ab$ by Lemma~\ref{lem:g2-units}.
-Let $\varepsilon$ evaluate $z$ at $-dc^{-1}$ modulo $3ab$.  Both generators
-of $I$ lie in $\ker\varepsilon$, the second because
-$c^2\equiv d^2\pmod{3ab}$.  Conversely, in the quotient by $I$, the relation
-$3ab=0$ makes $c$ a unit and $d+cz=0$ makes every Laurent monomial a
-constant.  Constants are reduced precisely modulo $3ab$, because
-$I\cap\Z\subseteq\ker\varepsilon\cap\Z=(3ab)$ and $3ab\in I$.
-Thus $\ker\varepsilon=I$, proving \eqref{eq:quotient} and
-\eqref{eq:eval}.  Applying a ring specialization to the ideal containment
-proves the final, deliberately limited assertion.
+Hence $I\subseteq\ker\varepsilon$ and $\varepsilon$ induces
+$\overline\varepsilon$ on $R/I$.
+
+For the other direction, work in $R/I$.  By \eqref{eq:3ab-in-I} we have
+$3ab=0$ there, and $\gcd(c,3ab)=1$ gives integers $c',n$ with $cc'=1+3abn$,
+so $c'$ inverts $c$ in $R/I$.  The two generators of $I$ therefore give
+\[
+             z=-c'd,\qquad z^{-1}=-c'd
+\]
+in $R/I$, so every Laurent monomial is congruent there to an integer and
+$\Z\hookrightarrow R\xrightarrow{\pi_I}R/I$ is surjective.  Its
+kernel is $I\cap\Z$, and
+\[
+ (3ab)\subseteq I\cap\Z\subseteq\ker\varepsilon\cap\Z=(3ab),
+\]
+the first inclusion by \eqref{eq:3ab-in-I} and the last because
+$\varepsilon$ restricted to $\Z$ is reduction modulo $3ab$.  Hence
+$I\cap\Z=(3ab)$ and $\overline\iota$ is a well-defined ring isomorphism.
+Finally $\overline\varepsilon\circ\overline\iota$ is the identity of
+$\Z/(3ab)$, again because $\varepsilon|_\Z$ is reduction modulo $3ab$;
+as both maps are bijections, $\overline\iota$ and $\overline\varepsilon$ are
+mutually inverse.  This proves \eqref{eq:quotient}, and $\ker\varepsilon=I$
+gives the equivalence of \eqref{eq:ideal} with \eqref{eq:eval}.
 \end{proof}
+
+\begin{corollary}[Universal property of the boundary quotient]
+\label{cor:laurent-universal}
+Let $A$ be a commutative ring and let $\phi:\Z[z,z^{-1}]\to A$ be a ring
+homomorphism with
+\[
+             \phi(d+cz)=\phi(d+cz^{-1})=0 .
+\]
+Then there is a unique ring homomorphism $\psi:\Z/(3ab)\to A$ with
+$\phi=\psi\circ\varepsilon$.  In particular $3ab\cdot1_A=0$, the element
+$\phi(c)$ is invertible in $A$, and $\phi(z)=-\phi(d)\phi(c)^{-1}$.
+Consequently, for every tiling as in Theorem~\ref{thm:laurent},
+\[
+ \phi\big(B(\partial T)\big)
+ =\psi\Big(B(\partial T)\big|_{z=-dc^{-1}}\Big),
+\]
+so every boundary invariant obtained by specializing the character $\chi$
+along such a $\phi$ factors through the cyclic quotient
+\eqref{eq:quotient}, and no such specialization can obstruct a candidate that
+satisfies \eqref{eq:eval}.
+\end{corollary}
+
+\begin{proof}
+The hypotheses give $I\subseteq\ker\phi$, and $\ker\varepsilon=I$ by
+Theorem~\ref{thm:laurent}, so $\phi$ factors as $\psi\circ\varepsilon$; the
+factor $\psi$ is unique because $\varepsilon$ is surjective.  Then
+$3ab\cdot1_A=\phi(3ab)=\psi(0)=0$, and $\phi(c)=\psi(\varepsilon(c))$ is
+invertible because $\varepsilon(c)$ is a unit of $\Z/(3ab)$ by
+Lemma~\ref{lem:g2-units}, whence
+$\phi(z)=-\phi(c)^{-1}\phi(d)$ from $\phi(d+cz)=0$.  Applying $\psi$ to
+$\varepsilon(B(\partial T))$ gives the displayed identity, and the last
+assertion is that identity read backwards: if \eqref{eq:eval} holds, the
+argument of $\psi$ vanishes.
+\end{proof}
+
+\begin{remark}[Scope of Corollary~\ref{cor:laurent-universal}]
+\label{rem:laurent-scope}
+Signed characters, root-of-unity specializations, and reductions modulo a
+divisor of $3ab$ all satisfy the hypothesis of
+Corollary~\ref{cor:laurent-universal} and are therefore already contained in
+\eqref{eq:eval}.  The corollary says nothing about invariants that are not
+ring specializations of $\chi$: bounds on the number or on the signs of the
+$N$ admissible tile terms representing $B(\partial T)$, and any use of edge
+order, incidence, or connectivity, lie outside its scope.  This is what
+Theorem~\ref{thm:no33} exhibits concretely.
+\end{remark}
 
 \begin{corollary}[Exact Group~2 arithmetic]\label{cor:rows}
 The six necessary conditions and count rays in
@@ -413,14 +998,21 @@ Appendix~\ref{app:rowalgebra}.
 \begin{remark}[What the invariant closes]\label{rem:boundaryscope}
 The quotient proves Zhang's divisibility conjecture for equilateral
 $120^\circ$ tiles, including the nonsquarefree cases not covered by his
-lemma, and the same proof works for $60^\circ$ tiles after replacing
-$c^2=a^2+ab+b^2$ by $c^2=a^2-ab+b^2$ and $d=a-b$ by $a+b$:
-the one-tile polynomials become, up to units,
-$d-cz^{-1}$ and $d-cz$, while $c^2-d^2=-3ab$.
-It also removes the congruence hypothesis from Zhang's row-V count formula
-\cite{Zhang25}.  Conversely, all ideal-membership obstructions obtained by
-specializing this Laurent character are exhausted.  Exact-$N$ coefficient
-bounds and non-character invariants lie outside this claim.
+lemma.  It also removes the congruence hypothesis from Zhang's row-V count
+formula \cite{Zhang25}.  The same proof works for $60^\circ$ tiles after
+replacing $c^2=a^2+ab+b^2$ by $c^2=a^2-ab+b^2$ and $d=a-b$ by $d=a+b$: the
+one-tile polynomials become, up to units, $d-cz^{-1}$ and $d-cz$, while
+$c^2-d^2=-3ab$, so that
+\[
+ c(d-cz)+dz(d-cz^{-1})=(d^2-c^2)z=3abz,
+\]
+and Lemma~\ref{lem:g60-units} supplies exactly the units the argument of
+Theorem~\ref{thm:laurent} consumes: $c$ and $d=a+b$ are invertible modulo
+$3ab$.  The evaluation is $z\mapsto dc^{-1}$ and the quotient is again
+$\Z/(3ab)$.  Conversely, by Corollary~\ref{cor:laurent-universal} all
+ideal-membership obstructions obtained by specializing this Laurent character
+are exhausted; the invariants excluded from that statement are listed in
+Remark~\ref{rem:laurent-scope}.
 \end{remark}
 
 \section{Construction thresholds and additive multiplier sets}
@@ -432,6 +1024,33 @@ angles $\pi/3$, and two legs of length $L$.\footnote{Zhang
 Its Laurent boundary is $3L$,
 independent of $x$, so Theorem~\ref{thm:laurent} gives the necessary condition
 $ab\mid L$.
+
+The construction below uses two statements of \cite{Zhang25} verbatim, both
+read with $y$ meaning the leg, as that paper's own proofs do.
+
+\begin{lemma}[Imported; basic ideal trapezoid, {\cite[Lemma~1]{Zhang25}}]
+\label{lem:imp-zhang1}
+The ideal trapezoid with short parallel side $x=a^2+b^2$ and leg $L=ab$ is
+tiled by $(a,b,c)$; it splits into the three triangles similar to $(a,b,c)$
+with integer factors $a$, $b$, $c$, hence into $a^2+b^2+c^2$ tiles.
+\end{lemma}
+
+\begin{lemma}[Imported; parallelograms, {\cite[Lemma~2]{Zhang25}}]
+\label{lem:imp-zhang2}
+A parallelogram whose angles are, in order, $2\pi/3$, $\pi/3$, $2\pi/3$,
+$\pi/3$, and whose side lengths are $x$ and $ab$, is tiled by $(a,b,c)$
+whenever $x>ab-a-b$.  The proof glues two
+tiles along $c$ into an $(a,b,a,b)$ parallelogram, forms the
+$(ab,a,ab,a)$ and $(ab,b,ab,b)$ parallelograms from it in the two
+orientations, and concatenates them; it therefore proves the sharper
+statement that the parallelogram is tiled whenever
+$x\in a\Nzero+b\Nzero$.
+\end{lemma}
+
+\noindent The sharper reading of Lemma~\ref{lem:imp-zhang2} is what
+Lemma~\ref{lem:trapezoid} uses; the Frobenius bound $x>ab-a-b$ of
+\cite[Prop.~2]{Zhang25} is only the crude sufficient condition for
+$x\in a\Nzero+b\Nzero$.
 
 \begin{lemma}[Trapezoid construction]\label{lem:trapezoid}
 Let $R=(a,b,c)$ be a primitive $120^\circ$ tile.  If
@@ -447,15 +1066,17 @@ copies of $R$.
 \end{lemma}
 
 \begin{proof}
-Zhang constructs the basic trapezoid $T(a^2+b^2,ab)$ and the
-$\pi/3$-parallelograms of side $ab$ and base $a$ or $b$
-\cite[Lemmas~1--2]{Zhang25}.  Write $L=kab$ and slice $T(x,L)$ into $k$
+Lemma~\ref{lem:imp-zhang1} supplies the basic trapezoid $T(a^2+b^2,ab)$ and
+Lemma~\ref{lem:imp-zhang2} the
+$\pi/3$-parallelograms of side $ab$ and base $a$ or $b$.
+Write $L=kab$ and slice $T(x,L)$ into $k$
 layers of leg $ab$.  In layer $i$, remove a copy of the basic trapezoid.
 The remainder is a parallelogram whose base is
 \[
        x+(i-1)ab-(a^2+b^2)\in a\Nzero+b\Nzero,
 \]
-so it is tiled by concatenating Zhang's two parallelograms.  The area ratio
+so it is tiled by concatenating the two parallelograms of
+Lemma~\ref{lem:imp-zhang2}.  The area ratio
 gives the stated number of tiles.
 \end{proof}
 
@@ -468,10 +1089,13 @@ equivalent to
 Indeed, if $rab-a^2-b^2=Aa+Bb$, reduction modulo $b$ and $a$ gives
 $A=ub-a$ and $B=va-b$ for integers
 $u\ge\lceil a/b\rceil$, $v\ge\lceil b/a\rceil$, and then $r=u+v$.
-The converse follows from the same formulae.  In Zhang's cyclic
-equilateral construction choose the three trapezoid parameters
-$R,R,m-2R$; all are at least $R$ exactly when $m\ge3R$.  This gives an
-equilateral tiling for every such multiplier.  At
+The converse follows from the same formulae.  In the cyclic equilateral
+construction of Theorem~\ref{thm:imp-zhang4} below, which assembles an
+equilateral triangle of side $(r+s+t)ab$ from three ideal trapezoids with
+parameters $r,s,t$, choose the parameters
+$R,R,m-2R$; Lemma~\ref{lem:trapezoid} tiles each of the three trapezoids
+because all parameters are at least $R$, exactly when $m\ge3R$.  This gives
+an equilateral tiling for every such multiplier.  At
 $(a,b,c)=(32,45,67)$ this gives the smaller multiplier
 $m=9$.\footnote{The threshold printed in \cite[Conjecture~2]{Zhang25} is
 $12$, so that conjectured threshold is not sharp.}  The count $116640$ is
@@ -510,6 +1134,51 @@ submonoid of $\Nzero$.  The hypotheses of Proposition~\ref{prop:addition} hold o
 six Group~2 rows and on Group~1 shapes 4 and 5; the integer ratios are given
 in Appendix~\ref{app:addition}.
 
+The transfer of an equilateral tail to the other rows is imported.  Call
+$L$ \emph{equiconstructible} for $(a,b,c)$ if the equilateral triangle of
+side $L$ is tiled by $(a,b,c)$.
+
+\begin{theorem}[Imported; equilateral construction,
+{\cite[Thm.~4]{Zhang25}}]\label{thm:imp-zhang4}
+Put $M_Z=3\lceil(c^2-a-b)/(ab)\rceil$.  Then $mab$ is equiconstructible for
+every integer $m\ge M_Z$, and hence an $m^2ab$-tiling exists for every such
+$m$.  The proof assembles an equilateral triangle of side $(r+s+t)ab$ from
+three ideal trapezoids with parameters $r,s,t\ge M_Z$.
+\end{theorem}
+
+\begin{proposition}[Imported; row transfers from an equilateral core,
+{\cite[Props.~8--10]{Zhang25}}]\label{prop:imp-zhang810}
+Suppose $mab$ is equiconstructible for $(a,b,c)$.  Then, in the notation of
+Table~\ref{tab:group2},
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \textup{\cite[Prop.~8(1)]{Zhang25}} the triangle
+      $(mbc,mbc,mb(a+2b))$, of shape row~I with $k=bm$, is tiled by
+      $m^2b(a+2b)$ copies of $(a,b,c)$;
+\item \textup{\cite[Prop.~9(1)]{Zhang25}} the triangle
+      $(mab,mbc,mb(a+b))$, of shape row~IV with $k=bm$, is tiled by
+      $m^2b(a+b)$ copies;
+\item \textup{\cite[Prop.~10(1)]{Zhang25}} the triangle
+      $\bigl(mac,(b+2a)mb,(a+b)cm\bigr)$, of shape row~III with $k=m$, is
+      tiled by $m^2(b+2a)(a+b)$ copies.
+\end{enumerate}
+In each case the statement with $a$ and $b$ interchanged also holds.
+\end{proposition}
+
+\begin{proposition}[Imported; row-V to row-II transfer,
+{\cite[Prop.~11]{Zhang25}}]\label{prop:imp-zhang11}
+If the triangle $\bigl((a+2b)am,(b+2a)bm,c^2m\bigr)$---row~V at multiplier
+$m$---is tiled by $(a,b,c)$, then the triangle
+$\bigl(c^2m,(a+2b)mc,3(a+b)mb\bigr)$---row~II at multiplier $m$---is tiled by
+$3m^2(a+2b)(a+b)$ copies of $(a,b,c)$, and likewise with $a$ and $b$
+interchanged.
+\end{proposition}
+
+\noindent Propositions~\ref{prop:imp-zhang810} and~\ref{prop:imp-zhang11}
+are used only as implications: (a)--(c) consume only equiconstructibility of
+$mab$, supplied here by the tail $m\ge3R(a,b)$ proved above, and
+Proposition~\ref{prop:imp-zhang11} consumes the row-V interval produced by
+the bisector dissection of Appendix~\ref{app:addition}.
+
 \pagebreak[3]
 \begin{corollary}[Finite generator windows]\label{cor:windows}
 For every primitive Group~2 tile and every row of
@@ -534,54 +1203,92 @@ Thus each Group~2 ray is determined by finitely many exact tiling questions.
 \begin{proof}
 Additive closure is Proposition~\ref{prop:addition}.  The equilateral tail
 $m\ge3R(a,b)$ was proved immediately above from
-Lemma~\ref{lem:trapezoid} and Zhang's cyclic construction.  Zhang's
-Propositions~8--10 transfer that tail to rows I, III, and IV
-\cite[Propositions~8--10]{Zhang25}.  For rows V and II,
+Lemma~\ref{lem:trapezoid} and the cyclic construction of
+Theorem~\ref{thm:imp-zhang4}.
+Proposition~\ref{prop:imp-zhang810}(a)--(c) transfers that tail to rows I,
+IV, and III.  For rows V and II,
 a bisector dissection transfers an equilateral tiling of side $2sab$ to row V
 at multiplier $s$; the dissection and count identity are in
-Appendix~\ref{app:addition}.  Zhang's Proposition~11 transfers the same
-interval to row II \cite[Proposition~11]{Zhang25}.
+Appendix~\ref{app:addition}.  Proposition~\ref{prop:imp-zhang11} transfers
+the same interval to row II.
 Finally, if an additively closed set contains every integer at least $C$,
 then each $n\ge2C$ is $C+(n-C)$ and induction shows that the set is generated
 by its members below $2C$.  The complement is finite, so
 $\Aset\cup\{0\}$ is a numerical semigroup.
 \end{proof}
 
-\begin{theorem}[Computer-assisted trapezoid classification]
-\label{thm:trapezoid357}
+\begin{theorem}[Trapezoid tilings for $(3,5,7)$: the constructive half]
+\label{thm:trapezoid-plus}
+For the tile $(3,5,7)$ and $L=15$, the ideal trapezoid $T(x,15)$ is tiled by
+$(3,5,7)$ for every integer $x\in\{29,31,32\}$ and every integer $x\ge34$.
+\end{theorem}
+
+\begin{proof}
+Here $ab=15=L$, so Lemma~\ref{lem:trapezoid} applies whenever
+$x-34\in3\Nzero+5\Nzero$, that is for $x=34,37,39,40$ and every $x\ge42$.
+The seven exact coordinate certificates listed in
+Appendix~\ref{app:trapezoids} cover
+\[
+  x=29,\ 31,\ 32,\ 35,\ 36,\ 38,\ 41 .
+\]
+Each passes the checks of Appendix~\ref{app:positive}, including the
+trapezoid-shape assertions, so by Lemma~\ref{lem:coverage} its tiles cover
+the intended trapezoid exactly.
+\end{proof}
+
+\begin{theorem}[Trapezoid tilings for $(3,5,7)$: the exclusion half;
+computer-assisted]\label{thm:trapezoid-minus}
+For the tile $(3,5,7)$, $L=15$, and every integer $x$ with $1\le x\le33$ and
+$x\notin\{29,31,32\}$, the ideal trapezoid $T(x,15)$ admits no tiling by
+$(3,5,7)$.
+\end{theorem}
+
+\begin{proof}
+The boundary inventory excludes every positive $x\notin\langle3,5,7\rangle$,
+namely $x\in\{1,2,4\}$.  For the remaining values the exact searcher was
+run; the search found precisely the $27$ exhausted cases
+\[
+ \langle3,5,7\rangle\cap[1,33]\setminus\{29,31,32\},
+\]
+each terminating with status exhausted in the sense of
+Definition~\ref{def:runstatus}, with no skipped placement and no unsupported
+geometric case.  Completeness of each search tree is
+Lemmas~\ref{lem:corner-branching}, \ref{lem:flush-list}, \ref{lem:fit},
+\ref{lem:exact-subtraction} and~\ref{lem:components}, and every prune used
+is one of the necessary conditions of Lemma~\ref{lem:prunes}.  The campaign
+comprises $34$ searches and $5{,}699{,}235$ states;
+Appendix~\ref{app:trapezoids} gives the case table and the completeness
+scope.
+\end{proof}
+
+\noindent
+This half depends on a single exhaustion implementation: no refutation
+certificate has been exported for these instances.  The pipeline of
+Appendix~\ref{app:certificates} applies to trapezoid targets without change,
+and the deferred campaign, with the commands it needs, is recorded with the
+certificate specification in the ancillary files.
+
+\begin{corollary}[The one-leg family at $L=15$]\label{cor:trapezoid357}
 For the tile $(3,5,7)$, $L=15$, and every integer $x\ge1$,
 \[
  T(x,15)\text{ is tileable}
  \quad\Longleftrightarrow\quad
  x\in\{29,31,32\}\cup\{x\in\N:x\ge34\}.
 \]
-\end{theorem}
+The implication ``$\Leftarrow$'' is Theorem~\ref{thm:trapezoid-plus} and is
+proved.  The implication ``$\Rightarrow$'' is
+Theorem~\ref{thm:trapezoid-minus} and therefore carries that theorem's
+evidence class: computer-assisted, one implementation, no independent
+certificate.
+\end{corollary}
 
-\begin{proof}
-The boundary inventory first forces $x\in\langle3,5,7\rangle$.
-Lemma~\ref{lem:trapezoid} covers $x=34,37,39,40$ and every $x\ge42$;
-explicit certificates cover
-\[
-  x=29,31,32,35,36,38,41.
-\]
-The boundary inventory excludes positive $x\notin\langle3,5,7\rangle$.
-The exact searcher exhausts precisely the remaining $27$ cases
-\[
- \langle3,5,7\rangle\cap[1,33]\setminus\{29,31,32\}.
-\]
-The
-campaign comprises $34$ searches and $5{,}699{,}235$ states, with no skipped
-placement warnings.  Appendix~\ref{app:trapezoids} gives the case table and
-the completeness scope.  In particular, the negative half presently depends
-on one exhaustion implementation; the seven positive cases are independently
-checkable coordinate certificates.
-\end{proof}
-
-Theorem~\ref{thm:trapezoid357} gives the complete local picture for this
-one-leg family.\footnote{The literal inequality in
-\cite[Conjecture~5]{Zhang25} does not hold as printed and already conflicts
-with the basic construction in \cite[Lemma~1]{Zhang25}.}  The necessary
-divisibility $ab\mid L$ remains valid.
+Corollary~\ref{cor:trapezoid357} gives the complete local picture for this
+one-leg family, with its two evidence classes separated by
+Theorems~\ref{thm:trapezoid-plus} and~\ref{thm:trapezoid-minus}.\footnote{The
+literal inequality in \cite[Conjecture~5]{Zhang25} does not hold as printed
+and already conflicts with the basic construction in
+\cite[Lemma~1]{Zhang25}.}  The necessary divisibility $ab\mid L$ remains
+valid.
 
 \section{The remaining arithmetic branches}\label{sec:otherbranches}
 
@@ -594,6 +1301,54 @@ The five target shapes lie on the rays in Table~\ref{tab:group1}.  Shapes
 1--3 are characterized by Beeson \cite{Beeson2229}.  Shapes 4--5 are
 necessity statements; their sufficiency remains open in general.
 
+The shape-1 count is used below, so we state it in the present
+normalization.  Beeson's shape-1 analysis is carried by two statements.
+
+\begin{theorem}[Imported; shape-1 necessity,
+{\cite[Thm.~4]{Beeson2229}}]\label{thm:imp-b4}
+Let $3\alpha+2\beta=\pi$ and let $T$ have angles
+$(2\alpha,\beta,\alpha+\beta)$ and be $N$-tiled by a tile with angles
+$\alpha$ and $\beta$.  Then $M^2+N=2K^2$ for some positive integers $M,K$
+with $M^2<N$, where $s=2\sin(\alpha/2)=M/K$; and $N$ is a square times a
+product of distinct primes of the form $8n\pm1$.
+\end{theorem}
+
+\begin{theorem}[Imported; shape-1 divisibility,
+{\cite[Thm.~6]{Beeson2229}}]\label{thm:imp-b6}
+Let $T$ have angles $(2\alpha,\beta,\alpha+\beta)$, let integers $N,K,M$
+solve $N=2K^2-M^2$, and suppose there is an $N$-tiling of $T$ by a tile with
+angles $(\alpha,\beta,\gamma)$ and sides $(a,b,c)$ with $a/c=M/K$.  Then
+$K\mid M^2$.
+\end{theorem}
+
+\begin{corollary}[Shape-1 ray]\label{cor:shape1ray}
+With the normalization $a/c=p/q$ of this section, the count of every
+shape-1 tiling is
+\[
+   N=q^2(2q^2-p^2)n^2,\qquad n\in\N,
+\]
+and conversely every such $N$ occurs \textup{(\cite[Thm.~5]{Beeson2229})}.
+\end{corollary}
+
+\begin{proof}
+By Lemma~2 of \cite{Beeson2229}, $s=2\sin(\alpha/2)=a/c=p/q$.  Let $(M,K)$
+be as in Theorem~\ref{thm:imp-b4}.  From $M/K=p/q$ with $\gcd(p,q)=1$ we get
+$M=pt$, $K=qt$ for an integer $t\ge1$, whence
+$N=2K^2-M^2=t^2(2q^2-p^2)$.  Theorem~\ref{thm:imp-b6} applies to this
+$(M,K)$ and gives $qt\mid p^2t^2$, i.e.\ $q\mid p^2t$, i.e.\ $q\mid t$.
+Writing $t=qn$ gives the displayed ray.  Conversely, for $(M,K)=(pqn,q^2n)$
+one has $M^2+N=2q^4n^2=2K^2$, $M^2<N$ and $K\mid N$, so
+\cite[Thm.~5]{Beeson2229} produces an $N$-tiling, by the tile
+$n\cdot(pq,q^2-p^2,q^2)$.
+\end{proof}
+
+\noindent Only Corollary~\ref{cor:shape1ray} is used later, in the proof of
+Proposition~\ref{prop:group1}.  We do not use the printed statement
+\cite[Thm.~7]{Beeson2229}, which asserts the existence of an $N$-tiling if
+and only if the tiling equation has a solution with $K\nmid M^2$; that
+inequality contradicts Theorems~5 and~6 of the same paper and the proof of
+Theorem~7 itself, and is a typographical negation.
+
 \begin{proposition}\label{prop:group1}
 For every Group~1 shape-4 tiling, the natural multiplier $m$ satisfies
 $q\mid m$; hence its count has the shape-4 form in
@@ -605,9 +1360,9 @@ table, without an additional parity factor.  The multiplier sets for shapes
 \begin{proof}
 For shape 4, an exact target insertion gives equal side
 $X=(q^2-p^2)qm$.  Attach a $qm$-scaled tile along that side.  The union is a
-shape-1 target with count $(2q^2-p^2)m^2$.  Beeson's necessary-and-sufficient
-shape-1 theorem says its count is
-$q^2(2q^2-p^2)n^2$, forcing $m=qn$ \cite[Theorem~7]{Beeson2229}.
+shape-1 target with count $(2q^2-p^2)m^2$.  Corollary~\ref{cor:shape1ray}
+says its count is
+$q^2(2q^2-p^2)n^2$, forcing $m=qn$.
 For shape 5, cancellation in the Group~1 boundary ideal forces the target
 scale $C$ to be divisible by $q^2-p^2$, giving the listed count.  The
 factorization and target insertion are recorded in
@@ -644,12 +1399,93 @@ $q$, so $m=qn$; in shape 5 there is no additional parity factor, including
 when $p$ and $q$ are both odd.}\label{tab:group1}
 \end{table}
 
-We do not use a further divisibility clause in Beeson's
-Theorem~19.\footnote{The printed condition $g\mid M$ in
-arXiv:1206.2229v3 \cite{Beeson2229} is violated by $12$ of the $15$ rows in
-that paper's Table~5 and by the exact $189$-tiling of
-Theorem~\ref{thm:88189}.  The ray formula in Proposition~\ref{prop:group1}
-does not depend on this clause.}
+\begin{remark}[Erratum: the clause $g\mid M$ of {\cite[Thm.~19]{Beeson2229}}]
+\label{rem:gM}
+Proposition~\ref{prop:group1} deliberately does not use a further
+divisibility clause carried by the published shape-5 necessity theorem.  We
+record why, because a reader who imports that clause will exclude values
+that are not excluded.
+
+\emph{The cited statement.}  \cite[Thm.~19]{Beeson2229} reads, verbatim:
+``Suppose $3\alpha+2\beta=\pi$.  Let $ABC$ be isosceles with base angles
+$\alpha$.  Suppose $ABC$ is $N$-tiled by the tile whose integer sides
+$(a,b,c)$ have no common factor, and whose angles are
+$(\alpha,\beta,\gamma)$.  Let $s=a/c$ and $g=\gcd(a,c)$, and let $M$ be the
+coloring number of the tiling.  Then $g$ divides $M$, $M^2\le2N$, and
+$(M,s)$ is a solution of the `isosceles-$\alpha$ tiling equation'
+\[
+   N=M^2\frac{(1+s)(2-s^2)}{(1-s)(2+s)^2}\text{.''}
+\]
+
+\emph{Translation of notation.}  In the normalization of this section the
+tile is $(a,b,c)=(pq,\,q^2-p^2,\,q^2)$, so
+\[
+   s=\frac ac=\frac pq,\qquad g=\gcd(pq,q^2)=q .
+\]
+Beeson's $M$ is the coloring number of the tiling, not our multiplier $n$.
+Substituting $s=p/q$ in the displayed equation gives
+\[
+   \frac{N}{M^2}=\frac{(q+p)(2q^2-p^2)}{(q-p)(2q+p)^2},
+\]
+and combining this with the shape-5 ray $N=(q^2-p^2)(2q^2-p^2)n^2$ of
+Proposition~\ref{prop:group1} yields
+\[
+   M=(q-p)(2q+p)\,n .
+\]
+Hence, on the ray, the printed clause is equivalent to a statement about our
+own multiplier:
+\[
+  g\mid M
+  \iff q\mid(q-p)(2q+p)n
+  \iff q\mid p^2n
+  \iff q\mid n ,
+\]
+the last step by $\gcd(p,q)=1$.
+
+\emph{A counterexample.}  Take $(p,q)=(1,2)$, tile $(2,3,4)$, and $n=3$.
+Then $s=1/2$, $g=2$, and
+\[
+   \frac{N}{M^2}
+   =\frac{(1+\tfrac12)(2-\tfrac14)}{(1-\tfrac12)(2+\tfrac12)^2}
+   =\frac{\tfrac32\cdot\tfrac74}{\tfrac12\cdot\tfrac{25}4}
+   =\frac{21}{25},
+\]
+so $M=15$ and $N=189$.  The coloring number is not merely predicted by the
+equation: the same paper's coloring relation $M=\mu(1-s)(2+s)$ with
+$\mu=X/b$ applied to the certified tiling of Theorem~\ref{thm:88189}(ii),
+which has $X=36$ and $b=3$, gives $\mu=12$ and
+$M=12\cdot\tfrac12\cdot\tfrac52=15$; and \cite[Table~5]{Beeson2229} itself
+lists the row $N=189$, $M=15$, $(a,b,c)=(2,3,4)$.  But $g=2$ does not divide
+$M=15$.  Since Theorem~\ref{thm:88189}(ii) exhibits an exact $189$-tiling of
+$(36,36,63)$ by $(2,3,4)$, the printed divisibility clause fails on a
+realized tiling.
+
+\emph{Extent.}  Of the $15$ rows of \cite[Table~5]{Beeson2229}, $12$ violate
+$g\mid M$; the three that satisfy it are the two rows marked ``yes''
+($N=84$, $M=10$ and $N=336$, $M=20$) and the row $N=306$, $M=21$,
+$(3,8,9)$.  A condition satisfied exactly on the realized rows of a table
+generated \emph{without} it has the shape of a sufficiency-side condition
+that has migrated into a necessity statement; compare the isosceles-$\beta$
+case, where $g\mid M$ is precisely the matching sufficient condition
+\cite[Thm.~16]{Beeson2229}.  We flag this reading and do not resolve it.
+Two textual observations point at the same place: the printed proof of
+Theorem~19 concludes from $g\mid X^2$ that $g\mid X$ ``since $g$ is
+squarefree'' by \cite[Lemma~8]{Beeson2229}, whose squarefreeness clause
+fails for $g=4$---the tiles $(12,7,16)$ and $(4,15,16)$ of that paper's own
+Tables~1, 2 and~5 have $\gcd(a,c)=4$---and the same proof asserts that
+$bc^3(a+c)$ is not divisible by $g^5$, whereas the first clause of
+\cite[Lemma~8]{Beeson2229} gives $c=g^2$ and hence $c^3=g^6$.  The proof
+also contains an unresolved cross-reference, printed as ``By Lemma ??''.
+
+\emph{Independence.}  Nothing in this paper depends on the clause.  The
+equation half of \cite[Thm.~19]{Beeson2229} is consistent with all of our
+data and is used only as a cross-check; the shape-5 ray of
+Proposition~\ref{prop:group1} is proved from the Group-1 boundary ideal in
+Appendix~\ref{app:rowalgebra}, and the shape-4 half from
+Corollary~\ref{cor:shape1ray}.  Had the clause been imported it would have
+``excluded'' the shape-5 values $161$, $280$ and $465$, none of which is
+excluded, and it would have contradicted Theorem~\ref{thm:88189}(ii).
+\end{remark}
 
 The remaining isosceles branch has tile angle $\gamma=2\alpha$
 \cite{BeesonIso}.  With coprime
@@ -659,11 +1495,15 @@ integers $u<v<2u$, its primitive side triple is
 \]
 
 \begin{proposition}[$\gamma=2\alpha$ ray]\label{prop:gamma2alpha}
-Every tiling of a non-similar isosceles target in this branch has
+Every tiling of a target $(\alpha,\alpha,\pi-2\alpha)$ in this branch, with
+$\alpha/\pi$ irrational, has
 \[
                  N=(v^2-u^2)r^2
 \]
-for an integer $r\ge2$.
+for an integer $r\ge2$.  \textup{(}By Theorem~\ref{thm:imp-isosceles} and
+the pairing of target shape with tile in \cite[Table~4]{Beeson7}, this is
+the only target shape the branch admits; compare case \textup{(ix)} of
+Proposition~\ref{prop:reduction33}.\textup{)}
 \end{proposition}
 
 \begin{proof}
@@ -837,8 +1677,8 @@ The immediate mathematical targets are small and concrete: decide the first
 unknown multipliers on the row-I, row-IV, row-V, Group~1 shape-5, and
 $\gamma=2\alpha$ rays; close or replace the forced-layer induction; prove a
 geometrically realizable seam calculus rather than only its inventory
-charges; and export search-independent refutation certificates for negative
-computations.  The manuscript is structured so that those results can be
+charges; and extend the search-independent refutation certificates of
+Appendix~\ref{app:certificates} to the remaining negative computations.  The manuscript is structured so that those results can be
 added without changing the distinction between proved and conditional claims.
 
 \appendix
@@ -872,6 +1712,51 @@ It checks:
 \item every pair of tiles has intersection of exact area zero; and
 \item the sum of the exact tile areas equals the exact target area.
 \end{enumerate}
+
+The step from these four checks to literal coverage of the target is the
+following elementary lemma, used again by the refutation checker of
+Appendix~\ref{app:certificates}.  Call a closed set $X\subseteq\mathbb R^2$ a
+\emph{body} if $X=\overline{\operatorname{int}X}$; closed polygons, closed
+triangles, and closures of components of open polygonal sets are bodies.
+
+\begin{lemma}[Coverage]\label{lem:coverage}
+Let $T$ be a bounded body and let $P_1,\dots,P_k\subseteq T$ be bodies with
+pairwise disjoint interiors and
+$\sum_{i=1}^k\operatorname{area}(P_i)=\operatorname{area}(T)$.  Then
+$\bigcup_{i=1}^kP_i=T$.
+\end{lemma}
+
+\begin{proof}
+For $i\ne j$, disjointness of the interiors gives
+$P_i\cap P_j\subseteq\partial P_i$, a Lebesgue-null set, so
+$\operatorname{area}\big(\bigcup_iP_i\big)=\sum_i\operatorname{area}(P_i)
+=\operatorname{area}(T)$.  Put $U=\bigcup_iP_i$, a closed subset of $T$.
+Then $\operatorname{int}T\setminus U$ is open and null, hence empty, so
+$\operatorname{int}T\subseteq U$ and therefore
+$T=\overline{\operatorname{int}T}\subseteq U\subseteq T$.
+\end{proof}
+
+\begin{lemma}[Containment by area]\label{lem:area-containment}
+Let $X$ be a body and $Y$ a closed set.  Then $X\subseteq Y$ if and only if
+$\operatorname{area}(X\cap Y)=\operatorname{area}(X)$.
+\end{lemma}
+
+\begin{proof}
+One direction is trivial.  Conversely, if some
+$x\in\operatorname{int}X\setminus Y$ then, $Y$ being closed, a disk about $x$
+lies in $X\setminus Y$, so $\operatorname{area}(X\setminus Y)>0$.  Hence
+$\operatorname{int}X\subseteq Y$ and
+$X=\overline{\operatorname{int}X}\subseteq Y$.
+\end{proof}
+
+Check~(1) makes every listed triangle a congruent copy of the tile;
+check~(2) is containment in the reconstructed target; check~(3) forces
+pairwise disjoint interiors, since two closed triangles with a common
+interior point share a disk and hence have intersection of positive area; and
+check~(4) is the area identity.  Lemma~\ref{lem:coverage} then gives literal
+coverage.  Lemma~\ref{lem:area-containment} is what licences deciding
+containment by an exact intersection area, as both the positive verifier and
+the refutation checker do.
 
 \begin{table}[ht]
 \centering
@@ -932,42 +1817,377 @@ reflex boundary vertex; exact containment, not the length of the first
 boundary segment, decides whether the placement is legal.
 \end{proof}
 
-\begin{lemma}[Exact boundary subtraction]\label{lem:exact-subtraction}
-Let $\Delta$ be a triangle contained in a simple polygonal component $R$, with
-no proper crossing of their boundaries, and suppose that
-$\partial R\cap\partial\Delta$ contains a nondegenerate segment.  This is the
-situation for every flush placement of
-Lemma~\ref{lem:corner-branching}.  Split $\partial R$ and
-$\partial\Delta$ at every vertex of either boundary lying on the other, form
-the oriented chain $\partial R-\partial\Delta$, and cancel opposite elementary
-edges.  Tracing the remaining directed edges by taking, at each vertex, the
-first edge clockwise from the reverse incoming direction gives exactly the
-counterclockwise boundaries of the positive-area components of
-$\overline{R\setminus\Delta}$, including when components meet at pinch
-vertices.
+Lemma~\ref{lem:corner-branching} bounds the branching to a fixed finite
+list, which both the search and the certificate format use verbatim.
+Throughout, $\theta_1,\theta_2,\theta_3$ are the tile angles, $\theta_i$
+opposite the side $s_i$, and $\operatorname{Rot}(\varphi)$ is rotation by
+$\varphi$.  In both branches $\cos\theta_i$ is rational by the law of cosines
+and $\sin\theta_i=w_i\sqrt D$ with $w_i\in\Q$: in Group~2,
+$\cos\alpha=(a+2b)/2c$ and $\sin\alpha=(a/2c)\sqrt3$; in Group~1,
+$\cos\alpha=(2q^2-p^2)/2q^2$ and $\sin\alpha=(p/2q^2)\sqrt D$ with
+$D=4q^2-p^2$.  So every candidate below has coordinates in $\Q(\sqrt D)$ as
+soon as the chosen boundary edge has rational length, which the searcher and
+the checker both test.
+
+\begin{lemma}[The flush placement list]\label{lem:flush-list}
+Let the polygonal region $R$ be positively oriented and tiled by congruent
+copies of the tile, let $P$ be a convex boundary vertex of $R$ with interior
+angle $\theta_P<\pi$, and let $u$ be the unit direction of one of the two
+boundary rays at $P$.  Let $\Delta$ be a tile of the tiling that has a vertex
+at $P$ and a complete edge starting at $P$ along $u$, as supplied by
+Lemma~\ref{lem:corner-branching}.  Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $\Delta=\big(P,\;P+\ell\,u,\;
+      P+\ell'\operatorname{Rot}(\varepsilon\theta_i)u\big)$
+      for some $i\in\{1,2,3\}$, some ordering $(\ell,\ell')$ of the two sides
+      adjacent to $\theta_i$, and some $\varepsilon\in\{+1,-1\}$.  Hence
+      $\Delta$ occurs in the twelve-element list indexed by $i$ ascending,
+      then the two orderings, then $\varepsilon=+1$ before $\varepsilon=-1$;
+\item $\theta_i\le\theta_P$, equivalently $\cos\theta_i\ge\cos\theta_P$;
+\item $\varepsilon=+1$ if $u$ points from $P$ to the next vertex in the
+      positive orientation, and $\varepsilon=-1$ if it points to the previous
+      one.  The six candidates carrying the other sign are contained in no
+      region with $P$ and $u$ as described.
+\end{enumerate}
+Consequently the at most six candidates obtained from \textup{(i)} with the
+sign of \textup{(iii)} and with $\theta_i\le\theta_P$ form a complete list of
+the tiles that can be flush at $P$ along $u$.
 \end{lemma}
 
 \begin{proof}
-The split edges form a finite planar arrangement.  An elementary edge cancels
-exactly when the two boundaries coincide there; every uncancelled edge
-separates $\overline{R\setminus\Delta}$ on its left from its complement on its
-right.  Hence the remaining chain is balanced at every vertex.  Because the
-removed triangle meets $\partial R$ in a segment, it creates no enclosed
-boundary component; by the Jordan curve theorem, every positive-area
-component of the complement is a polygonal disk.  The clockwise successor
-rule follows the boundary of the same local face and separates different
-faces at a pinch vertex.  It therefore uses every directed edge once in
-closed counterclockwise walks, one for each component.  Removing degenerate
-zero-area walks leaves precisely the asserted components.
+By Lemma~\ref{lem:corner-branching}, $\Delta$ has a vertex at $P$, and the
+side of $\Delta$ on the chosen ray is a complete tile edge.  Let $\theta_i$
+be the angle of $\Delta$ at $P$; its two sides at $P$ are the two sides
+adjacent to $\theta_i$, one of them along $u$ and the other along a rotation
+of $u$ through $\theta_i$ in one of the two senses.  Side-angle-side then
+determines $\Delta$, which is (i).
+
+Choose $\epsilon>0$ so small that $B=B(P,\epsilon)$ meets $\partial R$ only
+in the two boundary edges at $P$.  Then $R\cap B$ is the wedge $W$ of angle
+$\theta_P$ swept counterclockwise from the direction $u_+$ of the next vertex
+to the direction $u_-$ of the previous one, and $\Delta\cap B$ is the sector
+of angle $\theta_i$ at $P$.  Since $\Delta\subseteq R$, that sector lies in
+$W$, so $\theta_i\le\theta_P$; both angles lie in $(0,\pi)$, where the cosine
+is strictly decreasing, giving the stated inequality.  This is (ii).
+
+For (iii), $\theta_P<\pi$ makes $W$ a subset of the closed half-plane to the
+left of the line $\mathbb Ru_+$, so $W$ contains no direction obtained from
+$u_+$ by a clockwise rotation through an angle in $(0,\pi)$.  A candidate
+with $u=u_+$ and $\varepsilon=-1$ has its third vertex in such a direction,
+so the points of the segment from $P$ to that vertex which lie in $B$ are not
+in $R$, and the candidate is not contained in $R$.  The case $u=u_-$ is the
+mirror image.
 \end{proof}
 
-The program enumerates precisely these flush placements.  Subtraction is
-performed as an exact oriented $1$-chain: all component and tile edges are
-split at all vertices, opposite duplicates cancel, and the remaining faces are
-traced by a deterministic turning rule.  This handles a flush tile edge
-spanning several collinear boundary segments.  All orientation, containment,
-area, and intersection predicates are rational in $\Q(\sqrt D)$; the
-implementation is exactly Lemma~\ref{lem:exact-subtraction}.
+The program enumerates exactly the at most six candidates of
+Lemma~\ref{lem:flush-list}: it selects the deterministic convex corner
+$P$ and the ray towards the next vertex, discards a tile angle with
+$\cos\theta_i<\cos\theta_P$, and rotates counterclockwise, which is
+$\varepsilon=+1$.  The certificate format of
+Appendix~\ref{app:certificates} instead records all twelve entries of
+Lemma~\ref{lem:flush-list}(i) and leaves both the angle bound and the
+containment decision to the checker.
+
+\begin{lemma}[Necessary conditions for a placement]\label{lem:fit}
+Let $R$ be a simple positively oriented polygonal region tiled by congruent
+copies of the tile and let $\Delta$ be one of the tiles, so $\Delta\subseteq
+R$ and $\operatorname{int}\Delta\subseteq\operatorname{int}R$.  Then:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item no edge of $\Delta$ and edge of $R$ cross transversally at a point
+      interior to both;
+\item no vertex of $R$ lies in the interior of $\Delta$;
+\item the three vertices of $\Delta$ lie in $R$;
+\item the centroid of $\Delta$ lies in the interior of $R$;
+\item for every $V\in\partial\Delta\cap\partial R$, the interior cone of
+      $\Delta$ at $V$ is contained in the interior cone of $R$ at $V$; in
+      particular the two extreme directions of the tile cone and their sum
+      lie in the closed interior cone of $R$ at $V$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Since $\operatorname{int}\Delta$ is open and contained in $R$, it is
+contained in $\operatorname{int}R$.
+
+(a) Suppose an edge of $\Delta$ crosses a boundary edge $e$ of $R$
+transversally at $x$, interior to both.  As $R$ is simple, $x$ lies in the
+relative interior of no other boundary edge, so a small disk meets $R$ in the
+closed half-disk on the left of $e$.  The tile edge has points arbitrarily
+close to $x$ strictly on the right of $e$; these are not in $R$,
+contradicting $\Delta\subseteq R$.
+
+(b) A vertex $v$ of $R$ with $v\in\operatorname{int}\Delta$ would satisfy
+$v\in\operatorname{int}R$, contradicting $v\in\partial R$.
+
+(c) is $\Delta\subseteq R$, and (d) holds because the centroid lies in
+$\operatorname{int}\Delta\subseteq\operatorname{int}R$.
+
+(e) Choose $\epsilon>0$ with $B=B(V,\epsilon)$ meeting $\partial R$ only in
+the boundary edges through $V$ and $\partial\Delta$ only in the tile edges
+through $V$.  Then $R\cap B$ and $\Delta\cap B$ are the sectors of the
+interior cones $C_R$ and $C_\Delta$ at $V$, of angle $<\pi$ if $V$ is a
+vertex of the respective polygon and $=\pi$ if $V$ lies in the relative
+interior of one of its edges.  Now $\Delta\subseteq R$ gives
+$C_\Delta\subseteq C_R$.  The two extreme directions of $C_\Delta$ are
+limits of directions of $\operatorname{int}C_\Delta$, and their sum is a
+direction of $\operatorname{int}C_\Delta$; all three lie in the closed cone
+$C_R$.
+\end{proof}
+
+Conditions (a)--(e) are, in this order, the five clauses of the program's
+\texttt{fit\_test}.  Clause (e) is tested at the three tile vertices and at
+every vertex of $R$ lying on an edge of $\Delta$.  Any further point of
+$\partial\Delta\cap\partial R$ lies in the relative interior of an edge of
+each; the two edges are then collinear by (a), and either the two cones
+coincide, so that (e) is vacuous, or they are opposite half-planes, which
+$\Delta\subseteq R$ already excludes.  Only necessity is used: the search
+rejects a placement when a listed condition fails, and no claim is made that
+the list is sufficient for containment.  A placement that passes it but is
+not contained is caught at the next step, by the area identity of
+Lemma~\ref{lem:exact-subtraction}, and is reported as a skipped placement
+(Definition~\ref{def:runstatus}).
+
+\begin{definition}[Pieces]\label{def:pieces}
+The \emph{pieces} of a closed set $S\subseteq\mathbb R^2$ are the closures of
+the connected components of $\operatorname{int}S$.
+\end{definition}
+
+\begin{lemma}[Exact boundary subtraction]\label{lem:exact-subtraction}
+Let $R$ be a closed simple polygon, positively oriented, and let
+$\Delta\subseteq R$ be a nondegenerate closed triangle such that
+$\partial R\cap\partial\Delta$ contains a nondegenerate segment; this is the
+situation of every flush placement of Lemma~\ref{lem:corner-branching}.  Put
+$S=\overline{R\setminus\Delta}$ and perform:
+\begin{enumerate}[label=\textup{(S\arabic*)},leftmargin=3.1em]
+\item split every edge of $\partial R$ at every vertex of $\Delta$ lying in
+      its relative interior and every edge of $\partial\Delta$ at every
+      vertex of $R$ lying in its relative interior, orienting $\partial R$
+      positively and $\partial\Delta$ negatively; call the resulting directed
+      segments \emph{half-edges};
+\item delete every pair of half-edges with the same endpoints and opposite
+      directions;
+\item at each vertex $v$, let the successor $\sigma(h)$ of a half-edge $h$
+      ending at $v$ be the half-edge issuing from $v$ whose direction comes
+      first in clockwise order starting from the reverse of the direction of
+      $h$;
+\item discard every closed $\sigma$-walk enclosing zero area, after merging
+      collinear runs of vertices.
+\end{enumerate}
+Then:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item after \textup{(S2)} every surviving half-edge occurs exactly once, has
+      $S$ locally on its left and the closure of the complement of $S$
+      locally on its right, and $\partial S$ is the union of the surviving
+      half-edges;
+\item $\sigma$ is a permutation of the surviving half-edges, and its corners
+      $(h,\sigma(h))$ correspond bijectively to the local sectors of $S$ at
+      the vertices;
+\item the cycles of $\sigma$ are exactly the positively oriented boundary
+      walks of the pieces of $S$, one cycle per piece, and each is a simple
+      closed polygon after merging collinear runs;
+\item every cycle encloses positive area, so \textup{(S4)} discards nothing.
+\end{enumerate}
+Consequently the pieces of $S$ are simple polygons with pairwise disjoint
+interiors whose union is $S$, their areas sum to
+$\operatorname{area}(R)-\operatorname{area}(\Delta)$, and
+$\bigcup_i\partial P_i\subseteq\partial S\subseteq
+\partial R\cup\partial\Delta$.
+\end{lemma}
+
+\begin{proof}
+\emph{Elementary segments.}  Two half-edges from the same boundary meet only
+at endpoints, because $R$ and $\Delta$ are simple and (S1) only subdivides.
+Suppose $x$ lies in the relative interiors of a half-edge $e\subseteq\partial
+R$ and a half-edge $f\subseteq\partial\Delta$.  If $e$ and $f$ were not
+collinear they would cross transversally, and $f$ would have points
+arbitrarily near $x$ outside the closed half-plane that contains $R$ locally,
+contradicting $\Delta\subseteq R$.  So they are collinear.  The endpoints of
+$f$ are vertices of $\Delta$ or vertices of $R$, and by (S1) and simplicity
+neither can lie in the relative interior of $e$; symmetrically for the
+endpoints of $e$.  Hence $e$ and $f$ have the same endpoints.  Thus distinct
+undirected half-edges have disjoint relative interiors.
+
+\emph{Cancellation and sides.}  Each undirected segment occurs at most once
+in $\partial R$ and at most once in $\partial\Delta$, both being simple
+closed curves.  Suppose it occurs in both, and let $x$ be a relative interior
+point.  Locally $R$ is the closed half-disk on the left of the $\partial R$
+direction and $\Delta$ the closed half-disk on the left of the
+$\partial\Delta$ direction; $\Delta\subseteq R$ forces the two directions to
+agree, so the pair cancels in (S2), and locally $R\setminus\Delta=\emptyset$,
+whence a neighbourhood of $x$ misses $S$.  If the segment occurs only in
+$\partial R$, then by the previous paragraph its relative interior misses
+$\partial\Delta$, and it misses $\operatorname{int}\Delta\subseteq
+\operatorname{int}R$; so locally $S=R$ is the closed left half-disk and the
+complement of $R$ the open right one.  If it occurs only in
+$\partial\Delta$, its relative interior lies in $\operatorname{int}R$, and
+locally $\Delta$ is the closed half-disk left of the $\partial\Delta$
+direction while $S$ is the other closed half-disk, which is on the left of
+the reversed direction used in (S1).  This proves the side statement in (a),
+and it shows that every surviving half-edge lies in $\partial S$ while no
+cancelled segment does.  Since $\partial S\subseteq\partial R\cup
+\partial\Delta$, the union of the surviving half-edges is $\partial S$.
+Finally, after (S1) both boundary walks are closed, so in-degree equals
+out-degree at every vertex, and (S2) removes one incoming and one outgoing
+half-edge at each endpoint of a cancelled pair; the surviving chain is
+balanced.
+
+\emph{Local sectors.}  Fix a vertex $v$ and $\epsilon>0$ so small that
+$B=B(v,\epsilon)$ meets the surviving half-edges only in radial segments at
+$v$.  By (a), $\partial S\cap B$ is the union of those radii, so $S\cap B$ is
+a finite union of closed circular sectors with pairwise disjoint interiors,
+each bounded by two of the radii and containing no other radius.  Distinct
+half-edges at $v$ span distinct rays: two with the same ray would either
+coincide, which (S2) excludes, or contain each other's endpoint in a relative
+interior, which (S1) excludes.  ``$S$ on the left'' says that the material of
+$S$ along the ray of an outgoing half-edge lies on its counterclockwise side,
+and along the ray of an incoming half-edge on its clockwise side.  Hence for
+each sector the clockwise-most bounding ray belongs to an outgoing half-edge
+and the counterclockwise-most to an incoming one; in particular no two
+sectors are adjacent, incoming and outgoing rays alternate, and turning
+clockwise from an incoming ray the first ray met is the outgoing ray of the
+same sector.  That is exactly the rule (S3), so $\sigma$ maps the half-edges
+ending at $v$ bijectively to those issuing from $v$, and corners correspond
+to sectors.  Being a bijection at every vertex, $\sigma$ is a permutation,
+which is (b).
+
+\emph{The complement of $S$ is connected.}  By hypothesis
+$\partial R\cap\partial\Delta$ contains a nondegenerate segment, hence a
+cancelled half-edge $e$.  At a relative interior point of $e$ a small ball
+misses $S$, and it splits into the part inside $\operatorname{int}\Delta$ and
+the part outside $R$.  Therefore
+$\operatorname{int}\Delta\cup\operatorname{relint}(e)\cup(\mathbb R^2\setminus
+R)$ is a connected subset of the complement of $S$.  As
+$\mathbb R^2\setminus S=(\mathbb R^2\setminus R)\cup(\Delta\setminus\partial
+S)$ and every point of $\Delta\setminus\partial S$ lies in
+$\operatorname{int}\Delta$ or in the relative interior of a cancelled
+half-edge, the complement $K=\mathbb R^2\setminus S$ is connected and
+unbounded.
+
+\emph{One sector per piece per vertex.}  Suppose two distinct sectors at a
+vertex $v$ belonged to the same piece $P$.  Join an interior point of one to
+an interior point of the other by an arc in $\operatorname{int}P$ and close
+it through $v$: this gives a Jordan curve $J\subseteq P\subseteq S$ which,
+near $v$, consists of two arcs through $v$.  These two arcs separate a small
+disk at $v$ into two parts, and each contains one of the two complementary
+gaps between the two sectors; one gap therefore lies inside $J$ and the other
+outside.  Both consist of points of $K$, and $K$ also contains points far
+away, outside $J$.  So $K$ meets both complementary regions of $J$ while
+being connected and disjoint from $J$ --- a contradiction.  In particular no
+$\sigma$-cycle visits a vertex twice, so every cycle is a simple closed
+polygon.
+
+\emph{Cycles and pieces.}  For a surviving half-edge $h$, the material of $S$
+on the left of $h$ near its relative interior lies in a unique piece $P(h)$.
+The sector of the corner $(h,\sigma(h))$ lies in that piece and is adjacent
+along $\sigma(h)$ to the material on the left of $\sigma(h)$, so
+$P(\sigma(h))=P(h)$: the map $P$ is constant on cycles.  Conversely
+$P(h)=P$ holds precisely when $h\subseteq\partial P$.  Every cycle contains a
+half-edge of $\partial R$: the surviving half-edges of $\partial\Delta$ form
+proper subarcs of the simple closed curve $\partial\Delta$, since at least
+one of its segments cancelled, and subarcs contain no cycle.  Let $J$ be a
+cycle of $\partial P$ and $e\subseteq J$ a half-edge of $\partial R$.  The
+complement of $R$ is connected and unbounded, and $J\subseteq S\subseteq R$,
+so the bounded complementary region of $J$ is contained in $R$; the points
+just to the right of $e$ are outside $R$ and hence in the unbounded
+complementary region of $J$, while the material of $P$ lies just to the left.
+Since $\operatorname{int}P$ is connected and disjoint from $J$, it follows
+that $\operatorname{int}P$ is contained in the bounded region enclosed by
+$J$, and that $J$ is traversed counterclockwise, proving (d).  If a second
+cycle $J'\subseteq\partial P$ existed, then
+$J'\subseteq\partial P\subseteq\overline{\operatorname{int}P}$ and
+$J'\cap J=\emptyset$ would put $J'$ inside $J$; but $J'$ also contains a
+half-edge of $\partial R$, whose right-hand side consists of points outside
+$R$ lying in a neighbourhood contained in the bounded region enclosed by $J$,
+hence in $R$ --- a contradiction.  So each piece carries exactly one cycle
+and each cycle bounds exactly one piece, which is (c).
+
+The closing statements follow: pieces are simple polygons by (c), have
+pairwise disjoint interiors and union $S$ by Definition~\ref{def:pieces}
+(because $S=\overline{\operatorname{int}S}$, as $\operatorname{int}R\setminus
+\Delta$ is open and dense in $S$), their areas sum to
+$\operatorname{area}(S)=\operatorname{area}(R)-\operatorname{area}(\Delta)$,
+and $\partial P_i\subseteq\partial S$ because a point of
+$\operatorname{int}S$ has a ball inside a single component.
+\end{proof}
+
+Subtraction in \pathcode{computation/tiling_search/searcher2.py} is exactly
+the steps (S1)--(S4): all component and tile edges are split at all
+incidences, half-edges of net opposite multiplicity cancel, the surviving
+half-edges are traced by the successor rule (S3), and walks of zero area
+after merging collinear runs are dropped.  A flush tile edge spanning several
+collinear boundary segments therefore needs no special case; by
+Lemma~\ref{lem:exact-subtraction}(c) it can split off further pieces, as in
+the program's regression with two such pieces.  Three of these steps are
+guarded.  Each stored piece is required to be a simple polygon, which
+Lemma~\ref{lem:exact-subtraction}(c) guarantees and the program re-verifies
+under its \texttt{-{}-paranoid} flag; a negative traced area, which
+Lemma~\ref{lem:exact-subtraction}(d) excludes, is likewise rejected; and the
+area identity
+$\operatorname{area}(R)=\operatorname{area}(\Delta)+\sum_i
+\operatorname{area}(P_i)$
+is checked at every placement.  A failure of any of the three is recorded as
+a skipped placement, so by Definition~\ref{def:runstatus} the run is
+inconclusive and supports no nonexistence claim.  All orientation,
+containment, area, and intersection predicates are rational in
+$\Q(\sqrt D)$.
+
+\begin{lemma}[Components]\label{lem:components}
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Let $S$ be a closed polygonal region with pieces $P_1,\dots,P_k$.
+      Then $S$ is tileable by congruent copies of a given triangle if and
+      only if every $P_i$ is.
+\item Let $R$ be tiled by triangles $\Delta_1,\dots,\Delta_n$, put
+      $\Delta=\Delta_1$, and let $C_1,\dots,C_k$ be bodies with pairwise
+      disjoint interiors, each interior disjoint from
+      $\operatorname{int}\Delta$, such that
+      $\Delta\cup C_1\cup\dots\cup C_k=R$ and
+      $\bigcup_j\partial C_j\subseteq\partial R\cup\partial\Delta$.  Then
+      every $\Delta_i$ with $i\ge2$ is contained in exactly one $C_j$, and
+      for every $j$ the tiles contained in $C_j$ tile $C_j$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(ii)  Fix $i\ge2$.  Then $\operatorname{int}\Delta_i\subseteq
+\operatorname{int}R$, so $\operatorname{int}\Delta_i\cap\partial R=
+\emptyset$.  Also $\operatorname{int}\Delta_i\cap\partial\Delta=\emptyset$:
+a point of that intersection would have a disk inside
+$\operatorname{int}\Delta_i$ meeting $\operatorname{int}\Delta$, because
+$\Delta=\overline{\operatorname{int}\Delta}$, contradicting interior
+disjointness of the tiles.  Hence $\operatorname{int}\Delta_i$ misses
+$\bigcup_j\partial C_j$ and misses $\Delta$.  As
+$\operatorname{int}\Delta_i\subseteq R=\Delta\cup\bigcup_jC_j$, we get
+$\operatorname{int}\Delta_i\subseteq\bigcup_j\operatorname{int}C_j$, a
+disjoint union of open sets; $\operatorname{int}\Delta_i$ is connected, so it
+lies in a single $\operatorname{int}C_j$, and
+$\Delta_i=\overline{\operatorname{int}\Delta_i}\subseteq C_j$.  Uniqueness is
+clear since the interiors are disjoint.
+
+Let $I_j$ index the tiles contained in $C_j$.  Their interiors are disjoint
+and contained in $C_j$, so $\sum_{i\in I_j}\operatorname{area}(\Delta_i)\le
+\operatorname{area}(C_j)$.  The sets $\Delta,C_1,\dots,C_k$ have pairwise
+disjoint interiors and union $R$, so
+$\operatorname{area}(R)=\operatorname{area}(\Delta)+\sum_j
+\operatorname{area}(C_j)$, while
+$\sum_{i\ge2}\operatorname{area}(\Delta_i)=\operatorname{area}(R)-
+\operatorname{area}(\Delta)$.  Since every $i\ge2$ lies in exactly one
+$I_j$, summing the inequalities forces equality for each $j$, and
+Lemma~\ref{lem:coverage} then shows that the tiles indexed by $I_j$ cover
+$C_j$.  They therefore tile it.
+
+(i)  The pieces are bodies with pairwise disjoint interiors and union $S$,
+and $\bigcup_i\partial P_i\subseteq\partial S$; so the argument just given,
+with $\Delta$ absent, shows that every tile of a tiling of $S$ lies in
+exactly one piece and that the tiles inside a piece tile it.  Conversely, the
+union of tilings of the pieces has pairwise disjoint interiors and covers
+$S$, hence is a tiling of $S$.
+\end{proof}
+
+Together with Lemma~\ref{lem:exact-subtraction}, whose pieces satisfy the
+hypotheses of (ii) with $C_j=P_j$, this is the induction step of the search:
+after a placement, each tile of a hypothetical completion belongs to exactly
+one piece, the pieces are independent subproblems, and one untileable piece
+kills the placement.
 
 \begin{lemma}[Convex-end segment pruning]\label{lem:convex-segment}
 If a polygonal region tiled by triangles with side lengths $a,b,c$ has a
@@ -983,16 +2203,161 @@ the local interior wedge.  These complete tile edges partition the segment,
 so their lengths add to its length.
 \end{proof}
 
-A placement is pruned only by necessary conditions: integer area budget,
-feasible convex wedges, Lemma~\ref{lem:convex-segment}, and the proved
-boundary invariants.  Each recursive placement removes one tile, so the tree
-is finite.  Lemma~\ref{lem:corner-branching} shows that exhausting every
-branch proves nonexistence.  The implementation passes its exact geometry
-self-tests.  For $N=33$ it visits $6479$ states with all pruning enabled and
-$22850$ states when the general segment-semigroup table and boundary-invariant
-pruning are disabled.  The latter run retains the feasible-wedge test and the
-special case of Lemma~\ref{lem:convex-segment} that rejects a selected
-convex-ended edge shorter than every tile side.
+\begin{lemma}[The pruning conditions are necessary]\label{lem:prunes}
+Let the closed polygonal region $R$ be tiled by $n$ congruent copies of a
+tile with sides $a,b,c$ and angles $\theta_1,\theta_2,\theta_3$, and put
+$\theta_{\min}=\min_i\theta_i$.  Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \emph{(area budget)}
+      $\operatorname{area}(R)/\operatorname{area}(\text{tile})=n$, a positive
+      integer;
+\item \emph{(wedge)} the interior angle at every convex boundary vertex of
+      $R$ is a sum of at least one and at most
+      $\lfloor\pi/\theta_{\min}\rfloor$ tile angles; in particular it is at
+      least $\theta_{\min}$;
+\item \emph{(short edge)} a boundary edge of $R$ whose two endpoints are
+      convex has length in $a\Nzero+b\Nzero+c\Nzero$ and, being positive, at
+      least $\min(a,b,c)$;
+\item \emph{(Laurent and character bounds, Group~2)} with the notation of
+      Section~\ref{sec:laurent}, $B(\partial R)$ has integer coefficients,
+      lies in $I=(d+cz,d+cz^{-1})$, and satisfies
+      $B(\partial R)|_{z=1}=M(a-b+c)$ and
+      $B(\partial R)|_{z=-1}=M'(a-b-c)$ with integers $M,M'$ such that
+      $|M|,|M'|\le n$ and $M\equiv M'\equiv n\pmod 2$;
+\item \emph{(child budget)} if $\Delta$ is a tile of the tiling and some
+      piece of $\overline{R\setminus\Delta}$ has area which is not a positive
+      integer multiple of the tile area, then no tiling of $R$ contains
+      $\Delta$; in particular such a placement may be discarded.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i)  The tiles have pairwise disjoint interiors and union $R$, so their areas
+add.
+
+(ii)  Let $P$ be a convex boundary vertex with interior angle
+$\theta_P<\pi$, and intersect a small disk about $P$ with $R$, obtaining the
+wedge of angle $\theta_P$.  A tile containing $P$ cannot contain it in its
+interior, since $P\in\partial R$, and cannot contain it in the relative
+interior of an edge, since that edge would put a full diameter through $P$
+inside $R$, which a wedge of angle less than $\pi$ does not contain.  So
+every tile at $P$ has a vertex there, the corresponding sectors partition the
+wedge, and $\theta_P$ is the sum of their angles: a nonempty sum of tile
+angles, each at least $\theta_{\min}$, hence with at most
+$\lfloor\theta_P/\theta_{\min}\rfloor\le\lfloor\pi/\theta_{\min}\rfloor$
+summands.
+
+(iii)  This is Lemma~\ref{lem:convex-segment} together with the observation
+that the partition of a segment of positive length into complete tile edges
+is nonempty.
+
+(iv)  Subdivide every tile edge at every vertex of the tiling of $R$.  Each
+elementary interior segment is incident with one tile on each side, so it
+occurs twice with opposite orientations and cancels, exactly as in the proof
+of Theorem~\ref{thm:laurent}.  Hence
+\[
+ B(\partial R)=\sum_{j=1}^n\pm z^{k_j}\big(d+cz^{\varepsilon_j}\big),
+ \qquad \varepsilon_j\in\{1,-1\},\ k_j\in\Z,
+\]
+which has integer coefficients and lies in $I$.  Every Laurent unit
+evaluates to $\pm1$ at $z=1$ and at $z=-1$, while
+$d+cz^{\pm1}$ evaluates to $d+c=a-b+c$ at $z=1$ and to $d-c=a-b-c$ at
+$z=-1$.  So $B(\partial R)|_{z=1}$ is a sum of $n$ signs times $a-b+c$, and
+similarly at $z=-1$; the bound and the parity follow.
+
+(v)  By Lemma~\ref{lem:exact-subtraction} the pieces of
+$\overline{R\setminus\Delta}$ satisfy the hypotheses of
+Lemma~\ref{lem:components}(ii), so a tiling of $R$ containing $\Delta$ tiles
+every piece, and (i) applies to that piece.
+\end{proof}
+
+Every prune the program applies is one of the conditions of
+Lemma~\ref{lem:prunes}, in the following correspondence.  The area budget is
+(i), applied both to a component and, before recursion, to each of its
+pieces, which is (v).  The wedge prune rejects a component with a convex
+vertex whose interior angle is smaller than every tile angle, a special case
+of (ii).  The selected-edge prune rejects a component whose chosen
+convex-ended boundary edge is shorter than every tile side, which is (iii).
+The segment-semigroup table is (iii) in full, and the boundary-invariant
+prune is (iv), with the three tests: integrality of the coefficients,
+vanishing of $B(\partial R)$ at $z=-dc^{-1}$ modulo $3ab$, and the two
+character bounds.  A missing entry in the finite direction table only
+disables the last prune at that node.  Since each recursive placement removes
+one tile, the tree is finite; Lemmas~\ref{lem:corner-branching},
+\ref{lem:flush-list}, \ref{lem:fit} and~\ref{lem:components} show that
+exhausting every branch proves nonexistence.  The implementation passes its
+exact geometry self-tests, including positive controls in both branches with
+every prune enabled.  For $N=33$ it visits $6479$ states with all pruning
+enabled and $22850$ states when the general segment-semigroup table and the
+boundary-invariant pruning are disabled; the latter run retains the wedge and
+selected-edge prunes, that is (ii) and (iii) in the weak forms just
+described.
+
+\begin{definition}[Run status]\label{def:runstatus}
+A search run is \emph{exhausted} if all of the following hold: the recursion
+terminated without reaching a node, time, or memory limit; every enumerated
+placement was either rejected by one of the necessary conditions of
+Lemmas~\ref{lem:flush-list}, \ref{lem:fit} and~\ref{lem:prunes} or fully
+expanded; and no geometric operation reported an unsupported or inconsistent
+case, that is, every edge length was exactly rational, every placed triangle
+had exactly the tile area, every subtraction produced simple positively
+oriented pieces, and the area identity of
+Lemma~\ref{lem:exact-subtraction} held at every node.  A run that reaches a
+limit is \emph{undecided}.  A run in which any placement was skipped or any
+geometric case was reported unsupported is \emph{inconclusive}, whatever
+verdict it printed, and in particular is never exhausted.  Only an exhausted
+run supports a nonexistence claim.  In the implementation each such event
+increments a warning counter that is part of every archived run record; a
+record with a nonzero counter is not used in any theorem, and all records
+cited in this paper report zero.  A missing entry in the direction table of
+the boundary invariant is not such an event and is counted separately.
+\end{definition}
+
+Repeated components are cached.  The equivalence the implementation decides is
+translation, which is strictly finer than congruence.
+
+\begin{lemma}[Canonical states]\label{lem:memo}
+Call two components equivalent when one is a translate of the other.  Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item two components are equivalent if and only if they have the same
+      canonical key, where the key of a component is its positively oriented
+      vertex list translated so that its lexicographically least vertex
+      becomes the origin, and then cyclically shifted to the
+      lexicographically least shift;
+\item tileability is invariant under the equivalence;
+\item consequently caching tileable and untileable components by their
+      canonical key is sound, and a cached tiling is transported to any
+      translate by the same translation.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i)  The construction is translation-equivariant: translating every vertex by
+$t$ translates the lexicographically least vertex by $t$ and leaves both the
+difference vectors and the cyclic order unchanged, so translates receive the
+same key.  Conversely, equal keys mean that the two translated vertex lists
+agree after a cyclic shift, so the two polygons differ by the translation
+carrying one least vertex to the other.
+
+(ii)  A translation is an isometry, and the family of admissible tiles is
+closed under isometries because congruent copies are allowed to be reflected.
+So a tiling of $R$ is carried to a tiling of $R+t$ and back.
+
+(iii)  Whether a component can be tiled depends on the component alone and
+not on the tiles already placed elsewhere: by
+Lemma~\ref{lem:components}(ii) the pieces produced at a node are independent
+subproblems.  Hence a key that has been shown untileable can be rejected on
+every later occurrence, and a stored solution can be replayed after
+translation.
+\end{proof}
+
+The key factors out translation and the choice of starting vertex, and
+nothing else: rotations and reflections are not normalized, although (ii)
+would justify normalizing them, since the tile set is closed under all
+isometries.  Declining to do so costs cache hits only.  The certificate
+export runs of Appendix~\ref{app:certificates} disable the cache entirely,
+so Theorem~\ref{thm:no33} and Corollary~\ref{cor:21ray}(ii) do not depend on
+this lemma.
 
 A separately written diagnostic searcher is included for transparency, but
 its historical output is not part of the proof.  A previous version rejected
@@ -1004,22 +2369,203 @@ length $5$ and a contained tile edge has length $7$.  The cap has been
 removed; the corrected diagnostic search has not been exhausted, so no
 independent-exhaustion claim is made.
 
+\subsection{Refutation certificates and the independent
+checker}\label{app:certificates}
+
+\paragraph{The object.}
+A refutation certificate is a finite proof object for the statement that a
+given target polygon admits no tiling by a given tile.  Its format,
+\texttt{erdos634-refutation-v1}, is fixed normatively in
+\pathcode{computation/tiling_search/CERT_SPEC.md}; the file is gzipped JSONL,
+line one a header and every later line a node in depth-first preorder.
+Arithmetic is exact and symbolic: a coordinate is a pair of rationals
+$(x,w)$ denoting $x+w\sqrt D$, a point a pair of coordinates, a polygon a
+positively oriented list of at least three points which is simple and has no
+three consecutive collinear vertices.  The header fixes the instance name,
+the field parameter $D$, the exact tile side triple, the target polygon in
+standard position, the pruning configuration, and the number of node lines.
+
+Every node carries its region in \emph{absolute} coordinates, because the
+export run disables memoization and canonicalization: the object is a tree,
+no state identification has to be trusted, and Lemma~\ref{lem:memo} is not
+used.  The export run also uses the \emph{reduced} pruning configuration,
+whose only rules are the area budget, the wedge test, and the selected-edge
+test of Lemma~\ref{lem:prunes}(i)--(iii); the segment-semigroup table and the
+boundary-invariant prune are switched off, so a certificate depends on
+neither Theorem~\ref{thm:laurent} nor the general form of
+Lemma~\ref{lem:convex-segment}.
+
+A node is either \emph{pruned}, carrying a witness that names one of the
+three rules and the vertex or edge it applies to but no numerical data --- the
+checker recomputes the claim from the region and the tile alone --- or
+\emph{branched}, carrying a convex vertex, one of the two boundary rays at
+it, and the complete twelve-element candidate list of
+Lemma~\ref{lem:flush-list}(i) in the order fixed there, each entry marked
+rejected or expanded.  An expanded entry carries the child regions in
+absolute coordinates and singles out one of them as the \emph{refuted child},
+with the identifier of the node that refutes it.  The remaining children
+carry no node records: a refutation needs one untileable child, not all of
+them.  An expanded entry with no children is invalid, since by
+Lemma~\ref{lem:coverage} it would assert that the placed tile alone is the
+region.
+
+Two design points carry the independence.  First, the child regions are
+re-derived rather than trusted.  The checker verifies that every child is
+contained in the parent, that the children and the placed triangle have
+pairwise disjoint interiors, that every child edge lies, as a point set,
+inside the union of the parent's and the placed triangle's boundaries ---
+verified by exact one-dimensional coverage along the common supporting line,
+since a child edge may span a tile edge and a collinear parent edge
+together --- and that the areas of
+the children plus the tile area equal the parent area.  By
+Lemma~\ref{lem:coverage} the children and the tile then cover the parent
+exactly, and the edge condition supplies the remaining hypothesis of
+Lemma~\ref{lem:components}(ii), so every tile of a hypothetical completion
+lies in exactly one child.  The searcher's subtraction, that is
+Lemma~\ref{lem:exact-subtraction}, is thereby removed from the checked proof.
+Second, the checker, not the exporter, decides which placements are legal: it
+constructs the twelve candidates itself from the tile side lengths by the law
+of cosines and decides containment by the exact test
+$\operatorname{area}(\Delta\cap R)=\operatorname{area}(\Delta)$, which by
+Lemma~\ref{lem:area-containment} is equivalent to $\Delta\subseteq R$.  A
+candidate that is contained but recorded as rejected, or not contained but
+recorded as expanded, invalidates the certificate.
+
+\paragraph{The obligations.}
+The checker verifies, in exact arithmetic over $\Q(\sqrt D)$, and rejects on
+any failure: (1) that the header is well formed, that the instance is one it
+knows, that the target it constructs itself in standard position from the
+published side lengths equals the recorded target exactly, and that the tile
+triple satisfies the defining relation of its branch; (2) that the node count
+matches, that identifiers run $0,\dots,n-1$ in preorder, and that every node
+except the root is the refuted child of exactly one earlier node, whose
+identifier is smaller; (3) that every recorded polygon is simple, positively
+oriented, of positive area, without repeated or collinear consecutive
+vertices; (4) that the root region is the target; (5) for each pruned node,
+the witness claim recomputed from the region and the tile: a non-integral
+area ratio for the budget rule; for the wedge rule that the interior angle at
+the named vertex is not a nonempty sum of tile angles, by the bounded
+enumeration that Lemma~\ref{lem:prunes}(ii) justifies; for the selected-edge
+rule that both endpoints are convex and the length is smaller than every tile
+side; (6) for each branched node, that the named vertex is convex, that the
+chosen boundary edge has rational length, and that the twelve candidates it
+recomputes agree with the recorded ones in order; (7) containment of every
+candidate, decided by the checker itself, together with the recorded verdict;
+(8) the child obligations of the previous paragraph, including that the
+selected child equals the region of the refuted node exactly; (9) that no
+expanded entry has an empty child list; and (10) acceptance, reported with
+the instance name, the node count, and the SHA-256 digest of the certificate
+file.  There is no accepted-with-warnings state: any diagnostic is a
+rejection.
+
+Where the exporter's own tests are weaker than the recomputed claims, the
+recomputation is the stronger statement and holds a fortiori.  The searcher's
+wedge prune fires when a convex angle is smaller than every tile angle, and
+such an angle is certainly not a nonempty sum of tile angles.  The searcher
+discards a placement one of whose pieces has non-integral area budget without
+recursing, by Lemma~\ref{lem:prunes}(v); in the certificate that placement is
+expanded, and the piece in question is recorded as its refuted child and
+refuted by a node pruned under the budget rule.
+
+\paragraph{Independence.}
+The checker \pathcode{computation/tiling_search/check_refutation.py} was
+written from the specification and the lemmas of this appendix alone.  It
+shares no code with \pathcode{computation/tiling_search/searcher2.py}, with
+the earlier searchers, or with the positive-certificate verifier
+\pathcode{computation/tiling_search/verify_tiling.py}; it uses the Python
+standard library only, and reimplements the field arithmetic, the polygon
+predicates, the candidate construction, and the exact polygon intersection
+areas from scratch.  The exporter is a mode of the searcher and may reuse
+anything in it: it only produces the object, and nothing about how it was
+produced is trusted.
+
+\begin{theorem}[Soundness of certificate checking]\label{thm:cert-sound}
+Let a certificate be accepted by a checker discharging obligations
+\textup{(1)--(10)}, and let $T$ and $R_0$ be the target polygon and the tile
+of its header.  Then $T$ admits no tiling by congruent copies of $R_0$;
+reflections are allowed and no edge-to-edge hypothesis is imposed.
+\end{theorem}
+
+\begin{proof}
+We prove by induction over the tree, in decreasing order of node identifier,
+that the region of every node admits no tiling by congruent copies of $R_0$.
+Obligation (2) makes this a valid induction: a node's refuted child has a
+larger identifier.
+
+Let $\nu$ be a node whose region $R$ is, for contradiction, tiled.  If $\nu$
+is pruned then, by obligation (5), the recomputed witness claim holds for
+$R$: a non-integral ratio $\operatorname{area}(R)/\operatorname{area}(R_0)$
+contradicts Lemma~\ref{lem:prunes}(i); a convex interior angle that is not a
+nonempty sum of tile angles contradicts Lemma~\ref{lem:prunes}(ii); and a
+convex-ended boundary edge shorter than every tile side contradicts
+Lemma~\ref{lem:prunes}(iii).
+
+If $\nu$ is branched, let $P$ be its recorded vertex, convex by obligation
+(6), and let $u$ be the recorded boundary ray at $P$.  By
+Lemma~\ref{lem:corner-branching} the tiling contains a tile $\Delta$ with a
+vertex at $P$ and a complete edge starting at $P$ along $u$, and by
+Lemma~\ref{lem:flush-list}(i) that tile is one of the twelve candidates,
+which by obligation (6) are exactly the recorded ones.  Since
+$\Delta\subseteq R$, the checker's containment test finds $\Delta$ contained
+(Lemma~\ref{lem:area-containment}), so by obligation (7) the entry of
+$\Delta$ is marked expanded, and by obligations (8) and (9) it carries
+children $C_1,\dots,C_k$ with $k\ge1$ such that: each $C_j\subseteq R$; the
+sets $\Delta,C_1,\dots,C_k$ have pairwise disjoint interiors; every
+$\partial C_j$ lies in $\partial R\cup\partial\Delta$; and
+$\operatorname{area}(\Delta)+\sum_j\operatorname{area}(C_j)=
+\operatorname{area}(R)$.  By Lemma~\ref{lem:coverage},
+$\Delta\cup\bigcup_jC_j=R$, so by Lemma~\ref{lem:components}(ii) every tile
+of the tiling other than $\Delta$ lies in exactly one $C_j$ and the tiles
+lying in $C_j$ tile $C_j$.  In particular the refuted child is tileable.  Its
+region equals the region of the node with the recorded identifier, which is
+larger than that of $\nu$, so by induction that region admits no tiling: a
+contradiction.
+
+Hence no node's region is tileable.  By obligation (4) the root's region is
+the header target, so the header target admits no tiling; by obligation (1)
+that target is the instance's published one, constructed by the checker
+itself, and its tile triple is the published tile.  Obligation (10) ties the
+accepted object to the archived file by its digest.
+\end{proof}
+
+\paragraph{The first campaign.}
+\begin{center}
+\small
+\begin{tabular}{@{}llrl@{}}
+\toprule
+instance & target and tile & nodes & certificate SHA--256 \\
+\midrule
+\texttt{N33} & $(21,21,33)$ by $(5,3,7)$, $D=3$
+  & $23157$ & \texttt{613c52dd\ldots c21919} \\
+\texttt{N21} & $(12,12,21)$ by $(2,3,4)$, $D=15$
+  & $887$ & \texttt{70633336\ldots9eaf76} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent
+The checker has SHA-256 \texttt{52d74ab3\ldots7fd99c} and accepts both
+certificates, with total wall-clock runtime under one minute.  Certificates are bulk machine output and
+are not tracked in the repository; their digests, the exact commands, and the
+interpreter versions are recorded in
+\pathcode{paper/verification_manifest.md}, and the full digests are printed
+there as well.  These two instances are the
+negative computations on which Theorem~\ref{thm:no33} and
+Corollary~\ref{cor:21ray}(ii) depend.  The remaining negative searches in
+this paper, in particular the twenty-seven exhaustions of
+Theorem~\ref{thm:trapezoid-minus} and the searches recorded in
+Appendix~\ref{app:ledger}, are not yet certified; the pipeline applies to
+them unchanged, and the deferred campaigns and their commands are recorded
+with the specification in the ancillary files.
+
 \subsection{The complete \texorpdfstring{$N=33$}{N=33} reduction}
 
-For clarity, the reduction to the searched target is as follows.  The
-classical, reptile, commensurable-angle, and right-triangle count forms do not
-contain $33$.  The exact Group~1 ray formulae leave only shape-4 formal
-candidates with $(p,q)=(4,7)$ or $(16,17)$ at natural multiplier $m=1$;
-Proposition~\ref{prop:group1} excludes both because $q\nmid m$.  The
-$\gamma=2\alpha$ formula likewise leaves only $(u,v)=(4,7)$ or $(16,17)$ at
-$r=1$, excluded by Proposition~\ref{prop:gamma2alpha}.  The primitive
-$60^\circ$ norm equation has no equilateral candidate at $33$.  Finally, a
-finite divisor enumeration of the six Group~2 rows leaves exactly row I for
-$(a,b,c)=(5,3,7)$ at $k=3$, namely the target with sides
-$(21,21,33)$.  This agrees with Beeson's effective isosceles enumeration
-\cite[Theorem~12.10 and Example~2]{BeesonIso}.
+The reduction to the searched target is Proposition~\ref{prop:reduction33}
+together with Tables~\ref{tab:disposition33} and~\ref{tab:disposition33b}: the sixteen mutually exhaustive
+branches leave exactly row I for $(a,b,c)=(5,3,7)$ at $k=3$, namely the
+target with sides $(21,21,33)$.  This agrees with Beeson's effective
+isosceles enumeration \cite[Theorem~12.10 and Example~2]{BeesonIso}.
 
-These branch checks are executable in
+Every branch check, including the Group-1 equation sweep, is executable in
 \pathcode{computation/verify_theory_report3_claims.py}.  The primary
 exact-search commands, source and output hashes, interpreter version, and
 stored outputs are recorded in
@@ -1037,7 +2583,8 @@ check & result \\
 \midrule
 Laurent and signed-character invariant checks & all passed \\
 threshold and auxiliary-ray arithmetic & $23/23$ \\
-branch and fixed-$N$ audit & $76/76$ \\
+branch and fixed-$N$ audit, including the Group-1 equation sweep at $33$ &
+  $90/90$ \\
 boundary-polynomial and transfer audit & $37/37$ \\
 Group~1 and macro arithmetic audit & $18/18$ \\
 construction and layer arithmetic audit & $53/53$ \\
@@ -1046,11 +2593,31 @@ one-patch and lattice bounded regressions & $29/29$ \\
 searcher geometry self-tests & all passed \\
 $N=33$ fresh primary exhaustion & $6479$ states, no warnings \\
 $N=33$ reduced-pruning replay & $22850$ states, no warnings \\
+$N=33$ refutation certificate export & $23157$ nodes \\
+$N=33$ certificate, independent checker & \texttt{ACCEPT} \\
+$N=21$ refutation certificate export & $887$ nodes \\
+$N=21$ certificate, independent checker & \texttt{ACCEPT} \\
 long-edge/reflex-vertex regression & passed \\
 nine positive coordinate certificates & all passed \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\paragraph{What a replay must reproduce.}
+Node and state counts, cut and warning counters, and the SHA-256 digests of
+certificates and stored outputs are machine-independent invariants of the
+recorded commands: the searches are deterministic and their arithmetic is
+exact, so a replay on any platform must reproduce these integers exactly, and
+a discrepancy is a defect rather than a tolerance.  Wall-clock times, node
+rates, and peak resident memory are environment-dependent and are recorded
+only as capacity information; the same holds for the checker runtime quoted
+in Appendix~\ref{app:certificates}.  The pinned environment is recorded in
+\pathcode{paper/replay_environment.toml}: the release date, platform, and
+kernel; the interpreters for the original standard-library search runs
+(Python 3.9.6, no dependencies) and for the certificate export and checker
+runs (Python 3.14.6, no dependencies); the interpreter and the pinned
+\texttt{sympy} and \texttt{mpmath} versions used for the Laurent audit; the
+interpreter for the diagnostic regression; and the document build tool.
 The exact commands and hashes are collected in
 \pathcode{paper/verification_manifest.md}.  Passing a script verifies only
 the claims named in that script.  In
@@ -1085,12 +2652,19 @@ and $x=30,33$, together with the other cases not supplied by
 Lemma~\ref{lem:trapezoid}.  The aggregate is $27$ exhausted cases and seven
 tilings, $5{,}699{,}235$ states, and zero warnings.
 
-The negative result is computer-assisted and depends on one exhaustion
-implementation.  The search algorithm has the same completeness argument as
-the primary polygon search and extensive local tests; the positive cases are
-independently checkable exact coordinate certificates.  Exporting a semantic
-refutation DAG whose checker recomputes the complete candidate set at every
-state remains a desirable independent audit of the negative cases.
+The negative half, Theorem~\ref{thm:trapezoid-minus}, is computer-assisted
+and depends on one exhaustion implementation.  Its search algorithm has the
+completeness argument of Appendix~\ref{app:negative} and extensive local
+tests, and each of the $27$ runs is exhausted in the sense of
+Definition~\ref{def:runstatus}; the seven positive cases,
+Theorem~\ref{thm:trapezoid-plus}, are independently checkable exact
+coordinate certificates.  The refutation-certificate pipeline of
+Appendix~\ref{app:certificates}, which does recompute the complete candidate
+set and the child regions at every state, applies to these trapezoid targets
+without modification; exporting and checking the $27$ cases is deferred, and
+the commands are recorded with the format specification.  Until that is done,
+Corollary~\ref{cor:trapezoid357} carries the weaker evidence class of
+Theorem~\ref{thm:trapezoid-minus}.
 
 \section{Row algebra and the other branches}\label{app:rowalgebra}
 
@@ -1205,8 +2779,8 @@ side is therefore
                      X=Cq=bqm.
 \]
 Attaching a tile scaled by $qm$ along that side produces the shape-1 target
-used in Proposition~\ref{prop:group1}; Beeson's shape-1 theorem then forces
-$q\mid m$.
+used in Proposition~\ref{prop:group1}; Corollary~\ref{cor:shape1ray} then
+forces $q\mid m$.
 
 For shape 5, boundary integrality and
 $\gcd(q^2,h)=1$ make the target sides
@@ -1244,35 +2818,104 @@ $t(uz^2-vz+u)$.  Cancelling the common quadratic from the target and tile
 boundaries forces $t\in J\cap\Z=(b)$, say $t=br$.  Beeson's area equation
 $X^2=Nu^2b$ then gives $N=br^2$.
 
-It remains to exclude $r=1$.  Then an equal target side has length $ub$ and
-decomposes into complete tile edges as
+If $\alpha/\pi$ were rational, then $2\cos\alpha=v/u$ would be a rational
+algebraic integer and hence an integer.  But $1<v/u<2$ because $u<v<2u$, a
+contradiction.  Thus $\alpha/\pi\notin\Q$.
+
+\begin{lemma}[Angle representations for $\gamma=2\alpha$]\label{lem:g2a-angles}
+Let $\gamma=2\alpha$ and $\beta=\pi-3\alpha$ with $\alpha/\pi\notin\Q$.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The representations of $\alpha$, $\alpha+\beta$, and $\pi$ in the form
+$x\alpha+y\beta+z\gamma$ with $x,y,z\in\Nzero$ are exactly
+\[
+\begin{array}{c|l}
+\text{angle}&(x,y,z)\\
+\hline
+\alpha&(1,0,0)\\
+\alpha+\beta&(1,1,0)\\
+\pi&(3,1,0),\ (1,1,1).
+\end{array}
+\]
+The first two are unique; $\pi$ has exactly the two listed representations.
+In particular $y=1$ in every representation of $\alpha+\beta$ and of $\pi$,
+and $z\le1$ throughout.
+\item Consequently, in a tiling of the isosceles target of
+Proposition~\ref{prop:gamma2alpha}, whose base angles are $\alpha$ and whose
+apex angle is $\alpha+\beta$: a vertex interior to a straight boundary side
+carries exactly one $\beta$ sector and at most one $\gamma$ sector; a base
+corner carries exactly one sector, an $\alpha$; and the apex carries exactly
+two sectors, one $\alpha$ and one $\beta$, so exactly two tiles meet there and
+no target corner carries a $\gamma$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Since $\beta=\pi-3\alpha$ and $\gamma=2\alpha$,
+\[
+ x\alpha+y\beta+z\gamma=(x-3y+2z)\alpha+y\pi ,
+\]
+and $\alpha,\pi$ are linearly independent over $\Q$ because
+$\alpha/\pi\notin\Q$; so the two coefficients are determined by the angle
+represented.  For $\alpha$ this gives $y=0$ and $x+2z=1$, whence
+$(x,z)=(1,0)$.  For $\alpha+\beta=\pi-2\alpha$ it gives $y=1$ and
+$x-3+2z=-2$, again $x+2z=1$ and $(x,z)=(1,0)$.  For $\pi$ it gives $y=1$ and
+$x-3+2z=0$, that is $x+2z=3$, whence $(x,z)\in\{(3,0),(1,1)\}$; these are the
+identities $3\alpha+\beta=\pi$ and $\alpha+\beta+\gamma=\pi$.  This proves
+(i).
+
+For (ii), first identify the target angles.  The target is isosceles with
+$X/Y=u/v$, so if $\theta$ denotes its base angle, then
+\[
+ \frac uv=\frac XY=\frac{\sin\theta}{\sin(\pi-2\theta)}
+ =\frac1{2\cos\theta},
+\]
+whence $2\cos\theta=v/u=2\cos\alpha$ and $\theta=\alpha$, the cosine being
+injective on $(0,\pi)$.  The apex angle is therefore
+$\pi-2\alpha=\alpha+\beta$.  The sectors of the
+tiles incident with a vertex interior to a straight boundary side have angles
+summing to $\pi$, and those at a target corner sum to that corner angle; each
+sector is a single tile angle.  Reading off the table in (i) gives the three
+assertions, the count of tiles at the apex included.
+\end{proof}
+
+It remains to exclude $r=1$.  Then an equal target side has length $ub$ and,
+by Lemma~\ref{lem:boundary-integrality}, decomposes into complete tile edges
+as
 \[
              ub=A u^2+B b+Cuv,\qquad A,B,C\in\Nzero.
 \]
 Reduction modulo $u$ gives $u\mid B$, since $\gcd(u,b)=1$, while the size
 bound gives $B\le u$.  Hence $B=0$ or $B=u$.
 
-If $\alpha/\pi$ were rational, then
-$2\cos\alpha=v/u$ would be a rational algebraic integer and hence an integer.
-But $1<v/u<2$, a contradiction.  Thus $\alpha/\pi\notin\Q$.  Since
-$3\alpha+\beta=\pi$ and $\gamma=2\alpha$, the only angle multisets at an
-internal straight-boundary vertex are
-\[
-                   \{3\alpha,\beta\},\qquad
-                   \{\alpha,\beta,\gamma\}.
-\]
-If $B=u$, equality forces $A=C=0$.  The side then consists of $u$ edges of
-length $b$, each with one $\gamma$ endpoint.  Neither target endpoint carries
-$\gamma$, while each of the $u-1$ internal vertices carries at most one:
-a contradiction.
+Consider either equal side, and write its decomposition as $E=A+B+C$ edges
+with endpoints $v_0,\dots,v_E$ in order, so that $v_0$ is a base corner, $v_E$
+is the apex, and $v_1,\dots,v_{E-1}$ are interior to the side.  By
+Lemma~\ref{lem:g2a-angles}(ii), each $v_i$ with $0<i<E$ carries exactly one
+$\beta$ sector and at most one $\gamma$ sector.  Consequently, for either of
+the labels $\beta$ and $\gamma$, two edges of the decomposition cannot both
+place a sector with that label at a common endpoint: adjacent edges would put
+two $\beta$, respectively two $\gamma$, sectors at one straight vertex, and
+nonadjacent edges have no common endpoint.  Hence, for either label, sending
+an edge to its endpoint carrying that label is injective.
 
-If $B=0$, let $E=A+C$.  Every $a$- or $c$-edge has one $\beta$ endpoint.
-At the apex the angle $\alpha+\beta$ is decomposed as one $\alpha$ and one
-$\beta$; choose the equal side whose incident apex tile contributes the
-$\alpha$.  Its other endpoint has angle $\alpha$, so neither endpoint of
-this side supplies a $\beta$.  Its $E$ beta endpoints would have to occupy
-only $E-1$ internal vertices, each of which carries exactly one $\beta$.
-This is again impossible.  Thus $r\ge2$.  The argument does not imply
+If $B=u$, equality of lengths forces $A=C=0$, so the side consists of $E=u$
+edges of length $b$.  The side $b$ is opposite $\beta$, so the two endpoints
+of a $b$-edge carry $\alpha$ and $\gamma$: each of the $u$ edges has exactly
+one $\gamma$ endpoint.  No target corner carries a $\gamma$, so these $u$
+endpoints lie among the $u-1$ interior vertices, contradicting injectivity.
+
+If $B=0$, then $E=A+C\ge1$.  The sides $u^2$ and $uv$ are opposite $\alpha$
+and $\gamma$, so the endpoints of an $a$-edge carry $\beta,\gamma$ and those
+of a $c$-edge carry $\alpha,\beta$: each of the $E$ edges has exactly one
+$\beta$ endpoint.  Exactly two tiles meet at the apex, one contributing an
+$\alpha$ sector and one a $\beta$ sector, and each of the two equal sides is
+adjacent to one of them; choose the equal side whose apex tile contributes the
+$\alpha$.  Then neither of its two corners receives a $\beta$ endpoint: the
+base corner carries no $\beta$ sector at all, and the edge of the
+decomposition emanating from the apex is a complete edge of the apex tile,
+whose sector there is $\alpha$, so that edge carries its $\beta$ at its other
+endpoint.  Hence the $E$ beta endpoints lie among the $E-1$ interior vertices,
+again contradicting injectivity.  Thus $r\ge2$.  The argument does not imply
 $r\ge3$.
 
 \section{Addition data and constructive transfers}\label{app:addition}
@@ -1322,8 +2965,9 @@ core gives
 \[
  (c^2+a^2+b^2+4ab)s^2=UVs^2,
 \]
-where the equality uses $c^2=a^2+ab+b^2$.  Zhang's Proposition~11 then gives
-the same multiplier interval for row II \cite{Zhang25}.
+where the equality uses $c^2=a^2+ab+b^2$.
+Proposition~\ref{prop:imp-zhang11} then gives
+the same multiplier interval for row II.
 
 \subsection{The complete one-patch tables}
 
@@ -1619,26 +3263,106 @@ Let $\rho=e^{i\pi/3}$, so
 \[
        N(x+y\rho)=x^2+xy+y^2.
 \]
-The standard primitive Eisenstein-triple parametrization gives, after
-interchanging $a,b$ if necessary,
+\begin{lemma}[Primitive Eisenstein-square lemma]\label{lem:eisenstein-square}
+Let $(a,b,c)$ be a primitive positive solution of $c^2=a^2+ab+b^2$.  Then,
+after possibly interchanging $a$ and $b$, there are integers $r>s>0$ with
+$\gcd(r,s)=1$ and $r\not\equiv s\pmod3$ such that
 \[
- a=r^2-s^2,\qquad b=2rs+s^2,\qquad c=r^2+rs+s^2,
+ a=r^2-s^2,\qquad b=2rs+s^2,\qquad c=r^2+rs+s^2 .
 \]
-where $r>s>0$, $\gcd(r,s)=1$, and $r\not\equiv s\pmod3$.
-For completeness, the factorization argument is as follows.
-In the Euclidean domain $\Z[\rho]$,
+Conversely, every pair of integers $r>s>0$ with $\gcd(r,s)=1$ and
+$r\not\equiv s\pmod3$ yields by these formulae a primitive positive solution.
+\end{lemma}
+
+\begin{proof}
+Work in the ring of Eisenstein integers $\Z[\rho]$, a Euclidean domain and
+hence a unique factorization domain.  Here $\rho^2=\rho-1$,
+$\overline\rho=1-\rho=\rho^{-1}$, the norm $N(x+y\rho)=x^2+xy+y^2$ is
+multiplicative and positive definite, and the unit group is the cyclic group
+$\Z[\rho]^\times=\langle\rho\rangle$ of order six, with $\rho^3=-1$.  Put
 \[
-                  N(a+b\rho)=c^2.
+ \xi_0=a+b\rho,\qquad
+ \overline{\xi_0}=a+b-b\rho,\qquad
+ \xi_0\overline{\xi_0}=N(\xi_0)=c^2 .
 \]
-The two conjugate factors are coprime up to units: a common nonunit would
-force a common rational prime divisor of $a,b,c$, except possibly the
-ramified prime over $3$, and that possibility is excluded by $3\nmid c$.
-Unique factorization therefore makes $a+b\rho$ a unit times a square.
-Multiplication by a unit, conjugation, and if necessary interchange of
-$a,b$ put its square root in the chamber $r>s>0$.  Expanding
-$(r+s\rho)^2$ gives the displayed formulae.  Common factors of $r,s$, or
-$r\equiv s\pmod3$, would make the resulting triple nonprimitive; the
-converse is immediate from the same formulae.
+
+\emph{A common prime divisor lies above $3$.}  Let $\pi$ be a prime of
+$\Z[\rho]$ dividing both $\xi_0$ and $\overline{\xi_0}$.  From
+$\rho-\overline\rho=2\rho-1$ and $\rho+\overline\rho=1$,
+\[
+ \xi_0-\overline{\xi_0}=b(2\rho-1),\qquad
+ \xi_0+\overline{\xi_0}=2a+b,
+\]
+so $\pi\mid b(2\rho-1)$ and $\pi\mid 2a+b$.  Now
+$N(2\rho-1)=(-1)^2+(-1)\cdot2+2^2=3$, so $2\rho-1$ is prime; it is the
+ramified prime above $3$, since $(2\rho-1)^2=4\rho^2-4\rho+1=-3$.  If $\pi$ is
+not associate to $2\rho-1$, then $\pi\mid b$, hence $\pi\mid a$ because
+$\pi\mid a+b\rho$; writing $1=ua+vb$ with $u,v\in\Z$, available since
+$\gcd(a,b)=1$ by Lemma~\ref{lem:g2-units}, gives $\pi\mid1$, which is absurd.
+So $\pi$ is associate to $2\rho-1$.
+
+\emph{Primitivity and $3\nmid c$ exclude that prime.}  If $2\rho-1$ divided
+$\xi_0$, then $3=N(2\rho-1)$ would divide $N(\xi_0)=c^2$ and hence $3\mid c$,
+contradicting Lemma~\ref{lem:g2-units}.  Therefore $\xi_0$ and
+$\overline{\xi_0}$ have no common prime divisor.
+
+\emph{All prime exponents are even.}  For every prime $\pi$ of $\Z[\rho]$,
+\[
+ v_\pi(\xi_0)+v_\pi(\overline{\xi_0})=v_\pi(c^2)=2v_\pi(c),
+\]
+and by the previous step at most one of the two summands is nonzero; hence
+$v_\pi(\xi_0)$ is $0$ or $2v_\pi(c)$, in either case even.  Unique
+factorization therefore gives $\xi_0=u\,\xi^2$ with $u\in\Z[\rho]^\times$ and
+$\xi\in\Z[\rho]$.
+
+\emph{Normalizing the unit.}  The squares of units form the index-two subgroup
+$\{1,\rho^2,\rho^4\}$ of $\langle\rho\rangle$; note $-1=\rho^3$ is not a
+square.  Replacing $\xi$ by $\rho^k\xi$ we may therefore assume $u\in\{1,\rho\}$.
+Since $\rho\overline\rho=N(\rho)=1$ and
+\[
+ \rho\,\overline{a+b\rho}=\rho(a+b-b\rho)=b+a\rho ,
+\]
+multiplying the conjugate by $\rho$ is exactly the interchange of $a$ and $b$.
+Hence if $u=\rho$, then
+\[
+ b+a\rho=\rho\,\overline{\xi_0}
+ =\rho\,\overline{\rho\xi^2}
+ =\rho\overline\rho\,\overline\xi^{\,2}
+ =\overline\xi^{\,2},
+\]
+so after interchanging $a$ and $b$ we may assume $u=1$, that is
+$a+b\rho=\xi^2$.
+
+\emph{The chamber.}  Write $\xi=r+s\rho$ with $r,s\in\Z$.  Using
+$\rho^2=\rho-1$,
+\[
+ \xi^2=(r^2-s^2)+(2rs+s^2)\rho ,
+\]
+so $a=r^2-s^2$ and $b=2rs+s^2$; moreover $N(\xi)=r^2+rs+s^2$ is positive with
+$N(\xi)^2=N(\xi_0)=c^2$ and $c>0$, so $c=r^2+rs+s^2$.  Replacing $\xi$ by
+$-\xi$ leaves $\xi^2$ unchanged, so we may assume $s\ge0$.  Then
+$b=s(2r+s)>0$ forces $s>0$ and $2r+s>0$, while $a=r^2-s^2>0$ forces $|r|>s$.
+If $r<-s$, then $r<-s<-s/2$, contradicting $2r+s>0$; hence $r>s>0$.  A common
+prime divisor of $r$ and $s$ would divide both $a$ and $b$, so
+$\gcd(r,s)=1$.  Finally, if $r\equiv s\pmod3$, then $3\mid r-s$ gives
+$3\mid a=(r-s)(r+s)$, while $2r+s\equiv2s+s=3s\equiv0\pmod3$ gives
+$3\mid b=s(2r+s)$, again contradicting $\gcd(a,b)=1$.  Hence
+$r\not\equiv s\pmod3$.
+
+\emph{Converse.}  Let $r>s>0$ be coprime with $r\not\equiv s\pmod3$ and define
+$a,b,c$ by the displayed formulae.  Then $a,b,c>0$, and
+$a+b\rho=(r+s\rho)^2$ with $N(r+s\rho)=c$ gives $c^2=a^2+ab+b^2$.  Let a prime
+$\ell$ divide $a$ and $b$.  If $\ell\mid r$, then $\ell\mid a=r^2-s^2$ forces
+$\ell\mid s$; if $\ell\mid s$, then $\ell\mid a$ forces $\ell\mid r$; both
+contradict $\gcd(r,s)=1$.  So $\ell\nmid rs$, and $\ell\mid b=s(2r+s)$ gives
+$\ell\mid2r+s$.  Also $\ell\mid a=(r-s)(r+s)$.  If $\ell\mid r+s$, then
+$\ell\mid(2r+s)-(r+s)=r$, excluded.  If $\ell\mid r-s$, then
+$\ell\mid(2r+s)-2(r-s)=3s$, so $\ell=3$ and $3\mid r-s$, contrary to
+hypothesis.  Hence $\gcd(a,b)=1$, and a fortiori $\gcd(a,b,c)=1$.
+\end{proof}
+
+Lemma~\ref{lem:eisenstein-square} is the parametrization asserted in
+Proposition~\ref{prop:relationwords}.
 
 Direct expansion now gives
 \[
@@ -1837,12 +3561,14 @@ $N$ & present basis for nonmembership & evidence \\
 $p\equiv3\pmod4$ & three prime-case manuscripts
   \cite{HarriesPrime,GeorgePrime,BeesonAllPrime} & independently derived \\
 21 & full branch audit; exact exhaustion of the surviving Group~1
-  shape-5 candidate & arithmetic + search \\
+  shape-5 candidate, with an exported refutation certificate accepted by the
+  independent checker & computer-assisted, independently certified \\
 30 & full branch audit; the Group~2 candidate fails boundary divisibility,
   with an exact exhaustion as a cross-check & arithmetic + search \\
-33 & unique candidate; primary exact exhaustion, with a replay disabling
-  the general segment-semigroup table and boundary-invariant pruning &
-  computer-assisted, one implementation \\
+33 & unique candidate; exported refutation certificate accepted by the
+  independent checker, corroborated by the primary exact exhaustion and by a
+  replay disabling the general segment-semigroup table and
+  boundary-invariant pruning & computer-assisted, independently certified \\
 46 & complete arithmetic branch audit; also \cite{GeorgePrime} &
   independently derived \\
 55 & full branch audit; the Group~2 row-IV candidate has $b\nmid k$ &
@@ -1858,6 +3584,179 @@ $p\equiv3\pmod4$ & three prime-case manuscripts
 \bottomrule
 \end{tabular}
 \end{center}
+
+\subsection{Dependency ledger}\label{app:ledger-deps}
+
+Tables~\ref{tab:ledger} and~\ref{tab:ledgerb} list every external result on which a conclusion of
+this paper depends, the version in which we read it, and its logical role.
+``Load-bearing'' means that a stated conclusion of this paper becomes
+unproved if the imported statement fails; ``corroboration'' means that the
+conclusion has an independent basis here and the import is only a
+cross-check.  Sources marked \emph{unaudited in this project} were used as
+black boxes: we verified the statement we quote, not its proof.
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.16}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.215\linewidth}
+>{\raggedright\arraybackslash}p{0.215\linewidth}
+>{\raggedright\arraybackslash}p{0.185\linewidth}
+>{\raggedright\arraybackslash}p{0.28\linewidth}@{}}
+\toprule
+present conclusion & imported result & exact version & logical role \\
+\midrule
+Completeness of the branch list, non-isosceles targets
+ (Prop.~\ref{prop:reduction33}(iv),(v),(xi)--(xiv))
+ & Laczkovich, \emph{Tilings of triangles}, Thm.~4.1, in the tabulation
+   \cite[Table~4]{Beeson7}
+ & Discrete Math.\ \textbf{140} (1995); tabulation arXiv:1811.09723v5
+ & load-bearing; also fixes the target shape for the $\gamma=2\alpha$
+   branch (case (ix)) \\
+same, restated
+ & Beeson--Laczkovich--Zhang, \emph{Solution of Erd\H os Problem 633},
+   Thm.~9
+ & arXiv:2604.03609v2
+ & corroboration; Thm.~9 verified verbatim against a local copy of the
+   source, whose proof this project has not audited \\
+Completeness, isosceles non-equilateral targets
+ (Prop.~\ref{prop:reduction33}(iii),(vi)--(viii),(x))
+ & Beeson, Thm.~3(i)--(iii)
+ & arXiv:2607.19572v1
+ & load-bearing; its parts (i)--(iii) are attributed there to
+   \cite[Thm.~3.1]{BeesonIso} and \cite{Lacz95} \\
+Completeness, equilateral targets
+ (Prop.~\ref{prop:reduction33}(xv),(xvi))
+ & Laczkovich, Thm.~3.3
+ & Discrete Comput.\ Geom.\ \textbf{48} (2012)
+ & load-bearing; read only through its use in the proof of
+   \cite[Thm.~11]{BeesonPrime}; the 2012 wording was not re-verified here \\
+Reptile counts (case (i))
+ & Snover--Waiveris--Williams
+ & Discrete Math.\ \textbf{91} (1991), as restated in
+   \cite[Thm.~4]{BLZ633}
+ & load-bearing \\
+Commensurable-angle counts (case (ii))
+ & Beeson, Thm.~3 and Table~3
+ & arXiv:1811.09723v5
+ & load-bearing; the last row of that table is flagged in the source as
+   ``necessary conditions for tilings that probably do not exist'' \\
+Right-tile classification (case (iii))
+ & Beeson, Thm.~7.10
+ & arXiv:1206.1974v7
+ & load-bearing \\
+Integer normalization of every Group-2 tile: Table~\ref{tab:group2},
+ Cor.~\ref{cor:rows}, Thm.~\ref{thm:laurent}
+ & Beeson--Zhang, \emph{Rationality of certain triangle tilings}, Thm.~1.2
+ & arXiv:2604.01314v1, quoted verbatim as \cite[Thm.~1]{Zhang25} and as
+   \cite[Thm.~6]{BLZ633}
+ & load-bearing; statement verified through two independent quotations,
+   source unaudited in this project \\
+Integer normalization of every Group-1 tile: Table~\ref{tab:group1},
+ Prop.~\ref{prop:group1}
+ & Beeson, Thm.~3 (``Rational tile'') and Lemma~2
+ & arXiv:1206.2229v3
+ & load-bearing; independent of arXiv:2604.01314v1 \\
+Normalization and parametrization of the $\gamma=2\alpha$ tile:
+ Prop.~\ref{prop:gamma2alpha}
+ & Beeson, Thm.~10.5, Lemma~11.2, Lemma~11.4
+ & arXiv:1206.1974v7
+ & load-bearing for the parametrization and rationality; the area equation
+   $X^2=Nab$ is elementary \\
+\bottomrule
+\end{tabular}
+\caption{Dependency ledger, part I: classification and normalization
+imports.}
+\label{tab:ledger}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.16}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.215\linewidth}
+>{\raggedright\arraybackslash}p{0.215\linewidth}
+>{\raggedright\arraybackslash}p{0.185\linewidth}
+>{\raggedright\arraybackslash}p{0.28\linewidth}@{}}
+\toprule
+present conclusion & imported result & exact version & logical role \\
+\midrule
+Shape-1 count $q^2(2q^2-p^2)n^2$ used in Prop.~\ref{prop:group1}
+ (Cor.~\ref{cor:shape1ray})
+ & Beeson, Thms.~4 and~6 (necessity) and Thm.~5 (sufficiency)
+ & arXiv:1206.2229v3
+ & load-bearing.  We do \emph{not} cite Thm.~7 of that paper, whose printed
+   condition $K\nmid M^2$ is a typographical negation \\
+Shape 1--3 characterizations and completeness of
+ \cite[Tables~1--3]{Beeson2229}
+ & Beeson, Cor.~1, Table~2, Cor.~2
+ & arXiv:1206.2229v3
+ & corroboration for Table~\ref{tab:disposition33}; the shape-3 ray of
+   Table~\ref{tab:group1} additionally rests on the clause $g\mid M$ of
+   \cite[Thm.~14]{Beeson2229}, which is not used in any exclusion here \\
+Agreement of the surviving $N=33$ instance with the published isosceles
+ enumeration
+ & Beeson, Thm.~12.10, Lemma~12.9, Table~5, Example~2
+ & arXiv:1206.1974v7; verified locally in the
+   \pathcode{michaelbeeson.com} edition, numbering confirmed identical
+ & corroboration; not used in the proof of Thm.~\ref{thm:no33}.  That
+   source explicitly leaves $N=33$ open and abstains from
+   computer-search nonexistence proofs \\
+Trapezoid and parallelogram constructions in Lemma~\ref{lem:trapezoid}
+ & Zhang, Lemma~1 and Lemma~2 (Lemmas~\ref{lem:imp-zhang1},
+   \ref{lem:imp-zhang2})
+ & arXiv:2512.22696v4
+ & load-bearing; read with $y$ meaning the leg, as that paper's proofs do \\
+Equilateral tail and its transfer to rows I, III, IV, II in
+ Cor.~\ref{cor:windows}
+ & Zhang, Thm.~4, Props.~8--10, Prop.~11
+ & arXiv:2512.22696v4
+ & load-bearing as implications; their thresholds are replaced by the
+   sharper window $m\ge3R(a,b)$ proved here \\
+Multipliers $2$ and $4$ on the Group-1 shape-5 ray $21n^2$
+ (Cor.~\ref{cor:21ray})
+ & Beeson, Table~5, rows $N=84$ and $N=336$ marked ``yes''
+ & arXiv:1206.2229v3
+ & load-bearing: Cor.~\ref{cor:21ray} needs multiplier $2$.  The negative
+   entry at $n=1$ is \emph{not} imported; it is re-proved here \\
+Orientation-changing block and the $720$ inventory
+ (Lemma~\ref{lem:orientationblock}, Rem.~\ref{rem:720macro})
+ & Beeson, Figs.~22 and~24 (Herdt's constructions)
+ & arXiv:1206.1974v7
+ & corroboration; Rem.~\ref{rem:720macro} audits a transcribed figure
+   inventory and is not a coordinate certificate \\
+Prime classification $p=2,3$ or $p\equiv1\ (4)$
+ & Harries; George, GPT-5.6 Pro and Inkling; Beeson (all-prime); Beeson
+   (isosceles prime)
+ & as in the bibliography
+ & corroboration; not used in any proof in this paper \\
+Nonmembership of $46$
+ & George, GPT-5.6 Pro and Inkling
+ & manuscript dated July 16, 2026
+ & corroboration; not used in any proof in this paper.  The basis here is
+   the branch audit of
+   \pathcode{computation/verify_theory_report3_claims.py} \\
+The clause $g\mid M$ of \cite[Thm.~19]{Beeson2229}
+ & Beeson, Thm.~19
+ & arXiv:1206.2229v3
+ & not used; see Remark~\ref{rem:gM}.  Its equation half is used only as a
+   cross-check \\
+\bottomrule
+\end{tabular}
+\caption{Dependency ledger, part II: counts, constructions, and
+corroborating sources.}
+\label{tab:ledgerb}
+\end{table}
+
+\noindent Two structural remarks about this ledger.  First, no conclusion of
+this paper depends on more than one unaudited preprint at a time: the
+Group-2 arithmetic depends on \cite{BZRat} alone, and the branch
+completeness on Laczkovich's two papers as tabulated in \cite{Beeson7} and
+on \cite{BeesonPrime}, but not on \cite{BLZ633}, which appears only as
+corroboration.  Second, the two
+non-archival prime-case manuscripts and the private Beeson manuscript are
+corroboration only; every row that cites them has an independent basis in
+this paper or in an archival source.
 
 \section{Provisional below-\texorpdfstring{$200$}{200} research programme}
 \label{app:conditional}
@@ -1982,39 +3881,58 @@ intuition.
 \bibitem{Beeson7}
 M.~Beeson,
 \emph{No triangle can be cut into seven congruent triangles},
-arXiv:1811.09723v5 (2019).
+arXiv:1811.09723v5 [math.MG], 17 June 2019.
+\url{https://arxiv.org/abs/1811.09723v5}.
+(Tables~3 and~4 are the tabulation of Laczkovich's two classification
+theorems used in Proposition~\ref{prop:reduction33}.)
 
 \bibitem{Beeson2229}
 M.~Beeson,
 \emph{Triangle tiling: the case $3\alpha+2\beta=\pi$},
-arXiv:1206.2229v3 (2019).
+arXiv:1206.2229v3 [math.MG], 13 February 2019, 94~pp.
+\url{https://arxiv.org/abs/1206.2229v3}.
 
 \bibitem{BeesonIso}
 M.~Beeson,
 \emph{Tilings of an isosceles triangle},
-arXiv:1206.1974v7 (2026).
+arXiv:1206.1974v7 [math.MG], 4 May 2026, 61~pp.; to appear in
+\emph{Integers}.
+\url{https://arxiv.org/abs/1206.1974v7}.
+(Statements quoted here were additionally checked against the author's
+website edition; the numbering of Theorem~7.10, Theorem~10.5,
+Lemma~11.2, Lemma~11.4, Lemma~12.9, Theorem~12.10, Table~5 and Example~2
+agrees in the two editions.  The website edition's abstract differs from
+the arXiv version and contains two misprints, ``$N<36$'' for $N<33$ and
+``$2736$'' for $2673$.)
 
 \bibitem{BeesonPrime}
 M.~Beeson,
 \emph{No prime tiling of an isosceles triangle},
-arXiv:2607.19572v1 (2026).
+arXiv:2607.19572v1 [math.MG], 2026.
+\url{https://arxiv.org/abs/2607.19572v1}.
 
 \bibitem{BeesonAllPrime}
 M.~Beeson,
 \emph{Tiling a triangle into a prime number of congruent triangles},
-author-supplied manuscript dated July 26, 2026, version consulted
-July 26, 2026; exact SHA-256 recorded in the supplementary verification
-manifest; arXiv identifier pending.
+author-supplied manuscript dated July 26, 2026, received and consulted
+July 26, 2026; no public identifier as of July 27, 2026.  SHA-256 of the
+consulted file
+\texttt{7229facc5cd346617778cd5eed26ea2721e21108bc3f764b15fd06e434c1d8f5},
+recorded in the supplementary verification manifest.
 
 \bibitem{BLZ633}
 M.~Beeson, M.~Laczkovich, and Y.~X.~Zhang,
 \emph{Solution of Erd\H{o}s Problem 633},
-arXiv:2604.03609v2 (2026).
+arXiv:2604.03609v2 [math.CO], 2026.
+\url{https://arxiv.org/abs/2604.03609v2}.
 
 \bibitem{BZRat}
 M.~Beeson and Y.~X.~Zhang,
 \emph{Rationality of certain triangle tilings},
-arXiv:2604.01314v1 (2026).
+arXiv:2604.01314v1 [math.MG], 2026.
+\url{https://arxiv.org/abs/2604.01314v1}.
+(Theorem~1.2 is quoted verbatim as Theorem~1 of \cite{Zhang25}; its
+appendix patches \cite[Lemma~7.1]{Lacz12}.)
 
 \bibitem{EP634}
 T.~F.~Bloom,
@@ -2028,8 +3946,9 @@ R.~J.~George, GPT-5.6 Pro, and Inkling,
 a complete direct proof for $N=19$, a prime obstruction, and the composite
 case $N=46$},
 public author manuscript, version dated July 16, 2026, consulted
-July 24, 2026; exact SHA-256 recorded in the supplementary verification
-manifest;
+July 24, 2026.  SHA-256 of the consulted file
+\texttt{34231b402a3ab8c302d3370cdee57cecc638824f278a5bed46eef46bc048388e},
+recorded in the supplementary verification manifest;
 \url{https://drive.google.com/file/d/1ZXacH37WDv3kVQzY3GzbxndJm6dbRqel/view}.
 
 \bibitem{HarriesPrime}
@@ -2046,12 +3965,16 @@ M.~Laczkovich,
 \emph{Tilings of triangles},
 Discrete Mathematics \textbf{140} (1995), 79--94.
 \url{https://doi.org/10.1016/0012-365X(93)E0176-5}.
+(Theorem~4.1 is the incommensurable classification used here; three
+entries of its Theorem~5.1 are eliminated by its Theorem~5.3, as noted in
+\cite[\S7, footnote 4]{Beeson7}.)
 
 \bibitem{Lacz12}
 M.~Laczkovich,
 \emph{Tilings of convex polygons with congruent triangles},
 Discrete \& Computational Geometry \textbf{48} (2012), 330--372.
 \url{https://doi.org/10.1007/s00454-012-9404-x}.
+(Lemma~7.1 of this paper is corrected in the appendix of \cite{BZRat}.)
 
 \bibitem{SWW91}
 S.~L.~Snover, C.~Waiveris, and J.~K.~Williams,
@@ -2067,7 +3990,12 @@ A.~Soifer,
 \bibitem{Zhang25}
 Y.~X.~Zhang,
 \emph{Tiling triangles with $2\pi/3$ angles},
-arXiv:2512.22696v4 (2026).
+arXiv:2512.22696v4 [math.CO], 4 April 2026, 14~pp.
+\url{https://arxiv.org/abs/2512.22696v4}.
+(In \S2.2 the symbol $y$ is defined as the longer parallel side of an ideal
+trapezoid but used as the leg in Lemma~1, Lemma~2 and the proof of
+Proposition~3; all statements imported here are read with the operational
+meaning.)
 
 \end{thebibliography}
 
