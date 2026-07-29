@@ -30,6 +30,12 @@ even order.
 
 ## Contents
 
+- [`lean/`](lean/): a formalization-ready rewrite of the proof
+  ([`lean/FORMAL_PROOF.md`](lean/FORMAL_PROOF.md)) and a Lean 4 / Mathlib
+  formalization (zero `sorry`) of its definitional layer, the line-colouring
+  reduction, the full lower bound \(t(2q)\ge H(2q)\), the Table-1 values of
+  \(H\), and complete small instances of the theorem; written at the request
+  of an OEIS editor. See [`lean/README.md`](lean/README.md) for exact scope.
 - [`peace_even_torus.pdf`](peace_even_torus.pdf): the 21-page paper.
 - [`peace_even_torus.tex`](peace_even_torus.tex): self-contained LaTeX source.
 - [`peace_even_torus-arxiv.tar.gz`](peace_even_torus-arxiv.tar.gz): source and
