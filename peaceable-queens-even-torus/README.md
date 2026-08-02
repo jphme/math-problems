@@ -36,6 +36,8 @@ even order.
   reduction, the full lower bound \(t(2q)\ge H(2q)\), the Table-1 values of
   \(H\), and complete small instances of the theorem; written at the request
   of an OEIS editor. See [`lean/README.md`](lean/README.md) for exact scope.
+  The Lean build is checked in CI on every change to a Lean file:
+  [![Lean](https://github.com/jphme/math-problems/actions/workflows/lean.yml/badge.svg)](https://github.com/jphme/math-problems/actions/workflows/lean.yml)
 - [`peace_even_torus.pdf`](peace_even_torus.pdf): the 21-page paper.
 - [`peace_even_torus.tex`](peace_even_torus.tex): self-contained LaTeX source.
 - [`peace_even_torus-arxiv.tar.gz`](peace_even_torus-arxiv.tar.gz): source and

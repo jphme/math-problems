@@ -1,0 +1,49 @@
+name: Lean
+
+on:
+  push:
+    paths:
+      - 'peaceable-queens-even-torus/lean/**'
+      - '**/*.lean'
+      - '**/lean-toolchain'
+      - '**/lakefile.toml'
+      - '**/lakefile.lean'
+      - '**/lake-manifest.json'
+      - '.github/workflows/lean.yml'
+  pull_request:
+    paths:
+      - 'peaceable-queens-even-torus/lean/**'
+      - '**/*.lean'
+      - '**/lean-toolchain'
+      - '**/lakefile.toml'
+      - '**/lakefile.lean'
+      - '**/lake-manifest.json'
+      - '.github/workflows/lean.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: lean-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  peaceable-queens-even-torus:
+    name: peaceable-queens-even-torus / lean
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Lean development
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: peaceable-queens-even-torus/lean
+          use-mathlib-cache: true
+
+      - name: Assert the sources contain no sorry
+        working-directory: peaceable-queens-even-torus/lean
+        run: |
+          if grep -rnw --include='*.lean' 'sorry' PeaceableQueens.lean PeaceableQueens; then
+            echo '::error::found a sorry in the Lean sources'
+            exit 1
+          fi
+          echo 'no sorry found'

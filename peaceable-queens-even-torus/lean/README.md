@@ -1,5 +1,7 @@
 # Lean 4 formalization — peaceable queens on even toroidal boards
 
+[![Lean](https://github.com/jphme/math-problems/actions/workflows/lean.yml/badge.svg)](https://github.com/jphme/math-problems/actions/workflows/lean.yml)
+
 Companion formalization for *Peaceable queens on even toroidal boards*
 (`../paper/peace_even_torus.tex`), written at the request of an OEIS editor
 reviewing the A279405 contribution.  Two deliverables:
@@ -43,6 +45,11 @@ lake build                  # builds everything; no sorries
 ```
 
 Pinned toolchain: `leanprover/lean4:v4.32.2`, Mathlib `v4.32.2`.
+
+The same build runs in CI on every change to a Lean file
+([`.github/workflows/lean.yml`](../../.github/workflows/lean.yml), via
+[`leanprover/lean-action`](https://github.com/leanprover/lean-action)); the
+badge above reports the result on `main`.
 
 ## Trusted base
 
