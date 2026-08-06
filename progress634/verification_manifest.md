@@ -49,10 +49,19 @@ $\gamma=2\alpha$ angle-representation lemma) are:
 
 | artifact | SHA-256 |
 |---|---|
-| `erdos634_universal/paper/progress634.tex` | `ba3b615677be07e561f471a1eab034d9972171526a2a700f5cf99a6abcec8128` |
-| `erdos634_universal/paper/progress634.pdf` | `2df8f4a85a8d1905b44213c2d9425adb86cb97a5799e08a174aae601310ba08d` |
+| `erdos634_universal/paper/progress634.tex` | `63ddd07adfa22f4a10660d302e31c62528bb49a9facfc0b674965e6f6559692c` |
+| `erdos634_universal/paper/progress634.pdf` | `0136a3b70cb430959ddd2ee1320a2a02864a60fddf8f3f0af70fa7ada9d7dea7` |
 
-The 2026-07-27 referee-pass artifacts (tex
+The current artifacts additionally expand Appendix B.2/B.3 with the
+per-branch direction lattices, the explicit ideal memberships
+$B(\partial T)\in(F,G)=Q\cdot J$ over $\mathbb Z[z,z^{-1}]$, and the
+integer-scale derivations ($t\in J\cap\mathbb Z=(b)$, and $C\in\mathbb Z$ by
+boundary integrality plus B\'ezout), in response to a referee query on the
+$\gamma=2\alpha$ ray (theorem numbering unchanged).  The 2026-07-28 v0.4
+artifacts (tex
+`ba3b615677be07e561f471a1eab034d9972171526a2a700f5cf99a6abcec8128`, pdf
+`2df8f4a85a8d1905b44213c2d9425adb86cb97a5799e08a174aae601310ba08d`) and the
+2026-07-27 referee-pass artifacts (tex
 `9b2cb91faafdae090ebed008499f18d7398d2dcda9b4a2ed34bc8aff9835bde5`, pdf
 `737a46e12aaab3c218a8f7ec6fe2159be781850d04794ca43704f5a5dbd62a71`) are
 superseded by the above.
