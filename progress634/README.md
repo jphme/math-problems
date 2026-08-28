@@ -9,6 +9,35 @@ The current manuscript is:
 - `progress634-arxiv.tar.gz` — clean arXiv upload package: source and figures
   at the root, with the curated reproducibility record under `anc/`
 
+GitHub's inline PDF preview intermittently fails on `progress634.pdf`
+("Unable to render code block"); the file itself is valid. Use the direct
+download:
+<https://raw.githubusercontent.com/jphme/math-problems/main/progress634/progress634.pdf>
+
+## Citation
+
+The paper is not yet on arXiv. Until then, please cite the GitHub version:
+
+```bibtex
+@misc{harries2026progress634,
+  author = {Harries, Jan Philipp},
+  title  = {New constructions, obstructions, and multiplier structure
+            for {E}rd{\H{o}}s Problem 634},
+  year   = {2026},
+  note   = {Version 0.5, August 28, 2026},
+  url    = {https://github.com/jphme/math-problems/tree/main/progress634}
+}
+```
+
+Version 0.5 is dated 2026-08-28. It adds the attribution of the $z=1$
+specialization of the boundary character to Laczkovich (Tilings of convex
+polygons with congruent triangles, DCG 2012, p. 351; used by Beeson–Zhang
+§4.2), pointed out by Michael Beeson — the $z=-1$ specialization and the
+un-specialized Laurent ideal-membership form remain this paper's
+contributions — and incorporates the expanded Appendix B.2/B.3 integrality
+arguments of 2026-08-06 (referee query: the printed argument showed only
+$r\in\mathbb{Q}$; the ideal membership over
+$\mathbb{Z}[z,z^{-1}]$ forcing $r\in\mathbb{Z}$ is now spelled out).
 Version 0.4 is dated 2026-07-28. It is the major revision responding to the
 independent referee report of 2026-07-27: the `N=33` and 21-ray negative
 results are now carried by exported refutation certificates validated by an
