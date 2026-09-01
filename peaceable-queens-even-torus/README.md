@@ -28,6 +28,12 @@ classical two-parameter plaid family is a subfamily and already gives the
 sharp even-order asymptotic density; the parity refinement is exact at each
 even order.
 
+Clinch, Drescher, Huynh and Saffidine conjectured (arXiv:2406.06974,
+Conjecture 5.1) that on even tori the optimum exceeds the best plaid by at
+most two. The theorem confirms this for every even \(n\le400\) (the
+difference between the formula and the best plaid takes only the values 0, 1
+and 2 there) and replaces the inequality by an exact formula.
+
 ## Contents
 
 - [`lean/`](lean/): a formalization-ready rewrite of the proof

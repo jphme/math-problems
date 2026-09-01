@@ -38,7 +38,7 @@
 \author{Jan Philipp Harries}
 \thanks{ellamind GmbH, Bremen, Germany. \textit{E-mail address:} \href{mailto:jan@ellamind.com}{jan@ellamind.com}}
 
-\date{July 27, 2026}
+\date{September 2, 2026}
 
 \subjclass[2020]{Primary 05B99; Secondary 05C69, 68R05, 05C30, 90C05}
 \keywords{peaceable queens, toroidal chessboard, parity construction, exact formula, moment relaxation, computer-assisted proof, OEIS A279405}
@@ -83,8 +83,14 @@ translation invariant.  Its maxima form OEIS sequence A279405
 Clinch, Drescher, Huynh and Saffidine \cite{CDHS25,CDHS24} introduced
 \emph{plaid} constructions on even tori.  They obtained asymptotic lower
 density $0.1339$ and upper density $0.1402$, while for odd orders they proved
-the upper bound $t(n)\le n^2/8$.  The following theorem determines the even
-problem exactly.
+the upper bound $t(n)\le n^2/8$.  Their local search also found, on even
+tori, placements that recolour a few rows and columns of an optimal plaid
+(their \emph{swaps}) and exceed the best plaid by at most two queens in every
+case they examined; writing $P(n)$ for the largest value of $\min(|B|,|W|)$
+over all $(a,b)$-plaids, they conjectured that $t(n)\le P(n)+2$ for every
+even $n$ \cite[Conjecture~5.1]{CDHS24}.  The following theorem determines the
+even problem exactly; Remark~\ref{rem:plaid16} relates it to $P(n)$ and to
+that conjecture.
 
 \begin{definition}\label{def:H}
 For a positive integer $q$, put
@@ -254,11 +260,19 @@ The construction extends the plaid mechanism of \cite[\S3]{CDHS24}.
 Up to exchanging parity classes, the classical two-parameter subfamily has
 profiles $(u,q,v,q)$ and hence capacity
 \[
-\min\{q(u+v),(q-u)(q-v)\},\qquad 0\le u,v\le q.
+P(2q)=\max_{0\le u,v\le q}\min\{q(u+v),(q-u)(q-v)\}.
 \]
 The four counts in Proposition~\ref{prop:lower} are independent, so its
-family is larger.  Maximizing the displayed two-variable expression gives
-$50$ at $n=20$ and $72$ at $n=24$, whereas $H(20)=51$ and $H(24)=74$.
+family is larger.  Maximizing the two-variable expression gives $P(20)=50$
+and $P(24)=72$, whereas $H(20)=51$ (profile $(7,2,1,7)$) and $H(24)=74$
+(profile $(8,2,1,9)$).  The swapped plaids of \cite[\S5]{CDHS24} recolour
+rows and columns of a plaid; the example in \cite[Figure~6]{CDHS24} reaches
+$74$ on the $24$-torus, which is $H(24)$.  A direct computation gives
+$H(2q)-P(2q)\in\{0,1,2\}$ for all $q\le200$: the difference is $0$ at
+$146$ of these orders, $1$ at $33$ (first at $n=20$) and $2$ at $21$ (first
+at $n=24$).  Theorem~\ref{thm:main} therefore confirms Conjecture~5.1 of
+\cite{CDHS24} for every even $n\le400$ and replaces the inequality by an
+equality.  We have not proved $H(2q)\le P(2q)+2$ for every $q$.
 At $n=16$, the profile $(0,6,6,0)$ gives $36$ black-homogeneous and $32$
 white-homogeneous cells.
 \end{remark}
