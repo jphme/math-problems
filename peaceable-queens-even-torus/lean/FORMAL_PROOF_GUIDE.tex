@@ -242,7 +242,7 @@ pinned \file{leanprover/lean4:v4.32.2} toolchain and the external dependencies
 at the revisions in \file{lake-manifest.json} (Mathlib \file{v4.32.2}).
 The optional umbrella \file{PeaceableQueens.lean} is additionally needed
 for the project's default target; the manifest uses the explicit Main target.
-For all exported paper corollaries, \file{REVIEWER_FILES.txt} adds exactly
+For all exported paper corollaries, \file{COROLLARIES_FILES.txt} adds exactly
 \file{Values.lean}, \file{UpperBound/Asymptotics.lean} and
 \file{Corollaries.lean}: \textbf{898 files, of which 895 are Lean sources}.
 
@@ -265,9 +265,9 @@ The resource guard uses macOS tools. For other platforms, source-manifest
 checks and copyable commands, see \file{README.md}.
 
 \topic{Trust and the public release}
-The revised endpoint audit has \textbf{3 standard axioms and 483 native
+The endpoint audit has \textbf{3 standard axioms and 483 native
 computation axioms}: 356 large-tree batches and 127 finite acceptances.
-The two base-board proofs now use kernel decisions. Generic soundness proofs use the standard kernel
+The two base-board proofs use kernel decisions. Generic soundness proofs use the standard kernel
 axioms; scaled-integer dual-leaf checks use kernel \file{decide}.
 Native acceptance additionally trusts Lean's compiler/runtime and evaluated
 library implementations; see the official
@@ -279,7 +279,7 @@ inputs remain in the working repository; \file{.lake/} stays ignored.
 
 The public release directory \file{peaceable-queens-even-torus/} of
 \file{jphme/math-problems} contains the paper, its ancillary bundle, this
-guide and the complete Lean closure listed in \file{REVIEWER_FILES.txt}.
+guide and the complete Lean closure listed in \file{COROLLARIES_FILES.txt}.
 Continuous integration there rebuilds every hand-written module and a sample
 of certificate modules on every change; the complete closure is too large for
 hosted runners and is verified offline as recorded in \file{VERIFICATION.md}.

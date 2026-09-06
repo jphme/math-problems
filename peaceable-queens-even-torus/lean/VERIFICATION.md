@@ -23,12 +23,11 @@ in `PeaceableQueens/Main.lean`, together with the exported corollaries in
 | Lake | 5.0.0 |
 | machine | Apple Silicon Mac, macOS (Darwin 25.5.0), 48 GB RAM |
 | memory guard | `scripts/run_with_memory_limit.sh`, 12 GiB aggregate descendant-RSS cutoff, one Lean compiler at a time |
-| sources | the closure of `PeaceableQueens.Corollaries`: 895 Lean modules plus the three project files (`REVIEWER_FILES.txt`); `PeaceableQueens.Main` needs 892 of them (`VERIFICATION_FILES.txt`) |
+| sources | the closure of `PeaceableQueens.Corollaries`: 895 Lean modules plus the three project files (`COROLLARIES_FILES.txt`); `PeaceableQueens.Main` needs 892 of them (`VERIFICATION_FILES.txt`) |
 
 ## Complete build, 2026-09-06
 
-The sources of this release (after the review-driven edits of 2026-09-06)
-were built from scratch for all local modules with the serial driver:
+The sources of this release (revision of 2026-09-06) were built from scratch for all local modules with the serial driver:
 
 ```sh
 lake exe cache get
@@ -85,10 +84,10 @@ After the build, the six diagnostic scripts under `scripts/` were rerun with
 `C527PlaidSemantics.lean` (standard axioms only) and the three benchmark
 entry points (`BenchmarkFinite`, `BenchmarkFastFinite`,
 `BenchmarkFiniteTables`, type-checked), all exit 0 with no error line. The
-review-driven edits of 2026-09-06 changed docstrings, removed unused
-declarations and did not touch any generated module or checker definition; an
-earlier record of the same development (2026-09-05/06) had the same axiom
-counts with a rehash build of 3,893 jobs and a peak of 7.35 GiB.
+2026-09-06 revision differs from the build of 2026-09-05 only in docstrings
+and in removed unused declarations; no generated module or checker definition
+changed, and that earlier build had the same axiom counts, a rehash build of
+3,893 jobs and a peak of 7.35 GiB.
 
 ## What continuous integration checks
 

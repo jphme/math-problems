@@ -36,7 +36,7 @@ and 2 there) and replaces the inequality by an exact formula.
 
 ## Contents
 
-- [`peace_even_torus.pdf`](peace_even_torus.pdf): the 23-page paper
+- [`peace_even_torus.pdf`](peace_even_torus.pdf): the 24-page paper
   (September 6, 2026).
 - [`peace_even_torus.tex`](peace_even_torus.tex): self-contained LaTeX source.
 - [`peace_even_torus-arxiv.tar.gz`](peace_even_torus-arxiv.tar.gz): source and
@@ -140,35 +140,33 @@ directory gives the exact files.
     upper bound and hence of the theorem for every positive `q` (previously:
     definitional layer, line-colouring reduction, lower bound and small
     instances only). New in the paper: Appendix A.0 describing the
-    formalization, its scope and its trusted base; a sentence after
-    Proposition 36 noting the independent machine-checked finite range.
-    New documents: `lean/PAPER_CORRESPONDENCE.md`, `lean/VERIFICATION.md`,
+    formalization, its scope and its trusted base, and pointing to this
+    directory; a sentence after Proposition 36 noting the independent
+    machine-checked finite range. New documents:
+    `lean/PAPER_CORRESPONDENCE.md`, `lean/VERIFICATION.md`,
     `lean/FORMAL_PROOF_GUIDE.pdf`; `lean/FORMAL_PROOF.md` updated to the
-    completed state; `lean/scripts/check_paper_values.cpp` added.
-  - *In response to two independent reviews of the September 5 draft and the
-    Lean development* (one found no required changes; the other requested
-    three changes and made recommendations, all applied):
-    display (16) typeset the definition of `Y` in text mode, fixed;
-    Appendix A.0 pointed to a private working branch, now points to this
-    directory and states that the Lean finite range uses only the 76 legacy
-    cuts and is not a replay of the C++ engine; the two dual vectors of cuts
-    609 and 559 are printed in Appendix A.1 so that Lemma 26 can be checked
-    by hand; Lemma 26 is stated for every configuration (the chamber
-    hypothesis was never needed); the second case of Lemma 12 uses the direct
-    nonnegativity bound instead of the bilinear-vertex argument; the paragraph
-    after Lemma 17 now gives the correct non-interference argument for the
-    chamber normalization. In Lean: docstrings of the load-bearing theorems
-    cite the paper's stable labels; unused declarations (an array-walk
-    validator, an unused chamber predicate, two unused explicit bounds) were
-    removed; the provenance of the two transcribed support duals is documented
-    and the transcription is stated to be kernel-checked; stale notes and a
-    misattributed table entry in `lean/README.md` were corrected.
-  - *Earlier in the same revision (September 5 draft, not published here):*
-    the sentence claiming integrality is used "only" at one point of the
-    local finish was corrected (integrality also enters the construction of
-    `H` and the finite range); the plaid maximum in Remark 11 is written over
-    `u,v ∈ {0,…,q}`; the proof of Lemma 35 was reworded.
-  - *Continuous integration* now builds the hand-written modules and a
+    completed state; `lean/scripts/check_paper_values.cpp` added. The two
+    source manifests are `lean/VERIFICATION_FILES.txt` (closure of `Main`)
+    and `lean/COROLLARIES_FILES.txt` (closure of `Corollaries`).
+  - *Corrections relative to the September 2 version.* Display (16) typeset
+    the definition of `Y` in text mode, fixed. The sentence claiming that
+    integrality is used "only" at one point of the local finish was
+    corrected (integrality also enters the construction of `H` and the
+    finite range). Lemma 26 is stated for every configuration (the chamber
+    hypothesis was never needed); the second case of Lemma 12 uses the
+    direct nonnegativity bound instead of the bilinear-vertex argument; the
+    paragraph after Lemma 17 gives the correct non-interference argument for
+    the chamber normalization; the plaid maximum in Remark 11 is written
+    over `u,v ∈ {0,…,q}`; the proof of Lemma 35 was reworded.
+  - *Presentation.* Appendix A.1 prints the two sparse dual vectors of cuts
+    609 and 559, so that Lemma 26 can be checked by hand. File-level
+    verification detail (checker names, test parameters, the storage of the
+    cut library and of the two support duals) moved from Sections 4–6 into
+    Appendix A.1; the acknowledgements were shortened. In `lean/`: the
+    docstrings of the load-bearing theorems cite the paper's stable labels,
+    unused declarations were removed, and the provenance of the two
+    transcribed support duals is documented.
+  - *Continuous integration* builds the hand-written modules and a
     certificate sample (see above); the previous workflow built the small
     August development in full.
 - **2026-09-02 — paper dated September 2, 2026.** Attribution: the

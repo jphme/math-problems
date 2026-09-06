@@ -560,10 +560,25 @@ d_1+a_1\le\frac{9}{200}q,
 \end{equation}
 \end{theorem}
 
-Both theorems are established by exact branch certificates, distributed as the ancillary files \texttt{even\_\bs{}c527\_\bs{}sym\_\bs{}mc.json.gz} and \texttt{even\_\bs{}local\_\bs{}core\_\bs{}mc.json.gz}.
+Both theorems are established by exact branch certificates contained in the ancillary archive (Appendix~\ref{app:verify}, A.1).
 
 \begin{remark}[Verification]\label{rem:certverify}
-Two programs sharing no code check these trees, both using only exact rational arithmetic and neither trusting any stored number it can recompute. The delivered checker \texttt{verify\_\bs{}even\_\bs{}branch\_\bs{}certificate.py} rebuilds the moment system, every McCormick row, every dual, every split and every empty leaf, and ends in \texttt{ALL\_\bs{}EVEN\_\bs{}BRANCH\_\bs{}CERTIFICATES\_\bs{}OK}. The from-scratch verifier \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}independent.py} does not import it or the builders; it \emph{discovers} the $42$ rows by counting incidence fibres on real tori at $n=8,12,16,20$ (keeping a row only when all label tuples are attained with equal multiplicity, which is precisely the factorization statement, and finding by itself that $\{D,A\}$ is the unique ragged pair, thereby deriving the two aggregate rows rather than assuming them), re-validates them as exact identities on $200$ random colourings at $n=12,16,20,28$ ($8{,}400$ equation checks), re-derives the McCormick rows, recomputes every leaf bound from its own partial Lagrangian, and re-proves every emptiness claim by its own interval reasoning. It agrees with the delivered checker on every count in Table~\ref{tab:certs}, and rejects eight deliberately tampered copies of the first certificate. Appendix~\ref{app:verify} gives commands and digests.
+Two programs sharing no code check both trees, using only exact rational
+arithmetic and trusting no stored number that they can recompute.  The
+primary checker rebuilds the moment system, every McCormick row, every dual,
+every split and every empty leaf.  The second verifier imports neither the
+first nor the certificate builders: it derives the $42$ rows itself by
+counting incidence fibres on tori of orders $8,12,16,20$, keeping a row only
+when all label tuples are attained with equal multiplicity (which is the
+factorization statement) and finding by itself that $\{D,A\}$ is the unique
+pair that fails to factorize per block, so that the two aggregate rows are
+derived rather than assumed; it then re-validates the rows as exact
+identities on random colourings, re-derives the McCormick rows, recomputes
+every leaf bound from its own partial Lagrangian, and re-proves every
+emptiness claim by its own interval reasoning.  The two programs agree on
+every count in Table~\ref{tab:certs}, and the second rejects eight
+deliberately altered copies of the first certificate.  File names, commands
+and test parameters are in Appendix~\ref{app:verify}, A.1.
 \end{remark}
 
 \begin{proof}[Proof of Theorems~\ref{thm:cert1} and~\ref{thm:cert2}]
@@ -677,7 +692,7 @@ W\ \le\ F_W:=Y-\alpha\delta+Q .
 In particular, writing $T:=\min(F_B,F_W)$, we have $\min(B,W)\le T$.
 \end{lemma}
 
-The two exact rational duals are shipped in \texttt{even\_\bs{}finite\_\bs{}support\_\bs{}cuts.json} and are byte-identical to entries $609$ and $559$ of the certified library \texttt{new\_\bs{}dual\_\bs{}cuts.json}; \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py} recomputes both polynomial identities and the columnwise support property. Everything below is elementary algebra from \eqref{eq:core2}, \eqref{eq:chamber2}, \eqref{eq:FB} and \eqref{eq:FW}.
+Both duals are sparse and are printed in Appendix~\ref{app:verify}, A.1, together with the checks of the polynomial identities \eqref{eq:FB}, \eqref{eq:FW} and of the columnwise support property. Everything below is elementary algebra from \eqref{eq:core2}, \eqref{eq:chamber2}, \eqref{eq:FB} and \eqref{eq:FW}.
 
 \subsection{Basic estimates and the defect dichotomy}
 
@@ -898,13 +913,13 @@ combination of $B$ and $W$.  Multiply the columnwise inequalities
 equations replace $Ep$ by $b(x)$.
 \end{proof}
 
-The archive separates the library into $76$ legacy polynomials in
-\texttt{benders\_\bs{}cuts.json} and $684$ delivered rational duals in
-\texttt{new\_\bs{}dual\_\bs{}cuts.json}.  An exact standard-library verifier
-reconstructs the $42$ moment rows, checks the $64$ column inequalities and
-polynomial identity for every delivered dual, and recovers rational
-witnesses for the $76$ legacy cuts by exact simplex.  It verifies all
-$760$ cuts.
+The library is stored in two files: $76$ cuts as polynomials in the outer
+counts and $684$ as rational duals $(\theta,\lambda)$.  An exact
+standard-library verifier reconstructs the $42$ moment rows, checks the $64$
+column inequalities and the polynomial identity for every stored dual, and
+recovers a rational witness $\lambda$ for each of the $76$ polynomial cuts
+by exact simplex; it verifies all $760$ cuts (Appendix~\ref{app:verify},
+A.1).
 
 \subsection{The cut envelope at a fixed order}
 
@@ -1007,9 +1022,9 @@ domain.  Consequently $t(2q)=H(2q)$ for these orders.
 \end{proposition}
 
 \begin{proof}
-We ran the released C++17 exact box engine on all $122$ listed orders.  Every
+We ran the C++17 exact box engine of the ancillary archive on all $122$ listed orders.  Every
 search exhausted its stack with no survivor, visiting $13{,}379{,}092$ nodes
-in total; every discharge used one of the $76$ legacy cuts, and the fallback
+in total; every discharge used one of the $76$ polynomial cuts, and the fallback
 sweep of the full library at one-point boxes was never invoked.  The release verifier recompiles that engine, repeats every search,
 recomputes $H(2q)$ and compares every proof-relevant output field; thus it
 re-establishes the domain coverage required by Lemma~\ref{lem:boxsound}.
@@ -1018,11 +1033,12 @@ The archived per-order JSON files bind the cut inputs and record witnesses,
 status fields and aggregate statistics, but are compact run summaries, not
 node-by-node tree certificates.  Their checker audits those data and the
 full-tree accounting without claiming geometric coverage.  As a separate
-implementation check, the Python engine produced the original summaries
-through $q=60$ and was rerun for every $61\le q\le129$; its non-runtime
-envelope outputs agree exactly with the C++ outputs.  The two engines
-implement the same box algorithm, so this agreement is corroborative rather
-than a conceptually independent proof method.  Lemma~\ref{lem:boxsound}
+implementation check, a Python engine was also run on every order: it
+produced the archived summaries for $q\le60$, which the C++ engine
+reproduces, and for $61\le q\le129$ its non-runtime envelope outputs agree
+exactly with the C++ outputs.  The two engines implement the same box
+algorithm, so this agreement is corroborative rather than a conceptually
+independent proof method.  Lemma~\ref{lem:boxsound}
 gives the upper bound, and Proposition~\ref{prop:lower} gives equality.
 \end{proof}
 
@@ -1145,9 +1161,9 @@ Hence $t(15)\le20$.
 \subsection{A union-domain verification at \texorpdfstring{$n=16$}{n=16}}
 \label{ssec:t16}
 
-Although Theorem~\ref{thm:main} already gives $t(16)=32$, a direct search is
-useful both as an independent small-order proof and as the integration of the
-earlier $n=16$ computation.  Let $E,O\subset\Z/16\Z$ be the even and odd
+Although Theorem~\ref{thm:main} already gives $t(16)=32$, a direct search
+provides an independent small-order proof.  Let $E,O\subset\Z/16\Z$ be the
+even and odd
 residue classes and use profiles
 \[
 (r,c,d_0,d_1,a_0,a_1)
@@ -1182,9 +1198,9 @@ None is feasible.  A separately written Python audit regenerates the profile
 domain, proves its closure under the three domain symmetries, computes the
 seven pair-orbit counts by Burnside's lemma, regenerates every representative
 list and hash, and checks the certificate totals.  It prints
-\texttt{UNION\_\bs{}AUDIT\_\bs{}OK}.  The older $677$-job programs, which
-share their search chassis but use different completion kernels, reproduce
-the same upper bound as a secondary cross-check.
+\texttt{UNION\_\bs{}AUDIT\_\bs{}OK}.  Two further programs ($677$ jobs),
+which share the search chassis but use different completion kernels,
+reproduce the same upper bound.
 
 \begin{proposition}\label{prop:t16sweep}
 The union-domain search certifies that no $33+33$ placement exists on the
@@ -1365,7 +1381,7 @@ The odd asymptotics remain open; the upper bound $t(n)\le n^2/8$ is
 \section{Use of AI tools}\label{sec:ai}
 
 Large-language-model tools assisted with conjecture generation, drafting,
-code generation and source review.  The author checked the final mathematical
+code generation and source checking.  The author checked the final mathematical
 arguments and proof-critical outputs and takes responsibility for the paper.
 Agreement among AI-assisted implementations is treated as an error-detection
 measure, not as external scholarly reproduction.
@@ -1374,12 +1390,7 @@ measure, not as external scholarly reproduction.
 
 The work of Clinch, Drescher, Huynh and Saffidine provided the decisive plaid
 starting point and the previous asymptotic bounds.  I also thank the
-contributors who have maintained OEIS A279405 and the reviewer whose
-incidence correction and union-domain verification materially strengthened
-this paper.  A second independent referee replayed the exact certificates and
-the complete finite ladder, prompted the formal dual-leaf and box-discharge
-inference lemmas, and caught a packaging defect in a distributed copy of the
-ancillary archive.
+contributors and editors who maintain OEIS A279405.
 
 \appendix
 
@@ -1421,7 +1432,7 @@ trees and the integer local finish.  Its finite range is proved by a route
 different from Section~\ref{sec:ladder}: one complete action tree per order,
 checked node by node inside Lean, covers every $3\le q\le129$, including the
 five sweep exceptions of Proposition~\ref{prop:small-even}.  These trees use
-only the $76$ legacy cuts of the library, each with a kernel-checked support
+only the $76$ polynomial cuts of the library, each with a kernel-checked support
 witness, and they are not a replay of the C++ engine.  The two base boards
 use translations and small kernel decisions.
 
@@ -1430,8 +1441,8 @@ to this paper, in the \texttt{lean/} directory of
 \begin{center}
 \small\url{https://github.com/jphme/math-problems/tree/main/peaceable-queens-even-torus}.
 \end{center}
-The \texttt{README.md} of that directory carries a changelog naming the
-revision that accompanies each version of this paper.
+The \texttt{README.md} of that directory records the revision of the
+development that accompanies each version of this paper.
 Lean's \texttt{H q} denotes this paper's $H(2q)$.
 \texttt{PeaceableQueens/Main.lean} exports the unconditional upper bound
 and equality; \texttt{PeaceableQueens/Corollaries.lean} states
@@ -1444,7 +1455,7 @@ arbitrary-set counting in Proposition~\ref{prop:lower} are also exported.
 paper to its Lean statement and states the coverage limits; the concise
 guide is \texttt{lean/FORMAL\_PROOF\_GUIDE.pdf}.
 \texttt{lean/VERIFICATION\_FILES.txt} lists the exact main-theorem source
-closure and \texttt{lean/REVIEWER\_FILES.txt} adds the value table and
+closure and \texttt{lean/COROLLARIES\_FILES.txt} adds the value table and
 analytic corollaries; both include the pinned project files.
 \texttt{lean/VERIFICATION.md} records the complete build and the endpoint
 axiom audit.  The repository's continuous integration rebuilds the
@@ -1467,25 +1478,37 @@ use only the standard axioms.
 The formalization bounds rational feasible points and integer boxes.
 The real optimum in Definition~\ref{def:OPT} and its attainment, odd-order
 theorems, divisor lifting, plaid calculations and the open plaid-plus-two
-conjecture are outside its scope. The ancillary verification below remains
-a separate route for the paper's original proof objects and computations.
+conjecture are outside its scope. The ancillary verification below is
+a separate route through the paper's own proof objects and computations.
 
 \subsection*{A.1 Exact proof objects}
 
 The files \texttt{even\_\bs{}c527\_\bs{}sym\_\bs{}mc.json.gz} and
 \texttt{even\_\bs{}local\_\bs{}core\_\bs{}mc.json.gz} contain the two branch
-trees.  The delivered checker and a separately written verifier both
-reconstruct every split, moment row, McCormick inequality and rational leaf
-dual.  The latter also derives the $42$ moment rows from torus incidence
-fibres and tests them on explicit colourings.
+trees.  The primary checker
+\texttt{verify\_\bs{}even\_\bs{}branch\_\bs{}certificate.py} reconstructs
+every split, moment row, McCormick inequality and rational leaf dual and
+ends in \texttt{ALL\_\bs{}EVEN\_\bs{}BRANCH\_\bs{}CERTIFICATES\_\bs{}OK}.
+The second verifier
+\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}independent.py} imports
+neither the checker nor the certificate builders; it derives the $42$
+moment rows from torus incidence fibres at $n=8,12,16,20$ and re-validates
+them on $200$ random colourings at each of $n=12,16,20,28$ ($8{,}400$
+equation checks) before rechecking both trees
+(Remark~\ref{rem:certverify}).
 
 The files \texttt{new\_\bs{}dual\_\bs{}cuts.json} and
 \texttt{benders\_\bs{}cuts.json} together contain the $760$ support cuts.
 \texttt{verify\_\bs{}support\_\bs{}duals.py} verifies all of them exactly and
-recovers the $76$ legacy duals independently.  The two cuts used in
-Section~\ref{sec:local} are also checked by
-\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py}; the independent
-prose checker verifies the displayed algebra and exact constants.
+recovers rational duals for the $76$ polynomial cuts of
+\texttt{benders\_\bs{}cuts.json} independently.  The two duals used in
+Section~\ref{sec:local} are stored separately in
+\texttt{even\_\bs{}finite\_\bs{}support\_\bs{}cuts.json}, byte-identical to
+entries $609$ and $559$ of \texttt{new\_\bs{}dual\_\bs{}cuts.json};
+\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py} recomputes both
+polynomial identities and the columnwise support property, and
+\texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}prose.py} checks the displayed
+algebra and exact constants of that section.
 
 For hand verification, both duals are sparse.  Index the $42$ rows as in
 Lemma~\ref{lem:moments}: for each block $(i,j)$ the normalization row, the
@@ -1560,7 +1583,7 @@ outputs here.}\label{tab:finite-modes}
 For $n=15$, the archive includes both enumerator sources, both complete
 outputs, the $247$-profile worklist, a Burnside audit and direct witness
 checks.  For $n=16$, it includes the union-domain source, certificate and
-independent representative-list audit, as well as the older two-kernel
+independent representative-list audit, as well as the two-kernel
 cross-check.  The directory \texttt{general\_\bs{}sweep/} contains the
 general-$n$ source, audits and frozen outputs used for $n=8,12,14,17,18$,
 together with the second $n=17$ implementation and output.
@@ -1574,7 +1597,7 @@ candidate-space totals, the consistency and uniqueness of the output records,
 and the positive witnesses; they do not certify each individual completion
 test of the large enumerations.  Among the proof-critical campaigns, $n=15$
 and $n=17$ were decided twice by independently written enumerators, and
-$n=16$ additionally by the older two-kernel programs; the $n=8,12,14,18$
+$n=16$ additionally by the two-kernel programs; the $n=8,12,14,18$
 sweeps rest on the single audited implementation
 \texttt{general\_\bs{}sweep/solver\_\bs{}b.cpp}.  The release command reruns
 the complete ladder; the larger board enumerations are reproducible with the

@@ -4,13 +4,14 @@
 Copies, from this working repository into ``<public>/peaceable-queens-even-torus/``:
 
 * the paper source, PDF and submission archive;
-* the complete reviewer closure of the Lean project (``REVIEWER_FILES.txt``,
+* the complete corollary closure of the Lean project (``COROLLARIES_FILES.txt``,
   i.e. the ``PeaceableQueens.Corollaries`` import closure plus the pinned
   project files), the umbrella module, the documentation, the verification
   workflow scripts, the value checker and the verification evidence directory.
 
 Files under the public ``lean/`` directory that are not part of that set are
-removed, so the public copy mirrors the release exactly. The ancillary bundle
+removed (except under ``lean/verification/``), so the public copy mirrors the
+release exactly. The ancillary bundle
 ``anc/`` and the public folder's own ``README.md`` are never touched here.
 
 The script checks both source manifests against the import closure before
@@ -42,7 +43,7 @@ LEAN_EXTRAS = (
     "FORMAL_PROOF_GUIDE.tex",
     "FORMAL_PROOF_GUIDE.pdf",
     "VERIFICATION_FILES.txt",
-    "REVIEWER_FILES.txt",
+    "COROLLARIES_FILES.txt",
     "scripts/verification_manifest.py",
     "scripts/build_project_serial.py",
     "scripts/run_with_memory_limit.sh",
@@ -61,7 +62,7 @@ PAPER_FILES = (
 
 def lean_release_files(project: Path) -> list[str]:
     for target, manifest in (("PeaceableQueens.Main", "VERIFICATION_FILES.txt"),
-                             ("PeaceableQueens.Corollaries", "REVIEWER_FILES.txt")):
+                             ("PeaceableQueens.Corollaries", "COROLLARIES_FILES.txt")):
         expected = "\n".join(source_files(project, target)) + "\n"
         if (project / manifest).read_text(encoding="utf-8") != expected:
             raise ValueError(f"refresh {manifest}: it differs from {target}'s source closure")
@@ -89,8 +90,12 @@ def sync(repo: Path, public: Path, dry_run: bool) -> tuple[int, int, int]:
         if not source.is_file():
             raise ValueError(f"missing release input: {source}")
     keep = {destination.resolve() for _, destination in plan}
+    # Files under lean/verification/ are evidence (build and audit logs). They
+    # may be absent from a fresh checkout of the working repository and are
+    # never removed from the public copy.
     stale = [p for p in (target / "lean").rglob("*")
-             if p.is_file() and p.resolve() not in keep and ".lake" not in p.parts]
+             if p.is_file() and p.resolve() not in keep and ".lake" not in p.parts
+             and "verification" not in p.relative_to(target / "lean").parts]
     copied = changed = 0
     for source, destination in plan:
         same = destination.is_file() and filecmp.cmp(source, destination, shallow=False)

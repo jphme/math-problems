@@ -3,7 +3,8 @@
 Companion formalization for *Peaceable queens on even tori: an exact parity
 formula* (`peace_even_torus.tex`, published together with this directory in
 [`jphme/math-problems/peaceable-queens-even-torus`](https://github.com/jphme/math-problems/tree/main/peaceable-queens-even-torus)),
-written at the request of an OEIS editor reviewing the A279405 contribution.
+written at the request of an OEIS editor during the discussion of the A279405
+contribution.
 It proves the paper's main theorem (`thm:main`, printed Theorem 2):
 
 ```
@@ -79,8 +80,8 @@ by a different route from the paper's cut-envelope engine (see below).
 * `3 ≤ q ≤ 129`: one complete action tree per order, embedded in
   `UpperBound/Generated/Finite/Q003.lean` … `Q129.lean` (13,403,719 nodes in
   total). Each tree is decoded and checked node by node by the fail-closed
-  validator of `FiniteLattice.lean`; every discharge uses one of the 76 legacy
-  support cuts of the paper's library, each with a kernel-checked support
+  validator of `FiniteLattice.lean`; every discharge uses one of the 76 polynomial
+  support cuts of the paper's library (`benders_cuts.json`), each with a kernel-checked support
   witness in `UpperBound/RecoveredFiniteCutSupport/`. The threshold `12b + 6`
   with an explicit profile witness `b ≤ H q` gives `min(B,W) ≤ H q` by
   integrality. This route is self-contained: it uses neither the paper's C++
@@ -185,7 +186,7 @@ ancillary bundle are not inputs to Lean's endpoint proof. The root
 `PeaceableQueens.lean` is an optional convenience import; retain it too if
 using the default `lake build` target instead of the explicit `Main` target.
 
-For all exported paper corollaries, [`REVIEWER_FILES.txt`](REVIEWER_FILES.txt)
+For all exported paper corollaries, [`COROLLARIES_FILES.txt`](COROLLARIES_FILES.txt)
 adds three modules (`Values`, `UpperBound/Asymptotics`, `Corollaries`):
 **895 Lean sources plus the three project files, 898 files total**.
 
@@ -193,7 +194,7 @@ Both lists can be refreshed or checked without running Lean:
 
 ```sh
 python3 scripts/verification_manifest.py --check
-python3 scripts/verification_manifest.py --check --target PeaceableQueens.Corollaries --output REVIEWER_FILES.txt
+python3 scripts/verification_manifest.py --check --target PeaceableQueens.Corollaries --output COROLLARIES_FILES.txt
 ```
 
 For the documented serial verification workflow, additionally retain

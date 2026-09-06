@@ -54,7 +54,7 @@ jobs:
         working-directory: peaceable-queens-even-torus/lean
         run: |
           python3 scripts/verification_manifest.py --check
-          python3 scripts/verification_manifest.py --check --target PeaceableQueens.Corollaries --output REVIEWER_FILES.txt
+          python3 scripts/verification_manifest.py --check --target PeaceableQueens.Corollaries --output COROLLARIES_FILES.txt
 
       - name: Build the hand-written modules and a certificate sample
         uses: leanprover/lean-action@v1

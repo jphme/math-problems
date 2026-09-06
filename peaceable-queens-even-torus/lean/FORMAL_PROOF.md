@@ -530,8 +530,8 @@ inequalities by the nonnegative atom counts and sum; $Ep = b(x)$ by S27. **No
 relaxation, no branching, no chamber hypothesis is needed for this inference.**
 
 **S40 (The certified cut library).** `[CERT]`
-Certified object: 760 support cuts, stored as 684 delivered rational duals
-(`new_dual_cuts.json`) and 76 legacy polynomials (`benders_cuts.json`) with rational
+Certified object: 760 support cuts, stored as 684 rational duals
+(`new_dual_cuts.json`) and 76 polynomial cuts (`benders_cuts.json`) with rational
 dual witnesses recovered by exact simplex. Per-cut data: $(\theta, \lambda)$ and the
 induced multi-affine polynomial $P(x) = q^2 \lambda^{\mathsf T} b(x)$ (quadratic
 monomials only among the 22 admissible products; never a square). Per-cut checks for a
@@ -777,7 +777,7 @@ For every $q \in \{3,5\} \cup \{10, 11, \dots, 129\}$ (122 orders): the cut enve
 is at most $H(2q) + \tfrac12$ throughout the canonical integer domain, hence (S57)
 $t(2q) \le H(2q)$, hence (S14) $t(2q) = H(2q)$. Recorded statistics of the runs: all
 122 searches exhausted their stacks with no survivor, visiting 13,379,092 nodes in
-total; every discharge used one of the 76 legacy cuts; the fallback sweep of the full
+total; every discharge used one of the 76 polynomial cuts; the fallback sweep of the full
 library at one-point boxes was never invoked.
 The Lean theorem `UpperBound.Generated.Finite.finite_range_bound` proves the
 upper bound for the full interval $3\le q\le129$, including the five additional
@@ -895,20 +895,18 @@ Verified September 6, 2026 (Lean/Mathlib v4.32.2): all 895 local modules in
 the corollary closure passed serial verification, and the final rehash build
 passed all 3,893 jobs. Both endpoint reports contain exactly **3 standard
 axioms and 483 native computations**, with zero unexpected entries
-(356 branch batches and 127 finite cases). The initial release had 485
-native axioms; both base boards now use kernel proofs. Six diagnostic scripts
+(356 branch batches and 127 finite cases). Both base boards use kernel
+proofs. Six diagnostic scripts
 also passed, and the source scan found no proof holes or unsafe implementations.
 The exact validation record is in `VERIFICATION.md`.
 
 The tags above identify proof obligations; they do not declare unfinished
 work. Concrete acceptance additionally trusts the native evaluator/compiler.
 `PAPER_CORRESPONDENCE.md` maps every numbered paper result and explains all domain
-specializations. `REVIEWER_FILES.txt` and `REVIEWER_GUIDE.md` describe the
-standalone package for checking the main theorem and its exported corollaries.
+specializations. `COROLLARIES_FILES.txt` lists the source closure of the main theorem and
+its exported corollaries.
 Finite cases `q=3..9` use the cached checker; `q=10..129` use the fast checker.
 `FastFiniteChecker.acceptedFast_eq` proves their equality for every input.
-The review moved `Q124` to that fast interface while retaining its exact
-encoded certificate and threshold.
 
 | statements | tag | status today |
 |---|---|---|
