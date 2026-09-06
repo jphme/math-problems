@@ -38,7 +38,7 @@
 \author{Jan Philipp Harries}
 \thanks{ellamind GmbH, Bremen, Germany. \textit{E-mail address:} \href{mailto:jan@ellamind.com}{jan@ellamind.com}}
 
-\date{September 2, 2026}
+\date{September 6, 2026}
 
 \subjclass[2020]{Primary 05B99; Secondary 05C69, 68R05, 05C30, 90C05}
 \keywords{peaceable queens, toroidal chessboard, parity construction, exact formula, moment relaxation, computer-assisted proof, OEIS A279405}
@@ -260,7 +260,7 @@ The construction extends the plaid mechanism of \cite[\S3]{CDHS24}.
 Up to exchanging parity classes, the classical two-parameter subfamily has
 profiles $(u,q,v,q)$ and hence capacity
 \[
-P(2q)=\max_{0\le u,v\le q}\min\{q(u+v),(q-u)(q-v)\}.
+P(2q)=\max_{u,v\in\{0,\ldots,q\}}\min\{q(u+v),(q-u)(q-v)\}.
 \]
 The four counts in Proposition~\ref{prop:lower} are independent, so its
 family is larger.  Maximizing the two-variable expression gives $P(20)=50$
@@ -331,7 +331,7 @@ Put $w=\sqrt{\xi\eta}\in[0,1]$. By AM--GM, $4w-w^2\le2\xi+2\eta-\xi\eta\le1$, so
 \min(X,Y)\le\frac{X+Y}{2}=q^2\,\frac{1+w^2}{2}\le q^2\,\frac{1+(2-\sqrt3)^2}{2}=(4-2\sqrt3)q^2 .
 \]
 
-Now suppose $Y\ge X$, so $\min(X,Y)=X$, and assume for contradiction $X>\kappa q^2$. Then $X+Y\ge2X>2\kappa q^2$, so by \eqref{eq:XYid} $\xi\eta>2\kappa-1=(2-\sqrt3)^2$ and $w>2-\sqrt3$. On the other hand $X/q^2=\tilde r_0\tilde c_1+\tilde r_1\tilde c_0$ is bilinear in $(\tilde r_0,\tilde r_1)$ and $(\tilde c_0,\tilde c_1)$ subject to the fixed sums $\rho,\chi$, hence is at most $\rho\chi$ (attained at a vertex), and $\rho\chi=(1-\xi)(1-\eta)\le(1-w)^2$ by AM--GM. Therefore
+Now suppose $Y\ge X$, so $\min(X,Y)=X$, and assume for contradiction $X>\kappa q^2$. Then $X+Y\ge2X>2\kappa q^2$, so by \eqref{eq:XYid} $\xi\eta>2\kappa-1=(2-\sqrt3)^2$ and $w>2-\sqrt3$. On the other hand $X/q^2=\tilde r_0\tilde c_1+\tilde r_1\tilde c_0\le(\tilde r_0+\tilde r_1)(\tilde c_0+\tilde c_1)=\rho\chi$, because the two omitted products $\tilde r_0\tilde c_0$ and $\tilde r_1\tilde c_1$ are nonnegative, and $\rho\chi=(1-\xi)(1-\eta)\le(1-w)^2$ by AM--GM. Therefore
 \[
 \kappa<\frac{X}{q^2}\le(1-w)^2<\bigl(1-(2-\sqrt3)\bigr)^2=(\sqrt3-1)^2=4-2\sqrt3=\kappa,
 \]
@@ -447,12 +447,13 @@ r_0\le r_1,\qquad c_0\le c_1,\qquad r_0+r_1\le c_0+c_1,\qquad d_0+d_1\le a_0+a_1
 Complementing all four line sets exchanges $B$ and $W$ and replaces $\sum x_i$ by $8-\sum x_i$, so the budget can be enforced. Translating the board by one unit in the row direction, $(r,c)\mapsto(r+1,c)$, exchanges the two row parity classes (and simultaneously the two diagonal and the two antidiagonal classes); translating by one unit in the column direction does the same for the columns. Composing the two if necessary, we may sort $r_0\le r_1$ and $c_0\le c_1$. Transposing, $(r,c)\mapsto(c,r)$, exchanges rows with columns and fixes the antidiagonals while negating the diagonals, hence orders the row and column totals. Finally $(r,c)\mapsto(r,-c)$ fixes the row parities, permutes the column labels within their parity classes, and exchanges the diagonal with the antidiagonal family, so it orders $d_0+d_1\le a_0+a_1$. Each of these is an affine bijection of the board mapping lines to lines, so $B$ and $W$ are preserved (or exchanged, in the complementation step).
 \end{proof}
 
-The four ordering inequalities in \eqref{eq:chamber}, apart from the budget
-row, preserve the sorting achieved by the earlier steps.  Indeed, a unit
-translation exchanges $(d_0,d_1)$ with $(d_1,d_0)$ \emph{and} $(a_0,a_1)$
-with $(a_1,a_0)$ simultaneously, so it does not disturb the comparison of
-the two family totals; the transpose does not affect either total.  We
-therefore assume \eqref{eq:chamber} from now on.
+Each step preserves what the earlier steps achieved.  Complementation comes
+first, and the remaining maps permute labels within each family, so the
+budget row is kept.  The transpose exchanges the row counts with the column
+counts and therefore maps the pair of conditions $r_0\le r_1$, $c_0\le c_1$
+to itself; the final reflection fixes all four row and column parity counts
+and so preserves the first three ordering inequalities.  We therefore assume
+\eqref{eq:chamber} from now on.
 
 \section{The two branch certificates and the escape comparison}\label{sec:cert}
 
@@ -632,7 +633,7 @@ so $u,v,e,f,g,h$ are small ``defects'' and $R,C$ are close to $sq$. All eight ar
 \begin{aligned}
 \sigma&=R+C, & m&=u+v, & \delta&=e+f, & \zeta&=g+h,\\
 \alpha&=2q-\sigma-m, & \beta&=\sigma-q, & Q&=2ef+2gh,\\
-X&=uv+RC, & \multicolumn{4}{l}{Y=(q-u)(q-C)+(q-R)(q-v).}
+X&=uv+RC, & \multicolumn{4}{l}{$Y=(q-u)(q-C)+(q-R)(q-v).$}
 \end{aligned}
 \end{equation}
 The core \eqref{eq:core} reads
@@ -666,7 +667,7 @@ Third, $\alpha$ and $\beta$ are the two ``slacks'' that the support cuts below w
 The proof uses exactly two members of an exactly certified library of $760$ support-dual cuts for the moment system (Section~\ref{sec:ladder} and Appendix~\ref{app:verify}); they are entries $609$ and $559$ of that library, transported to the coordinates \eqref{eq:locvars}. A \emph{support dual} is a pair $(\alpha_{\mathrm{cut}},\lambda)$ of exact rationals such that the corresponding combination of the $42$ moment equations dominates $\alpha_{\mathrm{cut}}B+(1-\alpha_{\mathrm{cut}})W$ columnwise on all $64$ atoms; the resulting polynomial inequality then holds for every genuine configuration, with no relaxation and no branching. Cut $609$ has $\alpha_{\mathrm{cut}}=1$ and cut $559$ has $\alpha_{\mathrm{cut}}=0$, so they bound $B$ and $W$ separately:
 
 \begin{lemma}[Cuts $609$ and $559$]\label{lem:cuts}
-For every configuration in the canonical chamber,
+For every configuration,
 \begin{equation}\label{eq:FB}
 B\ \le\ F_B:=X-\beta\zeta+Q,
 \end{equation}
@@ -797,7 +798,9 @@ contradicting \eqref{eq:B28}. Since $g$ and $h$ are integer counts, $g\ge1$ and 
 \begin{equation}\label{eq:B29}
 \zeta=g+h\ \ge\ 2 .
 \end{equation}
-This is the only point in the whole argument where integrality of the counts is used; it is also exactly the point at which the continuous relaxation is provably insufficient (Remark~\ref{rem:integrality}).
+This is the discrete step in the local defect argument, where the continuous
+relaxation is insufficient (Remark~\ref{rem:integrality}). Integrality is also
+used in the construction of $H$ and the finite-range proof.
 
 \emph{Step 2: averaging the two cuts.} By \eqref{eq:FB} and \eqref{eq:FW},
 \begin{equation}\label{eq:B30}
@@ -983,15 +986,15 @@ $t(2q)\le H(2q)$.
 \end{lemma}
 
 \begin{proof}
-By Lemma~\ref{lem:boxops}(v) every split partitions the integer points of
-its parent, and by Lemma~\ref{lem:boxops}(i) pruning discards only boxes
-containing no canonical integer profile; so induction on the tree shows
-that every canonical integer profile belongs to a discharged terminal box.
-By Lemma~\ref{lem:boxops}(iii), (iv) --- or by direct evaluation for
-one-point boxes --- the discharging cut is at most $H(2q)+\frac12$ at that
-profile, and Lemma~\ref{lem:cutsound} gives
-$\min(B,W)\le H(2q)+\frac12$ there.  Both $\min(B,W)$ and $H(2q)$ are
-integers, hence $\min(B,W)\le H(2q)$.
+Splits partition the integer points of their parent boxes by
+Lemma~\ref{lem:boxops}(v).  Pruning removes only boxes containing no canonical
+integer profile by Lemma~\ref{lem:boxops}(i).  Induction on the tree therefore
+places every canonical integer profile in a discharged terminal box.
+At this profile the discharging cut is at most $H(2q)+\frac12$, by
+Lemma~\ref{lem:boxops}(iii), (iv), or direct evaluation for a one-point box.
+Lemma~\ref{lem:cutsound} then bounds $\min(B,W)$ by the same quantity.
+Since $\min(B,W)$ and $H(2q)$ are integers, we obtain
+\[\min(B,W)\le H(2q).\qedhere\]
 \end{proof}
 
 \begin{proposition}\label{prop:ladder}
@@ -1026,7 +1029,10 @@ gives the upper bound, and Proposition~\ref{prop:lower} gives equality.
 The orders $q=1,2$ are elementary.  The four remaining envelope exceptions
 $q=4,6,7,9$ are direct finite searches, while $q=8$ is covered by the
 union-domain verification of $n=16$.  They are proved together with the odd
-searches in Section~\ref{sec:odd}.
+searches in Section~\ref{sec:odd}.  Independently of both engines, the Lean
+development described in Appendix~\ref{app:verify}, A.0, checks complete
+action trees for every $3\le q\le129$, including these five orders, inside a
+proof assistant.
 
 \section{The exhaustive finite searches}\label{sec:odd}
 
@@ -1407,6 +1413,63 @@ as specified by their build commands and were rebuilt with Apple
 Clang~21.0.0; the union-domain enumerator was also reproduced with GCC~14 and
 Clang~17.  No floating-point comparison affects a proof verdict.
 
+\subsection*{A.0 Lean formalization of the even theorem}
+
+A Lean~4 development formalizes Theorem~\ref{thm:main}: the line-colouring
+reduction, the parity construction, the $42$ moment equations, both branch
+trees and the integer local finish.  Its finite range is proved by a route
+different from Section~\ref{sec:ladder}: one complete action tree per order,
+checked node by node inside Lean, covers every $3\le q\le129$, including the
+five sweep exceptions of Proposition~\ref{prop:small-even}.  These trees use
+only the $76$ legacy cuts of the library, each with a kernel-checked support
+witness, and they are not a replay of the C++ engine.  The two base boards
+use translations and small kernel decisions.
+
+The sources, documentation and reproduction instructions are published next
+to this paper, in the \texttt{lean/} directory of
+\begin{center}
+\small\url{https://github.com/jphme/math-problems/tree/main/peaceable-queens-even-torus}.
+\end{center}
+The \texttt{README.md} of that directory carries a changelog naming the
+revision that accompanies each version of this paper.
+Lean's \texttt{H q} denotes this paper's $H(2q)$.
+\texttt{PeaceableQueens/Main.lean} exports the unconditional upper bound
+and equality; \texttt{PeaceableQueens/Corollaries.lean} states
+Corollaries~\ref{cor:asym} and~\ref{cor:values} explicitly.
+The separate black and white inequalities in Lemma~\ref{lem:cuts} and the
+arbitrary-set counting in Proposition~\ref{prop:lower} are also exported.
+
+\texttt{lean/FORMAL\_PROOF.md} gives the proof as obligations S1--S66;
+\texttt{lean/PAPER\_CORRESPONDENCE.md} maps every numbered result of this
+paper to its Lean statement and states the coverage limits; the concise
+guide is \texttt{lean/FORMAL\_PROOF\_GUIDE.pdf}.
+\texttt{lean/VERIFICATION\_FILES.txt} lists the exact main-theorem source
+closure and \texttt{lean/REVIEWER\_FILES.txt} adds the value table and
+analytic corollaries; both include the pinned project files.
+\texttt{lean/VERIFICATION.md} records the complete build and the endpoint
+axiom audit.  The repository's continuous integration rebuilds the
+hand-written soundness modules and a sample of certificate modules on every
+change; the complete closure is too large for hosted runners and is verified
+offline as recorded there.
+The companion \texttt{lean/scripts/check\_paper\_values.cpp} reproduces
+Table~\ref{tab:Hvals} and the numerical comparisons in
+Remark~\ref{rem:plaid16}, including the $200$-order histogram, using exact
+integers and a small direct-enumeration cross-check.
+
+The proof uses Lean~4.32.2 and Mathlib~4.32.2. Concrete branch batches and
+finite-tree acceptance use \texttt{native\_decide}, which additionally
+trusts Lean's compiler, runtime and evaluated library implementations.
+The two main endpoints have three standard axioms and $483$ native
+computation axioms: $356$ branch batches and $127$ finite acceptances.
+Checker soundness, support inequalities, small boards and analytic estimates
+use only the standard axioms.
+
+The formalization bounds rational feasible points and integer boxes.
+The real optimum in Definition~\ref{def:OPT} and its attainment, odd-order
+theorems, divisor lifting, plaid calculations and the open plaid-plus-two
+conjecture are outside its scope. The ancillary verification below remains
+a separate route for the paper's original proof objects and computations.
+
 \subsection*{A.1 Exact proof objects}
 
 The files \texttt{even\_\bs{}c527\_\bs{}sym\_\bs{}mc.json.gz} and
@@ -1423,6 +1486,28 @@ recovers the $76$ legacy duals independently.  The two cuts used in
 Section~\ref{sec:local} are also checked by
 \texttt{verify\_\bs{}even\_\bs{}finite\_\bs{}algebra.py}; the independent
 prose checker verifies the displayed algebra and exact constants.
+
+For hand verification, both duals are sparse.  Index the $42$ rows as in
+Lemma~\ref{lem:moments}: for each block $(i,j)$ the normalization row, the
+four marginal rows $E_{ij}[\varepsilon_R]$, $E_{ij}[\varepsilon_C]$,
+$E_{ij}[\varepsilon_D]$, $E_{ij}[\varepsilon_A]$ and the five pair rows in
+the order of \eqref{eq:mom2}, followed by the two aggregate rows
+\eqref{eq:mom3}.  Cut $609$ ($\theta=1$) has multiplier $1$ on the
+normalization row, $-1$ on the $\varepsilon_D$ and $\varepsilon_A$ rows and
+$1$ on the $\varepsilon_R\varepsilon_C$ row of block $(0,0)$; $3$ on the
+normalization row, $-2$ on each of the four marginal rows and $1$ on each of
+the five pair rows of block $(1,1)$; $1$ on both aggregate rows; and $0$ on
+the remaining $26$ rows.  Cut $559$ ($\theta=0$) has $1$ on the
+normalization row and $-1$ on the $\varepsilon_D$ and $\varepsilon_A$ rows of
+each of the blocks $(0,0)$ and $(1,1)$; $1$ on the normalization row, $-1$ on
+each marginal row and $1$ on each pair row of each of the blocks $(0,1)$ and
+$(1,0)$; $1$ on both aggregate rows; and $0$ on the remaining $14$ rows.
+Substituting the right-hand sides of Lemma~\ref{lem:moments} and multiplying
+by $q^2$ gives $q^2\lambda^{\mathsf T}b(x)=F_B$ for cut $609$ and $F_W$ for
+cut $559$ in the coordinates \eqref{eq:locvars}, a short expansion; the $64$
+columnwise inequalities \eqref{eq:support} are a finite check, carried out in
+the Lean kernel in
+\texttt{lean/PeaceableQueens/UpperBound/SupportCuts.lean}.
 
 \subsection*{A.2 Finite computations}
 

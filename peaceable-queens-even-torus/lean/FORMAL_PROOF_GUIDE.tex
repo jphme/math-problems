@@ -1,0 +1,290 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=18mm,top=17mm,bottom=18mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,tabularx,array,xcolor,fancyhdr,ragged2e}
+\usepackage{xurl}
+\usepackage{hyperref}
+\definecolor{ink}{HTML}{19384B}
+\definecolor{muted}{HTML}{536775}
+\hypersetup{colorlinks=true,urlcolor=ink,linkcolor=ink,
+  pdftitle={Peaceable queens: a guide to the formal even-order proof},
+  pdfauthor={Jan Philipp Harries},pdfsubject={Paper and Lean correspondence}}
+\urlstyle{tt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\RaggedRightRightskip}{0pt plus 1fil}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.16}
+\renewcommand{\tabularxcolumn}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}Peaceable queens / formal proof guide}
+\fancyhead[R]{\small\color{muted}6 September 2026}
+\fancyfoot[L]{\footnotesize\color{muted}jphme/math-problems \quad Lean 4.32.2 / Mathlib 4.32.2}
+\fancyfoot[R]{\footnotesize\thepage\,/\,4}
+\renewcommand{\headrulewidth}{0.3pt}
+\newcommand{\topic}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{2pt}}
+\newcommand{\file}[1]{\mbox{\small\nolinkurl{#1}}}
+\newcommand{\paperref}[1]{{\small\texttt{#1}}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\begin{document}
+\RaggedRight
+
+{\LARGE\bfseries\color{ink}The formal proof for even tori}\par
+{\large What is proved, how it is assembled, and what to read}
+
+\textbf{Result.} The Lean endpoint proves the paper's main even-order
+theorem, with no remaining certificate hypothesis. This guide describes the
+formalization; the recorded build and endpoint axiom audit are in
+\file{VERIFICATION.md}, and the statement-by-statement correspondence with the
+paper is in \file{PAPER_CORRESPONDENCE.md}.
+
+\topic{The exact mathematical statement}
+For $q\in\N$, $q>0$, the board is $(\mathbb{Z}/2q\mathbb{Z})^2$.
+Two cells attack if their row, column, difference or sum agrees modulo $2q$.
+Attacks within an army are allowed; every cross-army attack is forbidden.
+$t(2q)$ is the greatest possible size of two equally large armies.
+Define, in the notation used by Lean,
+\[
+ H_q=\max_{0\le r_0,r_1,c_0,c_1\le q\atop r_i,c_i\in\N}
+ \min\!\left\{r_0c_1+r_1c_0,
+ (q-r_0)(q-c_0)+(q-r_1)(q-c_1)\right\}.
+\]
+\textbf{Indexing matters:} Lean's \texttt{H q} means the paper's $H(2q)$.
+In namespace \file{PeaceableQueens}, \file{Main.lean} exports
+\[
+ \underbrace{t(2q)\le H_q}_{\texttt{upperBoundStatement}}
+ \qquad\text{and}\qquad
+ \underbrace{t(2q)=H_q}_{\texttt{evenTorusTheorem}}.
+\]
+The propositions are defined in \file{TheoremStatement.lean} and discharged
+in \file{Main.lean}. The former alone is not the completed upper-bound proof.
+The paper prints \paperref{thm:main} as \textbf{Theorem 2}; source
+comments and guides cite stable paper labels.
+
+\topic{The argument, in reading order}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{27mm}X@{}}
+\toprule
+Step & Meaning and source, relative to \file{PeaceableQueens/} \\
+\midrule
+Define the problem & \file{Defs.lean}: modular attacks, equal armies, the capped maximum and the finite formula $H_q$. Maximum-characterization lemmas justify the cap. \\
+Replace armies by line colours & \file{LineColouring.lean}: every peaceable pair extends to a colouring of all four line families; conversely, monochromatic cells give peaceable armies after trimming the larger one. \\
+Prove the lower bound & \file{Parity.lean} and \file{LowerBound.lean}: arbitrary-set parity counting, followed by explicit label choices, gives $H_q\le t(2q)$. \\
+Normalize configurations & \file{FiniteGeometry.lean} and \file{UpperBound/Symmetry.lean}: attack-preserving board equivalences and complementation give the canonical chamber. \\
+Bound every order & $q=1,2$: \file{SmallBoards.lean}. $3\le q\le129$: checked finite action trees. $q\ge130$: checked rational branch trees and the local algebraic finish. \\
+Assemble & \file{UpperBound/Assembly.lean} partitions all positive $q$ into these three ranges. \file{Main.lean} supplies the checked components and combines both inequalities. \\
+\bottomrule
+\end{tabularx}
+
+\smallskip
+\textbf{Companion references.} The paper is \file{peace_even_torus.tex}
+(6 September 2026), published with this Lean project in the public repository
+\file{jphme/math-problems}, directory \file{peaceable-queens-even-torus/}.
+In its \file{lean/} subdirectory, \file{FORMAL_PROOF.md} gives obligations
+S1--S66 and \file{PAPER_CORRESPONDENCE.md} maps all 66 and all 43 numbered
+paper results. This PDF presents the argument and its essential interfaces.
+
+\newpage
+\topic{The large-order proof: $q\ge130$}
+Filenames on this page are relative to \file{PeaceableQueens/UpperBound/},
+abbreviated \file{UB/} on the next page. The eight normalized line counts are
+$x=(r_0,r_1,c_0,c_1,d_0,d_1,a_0,a_1)/q$.
+
+\textbf{1. Geometry gives a feasible rational point.}
+The four row/column parity blocks each have $q^2$ cells, with 16 colour atoms
+per block. Normalization, marginal counts and five independent line-pair
+counts give 40 equations. The two D/A equations aggregate counts across
+blocks: equal-parity diagonal and antidiagonal labels have two lifts;
+opposite-parity labels have none. This remains correct when $4\mid 2q$.
+No unjustified per-block D/A independence is imposed.
+
+\file{Incidence.lean}, \file{BlockMoments.lean} and
+\file{ConfigurationMoments.lean} establish these identities.
+\file{MomentModel.lean} gives their semantic indexing;
+\file{LPModel.lean} uses 95 variables (8 counts, 22 products, 64 atoms, one
+objective), 42 equalities and 95 inequalities.
+\file{ModelCompatibility.lean} checks the flat coefficients;
+\file{ConfigurationBridge.lean} proves feasibility with objective
+$\min(B,W)/q^2$. These implement \paperref{lem:inc}, \paperref{lem:moments}
+and the required part of \paperref{def:OPT} (S21--S32).
+
+\textbf{2. Two checked trees localize any possible counterexample.}
+For canonical feasible points, the global tree on $[0,1]^8$ proves the bound
+$527/1000$ outside
+\[
+ N=[0,\tfrac1{10}]\times[\tfrac35,\tfrac78]\times[0,\tfrac1{10}]
+ \times[\tfrac35,\tfrac78]\times[\tfrac{19}{20},1]
+\times[0,\tfrac1{10}]\times[\tfrac{19}{20},1]\times[0,\tfrac1{10}].
+\]
+The second tree starts at exactly $N$ and bounds the objective unless
+\[
+ \tfrac{36}{25}\le x_1+x_3\le\tfrac{37}{25},\quad
+ x_0+x_2\le\tfrac9{100},\quad x_5+x_7\le\tfrac9{200},\quad
+ x_4+x_6\ge\tfrac{49}{25}.
+\]
+Dual leaves are proved sound by exact linear combinations; splits cover
+their parent boxes. \file{DualLeaf.lean}, \file{SparseListDualLeaf.lean},
+\file{ScaledIntDualLeaf.lean} and its helper directory prove the arithmetic
+interfaces. \file{BranchCertificate.lean} supplies coverage;
+\file{Generated/Even/} supplies both complete trees.
+\file{CertificateConsequences.lean} connects them to configurations.
+The escape estimate $527q^2/1000<H_q$ for $q\ge64$ forces every hypothetical
+counterexample into this core.
+This is \paperref{lem:dualleaf}, \paperref{lem:branchsound},
+\paperref{thm:cert1}, \paperref{thm:cert2} and \paperref{cor:escape}
+(S33--S39).
+
+\textbf{3. Integer defects close the localized case.}
+Set $u=r_0$, $R=r_1$, $v=c_0$, $C=c_1$, $e=d_1$, $f=a_1$,
+$g=q-d_0$, $h=q-a_0$, now as unnormalized counts.
+Write $\delta=e+f$, $\zeta=g+h$, $Q=2ef+2gh$,
+$\alpha=2q-R-C-u-v$, $\beta=R+C-q$.
+The individual support bounds imply
+\[
+ \begin{gathered}
+ B\le F_B,\quad W\le F_W,\qquad F_B=uv+RC-\beta\zeta+Q,\\
+ F_W=(q-u)(q-C)+(q-R)(q-v)-\alpha\delta+Q.
+ \end{gathered}
+\]
+The core gives $Q\le\alpha\delta$ or $Q\le\beta\zeta$.
+In Case A, four explicit integer profile switches absorb the loss and bound
+the objective by $H_q$. In the remaining Case B subcase, $gh>0$ forces
+$\zeta\ge2$ because $g,h$ are natural defects. A factored quadratic inequality
+gives the necessary gap; the exact comparison closes at $q=130$.
+
+Read \file{SupportCuts.lean}, \file{LargeOrderConfiguration.lean},
+\file{LargeOrderAlgebra.lean}, \file{LargeOrderFinish.lean}, then
+\file{LargeOrderCertified.lean}. \file{ProfileAlgebra.lean} supplies the
+$H_q$ estimates and escape threshold. These cover \paperref{lem:cuts}
+through \paperref{thm:q130} (S40--S54).
+
+\newpage
+\topic{The finite proof: $3\le q\le129$}
+The search space is the integer box $[0,q]^8$ restricted by the five canonical
+chamber/budget rows. Each order has a complete action tree. Every action
+must justify a domain prune, implied endpoint tightening, split into both
+children, or a terminal support-cut bound. Corner discharge uses a proved
+multi-affinity condition; interval discharge is independently sound.
+
+\file{UB/FiniteLattice.lean} proves the rules and their tree induction.
+\file{UB/EncodedFiniteCertificate.lean} decodes the embedded strings with
+checked tags, indices, subtrees and end-of-input; malformed data cannot be
+accepted as a completed proof. The cached and fast implementations have
+proved equality to this specification:
+\file{CachedFiniteChecker.lean}, \file{FastFiniteChecker.lean},
+\file{FastFiniteTables.lean}, \file{FastCutEval.lean},
+\file{FastReducedCornerCheck.lean}, \file{FastIndependentCorner.lean}
+and \file{IndependentCutMasks.lean}, all under \file{UB/}.
+
+\textbf{The threshold is justified, not assumed to equal $H_q$.}
+The 76 cuts have checked moment-dual witnesses in
+\file{UB/RecoveredFiniteCutSupport/}; \file{UB/FiniteCutTable.lean}
+connects them to the integer polynomials. A tree at a concrete natural bound
+$b$ proves a cut value at most $12b+6$. Every cut satisfies
+$12\min(B,W)\le\text{cut value}$, so integrality gives $\min(B,W)\le b$.
+An explicit admissible four-count witness separately proves $b\le H_q$.
+\file{UB/FiniteCertificateConsequences.lean} transports this to $t(2q)$.
+
+There are 127 checked modules, \file{UB/Generated/Finite/Q003.lean} through
+\file{Q129.lean}; each supplies acceptance, the $H_q$ witness and
+\file{upper_bound}. \file{UB/Generated/FiniteRange.lean} covers the entire
+interval. These replace the paper's finite ladder \emph{and} its exceptional
+even sweeps. \file{PeaceableQueens/SmallBoards.lean} handles $q=1,2$
+with kernel decisions. On the 4-torus, translate a queen to the origin:
+only four cells remain available to the other army, and their four triples
+exclude two armies of size three.
+
+\topic{Paper correspondence and exact limits of coverage}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{57mm}X@{}}
+\toprule
+Paper result / obligations & What the Lean statements establish \\
+\midrule
+\paperref{thm:main} (Theorem 2); S66 & Full equality for every positive even order, with all proof components supplied. \\
+\paperref{lem:lines}, \paperref{prop:lower}; S1--S15 & Exact reduction and lower bound. \file{paritySeparated_counts} applies to arbitrary row/column sets, with exact homogeneous-cell identities. \\
+\paperref{lem:Hupper}, \paperref{lem:Hlower}; S16--S20 & Exact bounds on $H_q$ and explicit \file{IsBigO}/\file{Tendsto} statements. \file{Corollaries.lean} transfers them to $t(2q)$ and states the four displayed numerical values. \\
+\paperref{def:OPT}, \paperref{thm:cert1}, \paperref{thm:cert2} & Rational feasible-point bounds. The real optimum, compactness and attainment are not formalized; actual configuration frequencies are rational. \\
+\paperref{lem:cuts}; S41 & Both individual bounds $B\le F_B$, $W\le F_W$ are exported in \file{LargeOrderFinish.lean}; the minimum bounds used by the finish are their consequences. \\
+\paperref{lem:boxops}, \paperref{lem:boxsound}, \paperref{prop:ladder}; S55--S58 & Integer-box soundness and all 127 bounds. No real-box extrema or C++ overflow theorem; Lean uses mathematical integers. \\
+\paperref{prop:small-even}; S64 & All numerical conclusions, by action trees for the five historical exceptions, rather than the paper's sweep algorithms. \\
+Odd results, lifting, plaid remark & Odd incidence/results, search reductions, divisor lifting, plaid $P$ calculations and the all-order plaid-plus-two conjecture are outside this formalization. The conjecture is also unproved in the paper. \\
+\bottomrule
+\end{tabularx}
+
+\newpage
+\topic{The smallest source set under the current imports}
+\file{lean/VERIFICATION_FILES.txt} lists every required local
+file, relative to that directory: \textbf{892 Lean sources plus 3 project
+configuration files}. This is the exact transitive
+import closure of \file{PeaceableQueens.Main}, not a claim that every imported
+declaration is used by the final proof term.
+
+\begin{tabularx}{\linewidth}{@{}Xr@{}}
+\toprule
+Required group (relative to the Lean project) & Files \\
+\midrule
+\file{PeaceableQueens/*.lean} & 8 \\
+\file{PeaceableQueens/UpperBound/*.lean} & 39 \\
+\file{PeaceableQueens/UpperBound/ScaledIntDualLeaf/*.lean} & 7 \\
+\file{PeaceableQueens/UpperBound/RecoveredFiniteCutSupport/*.lean} & 21 \\
+\file{PeaceableQueens/UpperBound/Generated/Even/*.lean} & 689 \\
+\file{PeaceableQueens/UpperBound/Generated/Finite/Q*.lean} & 127 \\
+\file{PeaceableQueens/UpperBound/Generated/FiniteRange.lean} & 1 \\
+\file{lakefile.toml}, \file{lake-manifest.json}, \file{lean-toolchain} & 3 \\
+\midrule
+Total & \textbf{895} \\
+\bottomrule
+\end{tabularx}
+
+Use the exact manifest, not the globs, when copying the proof. Install the
+pinned \file{leanprover/lean4:v4.32.2} toolchain and the external dependencies
+at the revisions in \file{lake-manifest.json} (Mathlib \file{v4.32.2}).
+The optional umbrella \file{PeaceableQueens.lean} is additionally needed
+for the project's default target; the manifest uses the explicit Main target.
+For all exported paper corollaries, \file{REVIEWER_FILES.txt} adds exactly
+\file{Values.lean}, \file{UpperBound/Asymptotics.lean} and
+\file{Corollaries.lean}: \textbf{898 files, of which 895 are Lean sources}.
+
+\topic{Reproduce the build and inspect the endpoint}
+Also retain four workflow files in \file{scripts/}:
+\file{build_project_serial.py}, \file{run_with_memory_limit.sh},
+\file{AuditUpperBound.lean}, \file{check_upper_bound_axioms.py}.
+From \file{lean/}, after installing the toolchain:
+\begingroup\footnotesize
+\begin{verbatim}
+lake exe cache get
+python3 scripts/build_project_serial.py --target PeaceableQueens.Corollaries
+scripts/run_with_memory_limit.sh lake --rehash build +PeaceableQueens.Corollaries
+scripts/run_with_memory_limit.sh lake env lean scripts/AuditUpperBound.lean \
+  > .lake/final-upper-bound-audit.log 2>&1
+python3 scripts/check_upper_bound_axioms.py .lake/final-upper-bound-audit.log
+\end{verbatim}
+\endgroup
+The resource guard uses macOS tools. For other platforms, source-manifest
+checks and copyable commands, see \file{README.md}.
+
+\topic{Trust and the public release}
+The revised endpoint audit has \textbf{3 standard axioms and 483 native
+computation axioms}: 356 large-tree batches and 127 finite acceptances.
+The two base-board proofs now use kernel decisions. Generic soundness proofs use the standard kernel
+axioms; scaled-integer dual-leaf checks use kernel \file{decide}.
+Native acceptance additionally trusts Lean's compiler/runtime and evaluated
+library implementations; see the official
+\href{https://lean-lang.org/doc/reference/latest/ValidatingProofs/}{proof-validation}
+and \href{https://lean-lang.org/doc/reference/latest/Axioms/}{axiom documentation}.
+
+Generated Lean payloads are required proof inputs. Generators and pinned
+inputs remain in the working repository; \file{.lake/} stays ignored.
+
+The public release directory \file{peaceable-queens-even-torus/} of
+\file{jphme/math-problems} contains the paper, its ancillary bundle, this
+guide and the complete Lean closure listed in \file{REVIEWER_FILES.txt}.
+Continuous integration there rebuilds every hand-written module and a sample
+of certificate modules on every change; the complete closure is too large for
+hosted runners and is verified offline as recorded in \file{VERIFICATION.md}.
+\file{lean/scripts/check_paper_values.cpp} reproduces the displayed $H$/plaid
+values and 200-order histogram. External pinned Lean/Mathlib dependencies are
+fetched separately.
+
+\end{document}

@@ -1,0 +1,6 @@
+# Each finite certificate embeds a multi-megabyte encoded string on one line.
+# Avoid allocating enormous highlighted diffs in desktop review clients.
+# The files remain ordinary Lean source; inspect raw files or regenerate with
+# lean/scripts/generate_encoded_finite.py --check. Checker/proof source stays diffable.
+peaceable-queens-even-torus/lean/PeaceableQueens/UpperBound/Generated/Finite/Q*.lean -diff linguist-generated=true
+peaceable-queens-even-torus/lean/PeaceableQueens/UpperBound/Generated/Even/*.lean linguist-generated=true

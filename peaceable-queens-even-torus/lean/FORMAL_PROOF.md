@@ -1,22 +1,51 @@
-# A formalization-ready proof of $t(2q) = H(2q)$
+# Formal proof guide for $t(2q) = H(2q)$
 
-This document rewrites the proof of the main theorem ("Theorem 1" below) of *Peaceable
-queens on even tori: an exact parity formula* (`paper/peace_even_torus.tex`, July 27
-2026; OEIS A279405) as a dependency-ordered sequence of self-contained formal statements
+This document rewrites the proof of the main theorem (`thm:main`, printed Theorem 2) of *Peaceable
+queens on even tori: an exact parity formula* (`peace_even_torus.tex`, published in the parent directory of this Lean
+project in `jphme/math-problems/peaceable-queens-even-torus`, September 6, 2026; OEIS A279405) as a dependency-ordered sequence of self-contained formal statements
 S1–S66. Paper results are cited by their stable LaTeX labels (e.g. `lem:lines`) rather
 than by printed numbers. It is the
 specification against which the companion Lean 4 / Mathlib development in this directory
 (`PeaceableQueens/`) is written, and it delimits exactly what remains beyond that
 development.
 
-Every statement carries one of four tags:
+Statement headers retain their original proof-obligation tags. Algebraic and
+certificate tags do not by themselves mean that Lean work is still missing;
+the final coverage table records current implementation status. “Theorem 1”
+in older comments means `thm:main`, not its current printed number.
+
+The [concise PDF guide](FORMAL_PROOF_GUIDE.pdf) explains
+the completed argument. [PAPER_CORRESPONDENCE.md](PAPER_CORRESPONDENCE.md) cross-references every
+numbered paper result and every statement S1–S66. The exact source set for
+the complete Lean endpoint is [VERIFICATION_FILES.txt](VERIFICATION_FILES.txt).
+
+Coverage here means that the obligation needed for the even theorem is
+discharged; it does not always mean a literal formalization of the entire
+displayed paper statement. In particular:
+
+* The even part of S22 is proved. Odd D/A incidence is outside this development.
+* S31–S39 use rational feasible points directly. Lean does not define the
+  paper's real-valued `OPT₄₂`, or prove its compactness/attainment statement.
+* S56 proves the integer-point corner bound used by the checker, not the
+  stronger real-box extremum theorem or the C++ overflow claim.
+* S64 proves the five even conclusions by action certificates, not by
+  formalizing the historical sweeps. S62, S63 and S65 are outside Lean.
+
+`paritySeparated_counts` in `LowerBound.lean` now covers arbitrary row/column sets,
+and `LargeOrderFinish` exports both individual support inequalities.
+`Corollaries` gives the quantitative asymptotic bounds, `Tendsto`/`IsBigO`
+statements and four displayed numerical consequences. Divisor lifting and
+plaid comparisons remain outside Lean. The all-order plaid-plus-two conjecture remains open
+in the paper and is not claimed by the Lean endpoint.
+The separate [exact value checker](scripts/check_paper_values.cpp) reproduces
+the paper's displayed `H`/plaid values, witnesses and 200-order histogram.
 
 | tag | meaning |
 |---|---|
 | `[LEAN]` | formalized in the companion Lean development (names given per statement) |
 | `[CERT]` | reduces to a finite certified object; the object's data and the exact per-record check a verifier must perform are specified in the statement |
 | `[ALG]` | pen-and-paper algebra over $\mathbb{Q}$ (occasionally $\sqrt3$, always reducible to integer comparisons); each step is sized to be one Lean lemma |
-| `[COMP]` | exhaustive finite search, off the even theorem's critical path except for five small even orders (which the Lean development can instead decide directly; see §11) |
+| `[COMP]` | exhaustive finite search, now off the even theorem's critical path; the five formerly dependent small even orders have Lean action certificates instead (see §11) |
 
 Numerical conventions: $n$ is the board order, $n = 2q$ throughout the even theorem;
 $\kappa = 4-2\sqrt3$, $s = \sqrt3-1$ (so $\kappa = s^2$), $\gamma = 1 - 1/\sqrt3$.
@@ -44,7 +73,7 @@ later is stated against them.
   peaceable-queens maximum. The cap $n^2$ is legitimate because any army is a set of
   cells (S5); `findGreatest` makes `t` a total function (defined with classical
   decidability; it becomes *computable* through S11). Only $n = 2q \ge 2$
-  is referred to by Theorem 1.
+  is referred to by the main theorem (`thm:main`).
 * **`H (q : ℕ) : ℕ`** — the parity formula
   $$H(q) := \max_{(r_0,r_1,c_0,c_1)\in\{0,\dots,q\}^4}
     \min\bigl(r_0c_1 + r_1c_0,\ (q-r_0)(q-c_0) + (q-r_1)(q-c_1)\bigr),$$
@@ -146,11 +175,15 @@ $$|\mathrm{blackCells}| = r_0c_1 + r_1c_0, \qquad
 and both $r-c$, $r+c$ are odd, i.e. iff $r \in R$, $c \in C$ and $r, c$ have opposite
 parities; it is white-homogeneous iff $r \notin R$, $c \notin C$ and $r + c$ is even,
 i.e. $r, c$ of equal parity. Counting by parity classes (each class has exactly $q$
-labels) gives the two products of counts.
+labels) gives the two products of counts. In Lean,
+`LowerBound.paritySeparated_counts` proves these counts for arbitrary `R,C`;
+`parityBlackCells_eq_lineCells` and `parityWhiteCells_eq_lineCells` identify
+the constructed armies with the homogeneous cells. `Parity.lean` supplies
+the shared fibre equivalence and complementary counts.
 
 **S14 (Lower bound — `H_le_t`).** `[LEAN]`
 For every $q \ge 1$: `H q ≤ t (2*q)`. From S13, S9 and S7, maximizing over the four
-counts. **This half of Theorem 1 is fully formalized for all $q$.**
+counts. **This half of the main theorem is fully formalized for all positive $q$.**
 
 **S15 (Values of $H$ — paper Table 1).** `[LEAN]`
 Machine-checked value lemmas (finite evaluation of S12), Lean `H q` for
@@ -507,6 +540,10 @@ arithmetic; (ii) the polynomial identity between $q^2\lambda^{\mathsf T}b(x)$ an
 stored coefficient list of $P$; (iii) multi-affinity (monomial support inside the 22
 pairs). The existing verifier `verify_support_duals.py` performs exactly these checks
 for all 760 cuts.
+The Lean proof checks the subset it actually consumes: all 76 finite-envelope
+cuts, plus the two large-order cuts of S41. The full 760-cut archive passes the
+independent exact verifier, but Lean acceptance of unused cuts is not required
+or claimed here.
 
 **S41 (Cuts 609 and 559 — paper `lem:cuts`).** `[CERT]`
 Certified objects: entries 609 and 559 of the S40 library (shipped byte-identically as
@@ -618,8 +655,10 @@ $Q = 2ef \le \tfrac{\delta^2}{2} \le \tfrac{9q}{400}\delta < \tfrac{43}{100}q\de
 \le \alpha\delta$ (using $\delta \le \tfrac{9}{200}q$ and S44), a contradiction. Since $g, h$ are **integer** counts, $g \ge 1$ and
 $h \ge 1$, so
 $$\zeta = g + h \ \ge\ 2.$$
-This is the only point in the entire even proof where integrality of the counts is
-used; the continuous relaxation is provably insufficient without it (it yields only
+This is the local finish's discrete gap step. Integrality is also used to
+make the switched profiles admissible witnesses for `H`, in S19's rounding,
+and throughout the finite checker; it is not used only here in the entire proof.
+At this step, the continuous relaxation is provably insufficient without it (it yields only
 $t \le 43$ at $n = 18$ and $t \le 53$ at $n = 20$, against the true $42$ and $51$).
 
 **S52 (Averaging the two cuts).** `[ALG]`
@@ -649,8 +688,7 @@ $$\Bigl(\tfrac{11}{25} - \gamma\Bigr) q \ \ge\ \tfrac94,$$
 which at $q = 130$ reads $\tfrac{130}{\sqrt3} \ge \tfrac{1501}{20}$, i.e. the integer
 comparison $6{,}760{,}000 \ge 6{,}759{,}003$; and the left side is increasing in $q$
 because $\tfrac{11}{25} - \gamma = \tfrac{1}{\sqrt3} - \tfrac{14}{25} > 0$
-(equivalently $625 \cdot 3 < 25^2 \cdot 3 \dots$ concretely: $\tfrac1{\sqrt3} >
-\tfrac{14}{25} \iff 625 > 588$).
+(equivalently $\tfrac1{\sqrt3} > \tfrac{14}{25} \iff 625 > 588$).
 
 **S55 (Large even orders — paper `thm:q130`).** `[ALG]`
 For every $q \ge 130$: $t(2q) \le H(2q)$.
@@ -703,10 +741,11 @@ $t(2q) \le H(2q)$.
 boxes without canonical profiles, so every canonical integer profile lies in a
 discharged terminal box; there, S56(iii)/(iv) (or direct evaluation for one-point
 boxes) bound the discharging cut by $H(2q) + \tfrac12$, and S39 gives
-$\min(B,W) \le H(2q) + \tfrac12$; both sides integers, so $\min(B,W) \le H(2q)$.
+$\min(B,W) \le H(2q) + \tfrac12$; since $\min(B,W)$ and $H(2q)$ are integers,
+$\min(B,W) \le H(2q)$.
 Combine with S29 (reduction to the canonical chamber) and S9/S7.
 
-**S58 (Ladder certificate: the finite object).** `[CERT]`
+**S58 (Ladder certificate: the finite object).** `[LEAN]`
 Per order $q$, the finite object a verified checker consumes is a *full discharge
 tree*: header (order $q$; recomputed $H(2q)$ per S12/S15; the scaled integer cut
 library of S40 with $s = 12$; root box $\{0,\dots,q\}^8$) and one record per node —
@@ -720,39 +759,51 @@ arithmetic; the conclusion is the hypothesis of S57.
 node counts, hashes), not node-by-node trees; in the paper, full coverage is
 re-established by deterministically rerunning the audited C++17 engine
 (`box_engine.cpp`, via `replay_finite_envelope.py`), with a separately written Python
-engine agreeing exactly for all $q \le 129$ (same algorithm, so corroborative, not
-independent). Emitting the full trees in the S58 format is the precisely delimited
-remaining work for this component; the engine's operations are exactly those proved
-sound in S56, so the tree format above is faithful to what the engine already does.
+engine agreeing exactly on the paper's 122 ladder orders (same algorithm, so corroborative, not
+independent). The companion development now supplies all 127 full action trees
+for $3\le q\le129$, embedded in the tracked `Generated/Finite/Q*.lean`
+modules under `PeaceableQueens/UpperBound/`: 13,403,719 nodes, previously
+replayed with exact Python arithmetic. The equivalent gzip files under
+`certificates/finite/` are optional, ignored regeneration intermediates. Their operations are precisely the ones
+proved sound in S56. Every generated `Q003` through `Q129` acceptance and
+upper-bound theorem has now compiled in Lean.
+The Lean implementation uses a threshold $12b+6$ and separately proves
+$b\le H(2q)$ using an explicit admissible profile witness; it does not assume
+that an external computation of the optimum is correct or need to enumerate
+the entire definition of `H q` during certificate checking.
 
-**S59 (The ladder — paper `prop:ladder`).** `[CERT]`
+**S59 (The ladder — paper `prop:ladder`).** `[LEAN]`
 For every $q \in \{3,5\} \cup \{10, 11, \dots, 129\}$ (122 orders): the cut envelope
 is at most $H(2q) + \tfrac12$ throughout the canonical integer domain, hence (S57)
 $t(2q) \le H(2q)$, hence (S14) $t(2q) = H(2q)$. Recorded statistics of the runs: all
 122 searches exhausted their stacks with no survivor, visiting 13,379,092 nodes in
 total; every discharge used one of the 76 legacy cuts; the fallback sweep of the full
 library at one-point boxes was never invoked.
+The Lean theorem `UpperBound.Generated.Finite.finite_range_bound` proves the
+upper bound for the full interval $3\le q\le129$, including the five additional
+small even orders, by 127 explicit references to the checked per-order theorems.
 
 
 ## §11 Small orders and the exhaustive searches
 
-**S60 ($t(2) = 0$ — `t_two`).** `[LEAN]`
-`t 2 = 0 = H 1`. In Lean this is decided by finite evaluation of `lineMax 2` via S11
-($(2^2)^4 = 256$ quadruples). (Paper's hand argument: any two distinct cells of the
-$2\times2$ torus share a line.)
+**S60 ($t(2) = 0$ — `PeaceableQueens.t_two` in `SmallBoards.lean`).** `[LEAN]`
+`t 2 = 0 = H 1`. Any two cells on the $2\times2$ torus share a line.
+The finite line-incidence lemma and `H 1 = 0` use kernel `decide`; a
+nonempty black and white pair would contradict the incidence lemma.
 
-**S61 ($t(4) = 2$ — `t_four`).** `[LEAN]`
-`t 4 = 2 = H 2`. Decided by finite evaluation of `lineMax 4` via S11
-($(2^4)^4 = 65{,}536$ quadruples of subsets of `ZMod 4`, each requiring a count over
-16 cells — comfortably within `native_decide`, and feasible for `decide` with a tuned
-implementation). The paper instead gives a hand proof through the incidence and triple
-identities; the Lean development replaces it by the direct decision, which is the
-route recommended for any small order. $n = 6$ ($q = 3$, $t(6) = 4$) is covered by the
-ladder (S59) in the paper; in Lean the same direct decision is possible in principle
-($2^{24} \approx 1.7\cdot10^7$ quadruples) but is **not claimed as done** — see the
-frontier table.
+**S61 ($t(4) = 2$ — `PeaceableQueens.t_four` in `SmallBoards.lean`).** `[LEAN]`
+`t 4 = 2 = H 2`. Translate a black queen to $(0,0)$ using the
+attack-preserving `BoardEquiv.translation`. The only cells available to
+white are $(1,2),(2,1),(2,3),(3,2)$. If white has at least three cells,
+choose one of their four triples. Each triple leaves at most two cells
+for black (indeed only the origin). The four-case check uses kernel
+`decide`, so three queens in both armies are impossible. S14 and the
+kernel evaluation of `H 2 = 2` give equality. This replaces the former
+65,536-colouring native decision; it does not invoke the paper's triple
+identity. The order $n=6$ is covered by `Generated.Finite.Q003`, not a
+colouring enumeration.
 
-**S62 (Triple identity — paper Lemma 7).** `[ALG]`
+**S62 (Triple identity — paper `lem:triple`).** `[ALG]`
 Choose three line families with black-set sizes $x, y, z$, and let $U, U'$ count the
 cells whose three chosen lines are all black resp. all white. Then
 $$U + U' = n^2 - n(x + y + z) + I(X,Y) + I(X,Z) + I(Y,Z),$$
@@ -777,10 +828,9 @@ q_d$). If the filter uses only necessary conditions, the fixed-pair list meets e
 orbit, every third-family set is enumerated and the completion is decided exactly,
 then all-UNSAT proves the target infeasible (paper `lem:searchsound`). These reductions are
 formalizable, but the searches themselves are large computations audited (not
-node-certified) in the release; they are *not* on the even theorem's critical path
-except through S64.
+node-certified) in the release; they are *not* on the even theorem's critical path; S64 now has a separate Lean proof.
 
-**S64 (Remaining even orders — paper `prop:small-even`, `prop:t16sweep`).** `[COMP]`
+**S64 (Remaining even orders — paper `prop:small-even`, `prop:t16sweep`).** `[LEAN]`
 $q \in \{4, 6, 7, 9\}$: the audited sweep campaigns at $n = 8, 12, 14, 18$ with
 targets $9, 19, 26, 43$ (6 / 100 / 76 / 259 jobs; 720 / 5,111,848 / 70,259,455 /
 228,644,005,008 third-family cases), all UNSAT. $q = 8$: the union-domain
@@ -788,11 +838,16 @@ verification at $n = 16$, target 33 (1,898 profiles; 159,551 fixed-pair
 representatives; 3,226,530,570 $A$-masks tested, 2,951 surviving the scalar filter;
 29,768 diagonal-cardinality cases; 38,830,322 $D$-masks), UNSAT, audit ending
 `UNION_AUDIT_OK`. Together with S14 these give $t(2q) = H(2q)$ for
-$q \in \{4,6,7,8,9\}$. **Lean alternative:** each of these five orders is also
-decidable in principle by direct evaluation of `lineMax` (S11) or by a verified
-replay of the S63 reduction; neither is claimed as done. Of the $n = 8,12,14,18$
-sweeps, only $n = 17$ and $n = 15$ (below) were decided by two independently written
-enumerators; $n = 8, 12, 14, 18$ rest on the single audited implementation
+$q \in \{4,6,7,8,9\}$. **Lean proof (2026-09-05):** all five orders now have
+compiled upper-bound theorems `Generated.Finite.Q004.upper_bound`,
+`Q006.upper_bound`, `Q007.upper_bound`, `Q008.upper_bound`, and `Q009.upper_bound`
+under `PeaceableQueens.UpperBound`. These use complete propagation-aware
+action trees with the same 76 verified cuts as S58, not the audited sweep
+results or a direct `lineMax` decision. Each closes through
+`FiniteCertificateConsequences.finite_order_bound_of_tree_at` and the proved
+`RecoveredFiniteCutSupport.cutSound`; its concrete acceptance check uses
+`native_decide`. S14 supplies the matching lower bound. Among the historical search campaigns, $n = 17$ and $n = 15$ (below) were
+decided by two independently written enumerators; $n = 8, 12, 14, 18$ rest on the single audited implementation
 `general_sweep/solver_b.cpp`.
 
 **S65 (Odd values — paper `thm:t15`, `thm:t17`; off the even critical path).** `[COMP]`
@@ -814,57 +869,66 @@ upper bounds are audited computations, not certified objects.
 
 ## §12 Assembly
 
-**S66 (Theorem 1).**
+**S66 (Main theorem — paper `thm:main`).** `[LEAN]`
 For every $q \ge 1$: $t(2q) = H(2q)$ (Lean: `t (2*q) = H q`).
 *Proof by cases on $q$, each ingredient cited once:*
 * $\ge$: S14, for all $q$. `[LEAN]`
 * $\le$, $q \ge 130$: S55 (which consumes the certified S36, S37, S41 and the algebra
-  S16–S20, S27–S33, S35, S38, S42–S54). `[ALG]`+`[CERT]`
+  S16–S20, S27–S33, S35, S38, S42–S54). `[LEAN]`
 * $\le$, $q \in \{3,5\} \cup \{10,\dots,129\}$: S59 (which consumes the certified S40
-  ladder objects and the algebra S56, S57). `[CERT]`
+  ladder objects and the algebra S56, S57). `[LEAN]`
 * $\le$, $q \in \{1, 2\}$: S60, S61. `[LEAN]`
-* $\le$, $q \in \{4,6,7,8,9\}$: S64. `[COMP]`
+* $\le$, $q \in \{4,6,7,8,9\}$: S64. `[LEAN]`
 
-The Lean `Main` module isolates the entire upper bound as the single explicit
-hypothesis `UpperBoundStatement` (`∀ q > 0, t (2*q) ≤ H q`) and proves
-`evenTorusTheorem_of_upperBound : UpperBoundStatement → EvenTorusTheorem`; the
-unconditional Lean theorems today are S14 (all $q$) and the complete instances
-$q = 1, 2$.
+The Lean `Main` module now proves the unconditional endpoints
+`PeaceableQueens.upperBoundStatement : UpperBoundStatement` and
+`PeaceableQueens.evenTorusTheorem : EvenTorusTheorem`.
+These unfold to `∀ q > 0, t (2*q) ≤ H q` and `∀ q > 0, t (2*q) = H q`.
+The original `evenTorusTheorem_of_upperBound` remains a compatibility lemma in
+`TheoremStatement.lean`. No certificate or upper-bound hypothesis remains in
+the public endpoints.
 
 
 ## Formalization frontier
 
-The companion Lean development (Lean 4, Mathlib v4.32.2 toolchain, modules
-`PeaceableQueens/{Defs, LineColouring, LowerBound, Values, Main}`) fully proves the
-definitional layer, the line-colouring equivalence, the lower bound $H(2q) \le t(2q)$
-for **all** $q$, the Table-1 values of $H$, and the complete instances
-$t(2) = H(2)$, $t(4) = H(4)$. Everything else in the upper bound reduces to (a) the
-`[ALG]` statements — ordinary lemma-sized algebra with no new ideas, including every
-$\sqrt3$ comparison as an explicit integer comparison — and (b) exactly **three
-certified finite objects** plus their two soundness lemmas: the two branch trees
-(S36, S37, checked per S34 against S33), the support-cut library entries 609/559
-(S40, S41, checked per S39), and the per-order ladder trees (S58, S59, checked per
-S56/S57 — the one component whose full node-by-node records still need to be emitted
-by the existing engine; everything else about it is already specified). The five
-`[COMP]` orders $q \in \{4,6,7,8,9\}$ can be removed from the trusted base either by
-verified replay of S63 or, more simply, by direct `lineMax` decisions as in S60/S61.
+Verified September 6, 2026 (Lean/Mathlib v4.32.2): all 895 local modules in
+the corollary closure passed serial verification, and the final rehash build
+passed all 3,893 jobs. Both endpoint reports contain exactly **3 standard
+axioms and 483 native computations**, with zero unexpected entries
+(356 branch batches and 127 finite cases). The initial release had 485
+native axioms; both base boards now use kernel proofs. Six diagnostic scripts
+also passed, and the source scan found no proof holes or unsafe implementations.
+The exact validation record is in `VERIFICATION.md`.
+
+The tags above identify proof obligations; they do not declare unfinished
+work. Concrete acceptance additionally trusts the native evaluator/compiler.
+`PAPER_CORRESPONDENCE.md` maps every numbered paper result and explains all domain
+specializations. `REVIEWER_FILES.txt` and `REVIEWER_GUIDE.md` describe the
+standalone package for checking the main theorem and its exported corollaries.
+Finite cases `q=3..9` use the cached checker; `q=10..129` use the fast checker.
+`FastFiniteChecker.acceptedFast_eq` proves their equality for every input.
+The review moved `Q124` to that fast interface while retaining its exact
+encoded certificate and threshold.
 
 | statements | tag | status today |
 |---|---|---|
 | S1–S15 | `[LEAN]` | proved in the companion development (defs, S9 `hasPeaceable_iff_lineSets`, S11 `t_eq_lineMax`, S14 `H_le_t`, S15 `H` value lemmas) |
-| S60, S61 | `[LEAN]` | proved (`t_two`, `t_four`); $t(6)$ by the same `lineMax` decision is feasible but not claimed |
-| S16–S20 | `[ALG]` | pen-and-paper; not yet in Lean |
-| S21–S33, S35, S38 | `[ALG]` | pen-and-paper; not yet in Lean (S31/S32 replace the paper's $\mathrm{OPT}_{42}$, avoiding compactness) |
-| S36, S37 | `[CERT]` | certified objects released (`even_c527_sym_mc.json.gz`, `even_local_core_mc.json.gz`), doubly checked in Python; Lean verified checker per S34 not yet written |
-| S39–S41 | `[ALG]`/`[CERT]` | cut library released and doubly checked; Lean checker per S40 not yet written |
-| S42–S55 | `[ALG]` | pen-and-paper; not yet in Lean; sole integrality use is S51 |
-| S56, S57 | `[ALG]` | pen-and-paper; not yet in Lean |
-| S58, S59 | `[CERT]` | engine + summaries + deterministic replay released; full node-by-node trees in the S58 format not yet emitted — the only data-side gap |
+| S60, S61 | `[LEAN]` | `SmallBoards.t_two`, `t_four`: kernel decisions and the translated four-triple argument; $t(6)$ uses its action certificate |
+| S16–S20 | `[LEAN]` | `ProfileAlgebra` bounds; `UpperBound.Asymptotics` and `Corollaries` additionally export the asymptotic statements and even density limit |
+| S21–S33, S35, S38 | `[LEAN]` | even incidence and rational configuration-level versions; configuration/incidence/moment modules, `Symmetry.exists_chamber`, `ConfigurationBridge.configurationLPVector_leafFeasible`, dual and branch soundness, and localization interfaces |
+| S34, S36, S37 | `[LEAN]` | all 11,352 nodes in both complete Core/C527 trees are checked; both generated `checked_tree` theorems compile |
+| S39, S41; used subset of S40 | `[LEAN]` | weighted support inequality, individual `cut609_configuration_black` / `cut559_configuration_white`, their minimum consequences, and all 76 used finite cuts; unused library entries retain only the independent exact audit |
+| S42–S54 | `[LEAN]` | `LargeOrderConfiguration`, `LargeOrderAlgebra`, `LargeOrderFinish.configuration_finish`; the S51 integrality step is included |
+| S55 | `[LEAN]` | `LargeOrderCertified.large_order_bound` compiles without a certificate hypothesis and proves the upper bound for every q≥130 |
+| S56, S57 | `[LEAN]` | integer-point box soundness and exact scaling (not the C++ overflow assertion); `FiniteLattice.validateCompleteBool_sound` and `FiniteCertificateConsequences.finite_order_bound_of_tree_at`, with the compact decoder soundness bridge |
+| S58, S59 | `[LEAN]` | all 127 complete trees are independently replayed and accepted in Lean (13,403,719 nodes); `Generated.Finite.finite_range_bound` proves the complete interval |
 | S62 | `[ALG]` | pen-and-paper; only feeds `[COMP]` |
-| S63–S65 | `[COMP]` | audited searches; off the critical path for even orders except S64, which is replaceable by direct decisions |
-| S66 | — | assembles the above; unconditional in Lean today exactly for the S14 inequality and $q \in \{1,2\}$ |
+| S63, S65 | `[COMP]` | audited searches, now off the even theorem's critical path |
+| S64 | `[LEAN]` | the five generated upper-bound theorems listed above, plus S14 |
+| S66 | `[LEAN]` | `PeaceableQueens.upperBoundStatement` and `PeaceableQueens.evenTorusTheorem` in `Main.lean` compile without certificate hypotheses; full build and endpoint axiom audit pass |
 
-Sources of record: `paper/peace_even_torus.tex` (Sections 2–6, Appendix A) and the
+Sources of record: `peace_even_torus.tex` (Sections 2–7, Appendix A; the parent
+directory of this project in the public release) and the
 ancillary archive bound by `SHA256SUMS`, public immutable snapshot at
 `github.com/jphme/math-problems`, directory `peaceable-queens-even-torus/anc/`
 (one-command replay: `uv run --isolated --python 3.14.6 --with sympy==1.14.0 --with

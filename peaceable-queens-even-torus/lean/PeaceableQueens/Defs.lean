@@ -1,4 +1,9 @@
-import Mathlib
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.Nat.Find
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Finset.Lattice.Fold
+import Mathlib.Data.Fintype.Prod
+import Mathlib.Tactic
 
 /-!
 # Peaceable queens on the `n × n` torus — basic definitions
@@ -6,9 +11,11 @@ import Mathlib
 This file defines the toroidal peaceable-queens problem (OEIS A279405) and the
 even-order value function `H` of the paper
 
-  *Peaceable queens on even toroidal boards* (`paper/peace_even_torus.tex`),
+  *Peaceable queens on even tori: an exact parity formula*
+  (`peace_even_torus.tex`, published together with this Lean project at
+  https://github.com/jphme/math-problems/tree/main/peaceable-queens-even-torus),
 
-whose Theorem 1 states `t (2*q) = H q` for every `q ≥ 1` (in the paper's
+whose main theorem (`thm:main`) states `t (2*q) = H q` for every `q ≥ 1` (in the paper's
 notation, `t(2q) = H(2q)`).
 
 * `Cell n` — a board cell, a pair of coordinates in `ZMod n`.
@@ -23,7 +30,7 @@ notation, `t(2q) = H(2q)`).
 * `H q` — the parity-profile optimum `H(2q)` of Definition 1 of the paper.
   Natural subtraction is harmless there because all profile entries are `≤ q`.
 * `blackCells`/`whiteCells`/`lineMax` — the line-colouring reformulation used
-  by `PeaceableQueens.LineColouring` (Lemma 2 of the paper).
+  by `PeaceableQueens.LineColouring` (Lemma `lem:lines` of the paper).
 -/
 
 namespace PeaceableQueens
@@ -159,7 +166,7 @@ theorem H_le {q b : ℕ}
   simp only [Finset.mem_product, Finset.mem_range] at hx
   exact h r0 r1 c0 c1 (by omega) (by omega) (by omega) (by omega)
 
-/-! ## The line-colouring reformulation (Lemma 2 of the paper) -/
+/-! ## The line-colouring reformulation (Lemma `lem:lines` of the paper) -/
 
 section LineSets
 

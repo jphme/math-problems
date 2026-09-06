@@ -3,9 +3,10 @@ import PeaceableQueens.Defs
 /-!
 # The line-colouring equivalence
 
-This file proves Lemma 2 (`lem:lines`, "Line-colouring equivalence") of the
-paper *Peaceable queens on even toroidal boards*
-(`paper/peace_even_torus.tex`): a peaceable placement of `m` black and `m`
+This file proves Lemma `lem:lines` (`lem:lines`, "Line-colouring equivalence") of the
+paper *Peaceable queens on even tori: an exact parity formula*
+(`peace_even_torus.tex`, published together with this Lean project at
+https://github.com/jphme/math-problems/tree/main/peaceable-queens-even-torus): a peaceable placement of `m` black and `m`
 white queens on the `n × n` torus exists **iff** there are line sets
 `R, C, D, A ⊆ ZMod n` (black rows, columns, diagonals, antidiagonals) with
 `m ≤ |Bl(R,C,D,A)|` and `m ≤ |Wh(R,C,D,A)|`.
@@ -13,8 +14,8 @@ white queens on the `n × n` torus exists **iff** there are line sets
 * `hasPeaceable_iff_lineSets` — the equivalence itself.
 * `t_eq_lineMax` — the consequence `t n = max_{R,C,D,A} min (|Bl|, |Wh|)`
   stated in the paper right after the lemma ("the queens have disappeared");
-  this makes `t` computable by finite enumeration, which
-  `PeaceableQueens.Values` exploits for `n = 2, 4`.
+  this makes `t` computable by finite enumeration. The small-board endpoint
+  uses the smaller kernel proofs in `PeaceableQueens.SmallBoards`.
 -/
 
 namespace PeaceableQueens
@@ -48,7 +49,7 @@ theorem isPeaceable_blackCells_whiteCells (R C D A : Finset (ZMod n)) :
   · exact hw.2.2.1 (h ▸ hb.2.2.1)
   · exact hw.2.2.2 (h ▸ hb.2.2.2)
 
-/-- **Line-colouring equivalence** (Lemma 2 of the paper).  A peaceable
+/-- **Line-colouring equivalence** (Lemma `lem:lines` of the paper).  A peaceable
 placement of `m` black and `m` white queens exists iff some choice of black
 line sets `R, C, D, A` yields at least `m` all-black cells and at least `m`
 all-white cells.
