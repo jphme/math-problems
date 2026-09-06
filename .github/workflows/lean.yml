@@ -1,5 +1,22 @@
 name: Lean
 
+# Peaceable queens (peaceable-queens-even-torus/lean): the complete proof
+# closure has 895 Lean modules, 816 of them generated certificate modules
+# (13.4 million finite action nodes and 11,352 branch-tree nodes). Building
+# it takes hours with a 7.35 GiB peak under a serial driver, which exceeds
+# hosted-runner budgets. This workflow therefore checks a defined subset:
+#   * every hand-written module of the development (all soundness proofs,
+#     the moment model, the chamber normalization, the support cuts, the
+#     large-order algebra, the finite-lattice checker with its fast/cached
+#     equivalence, the lower bound, the small boards and the analytic
+#     corollaries), and
+#   * a sample of generated certificate modules (the two smallest finite
+#     action trees Q003 and Q004, and one scaled-integer dual-leaf batch of
+#     the global branch tree).
+# The complete closure, the final rehash build and the endpoint axiom audit
+# are verified offline; the record is
+# peaceable-queens-even-torus/lean/VERIFICATION.md.
+
 on:
   push:
     paths:
@@ -27,17 +44,36 @@ concurrency:
 
 jobs:
   peaceable-queens-even-torus:
-    name: peaceable-queens-even-torus / lean
+    name: peaceable-queens-even-torus / lean (hand-written modules + certificate sample)
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build the Lean development
+      - name: Check the source manifests against the import closure
+        working-directory: peaceable-queens-even-torus/lean
+        run: |
+          python3 scripts/verification_manifest.py --check
+          python3 scripts/verification_manifest.py --check --target PeaceableQueens.Corollaries --output COROLLARIES_FILES.txt
+
+      - name: Build the hand-written modules and a certificate sample
         uses: leanprover/lean-action@v1
         with:
           lake-package-directory: peaceable-queens-even-torus/lean
           use-mathlib-cache: true
+          build-args: >-
+            +PeaceableQueens.UpperBound.LargeOrderFinish
+            +PeaceableQueens.UpperBound.FiniteCertificateConsequences
+            +PeaceableQueens.UpperBound.EncodedFiniteCertificate
+            +PeaceableQueens.UpperBound.FastFiniteChecker
+            +PeaceableQueens.UpperBound.RecoveredFiniteCutSupport.Aggregate
+            +PeaceableQueens.UpperBound.BranchCertificate
+            +PeaceableQueens.UpperBound.Asymptotics
+            +PeaceableQueens.SmallBoards
+            +PeaceableQueens.Values
+            +PeaceableQueens.UpperBound.Generated.Finite.Q003
+            +PeaceableQueens.UpperBound.Generated.Finite.Q004
+            +PeaceableQueens.UpperBound.Generated.Even.C527Scaled00Check
 
       - name: Assert the sources contain no sorry
         working-directory: peaceable-queens-even-torus/lean

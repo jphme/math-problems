@@ -1,0 +1,10 @@
+REHASH START 17:10:49
+REHASH EXIT=0 17:10:56
+✔ [3892/3893] Built PeaceableQueens (3.1s)
+Build completed successfully (3893 jobs).
+MEMORY_LIMIT_OK peak_rss_kib=4177104 limit_kib=12582912
+AUDIT START 17:10:56
+AUDIT EXIT=0 17:10:59
+AXIOM_AUDIT_OK theorem=PeaceableQueens.upperBoundStatement standard=3 native=483 unexpected=0
+AXIOM_AUDIT_OK theorem=PeaceableQueens.evenTorusTheorem standard=3 native=483 unexpected=0
+CHECK EXIT=0

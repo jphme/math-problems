@@ -1,31 +1,18 @@
-import PeaceableQueens.LineColouring
+import PeaceableQueens.SmallBoards
 
 /-!
-# Machine-checked values
+# Optional exact value table
 
-This file verifies, by compiled evaluation (`native_decide`):
-
-* the values `H 1, …, H 20` of the paper's value function (Table 1 of
-  *Peaceable queens on even toroidal boards*, `paper/peace_even_torus.tex`;
-  `H q` here is the paper's `H(2q)`), and
-* complete unconditional instances of Theorem 1, `t (2*q) = H q`, for the
-  smallest boards: `t 2 = H 1` and `t 4 = H 2`.  Both bounds are included:
-  via `t_eq_lineMax` the value `t n` equals the computable `lineMax n`,
-  which enumerates all `2^(4n)` line colourings.
-
-The trusted base is documented by the `#print axioms` commands at the end
-(`native_decide` adds `Lean.ofReduceBool` to the usual axioms).
+`H q` is the paper's `H(2q)`, Table `tab:Hvals`. This module checks the
+entries through order 40 with native computation. The kernel proofs for
+`H 1`, `H 2`, `t 2` and `t 4` are in `SmallBoards.lean`. The main endpoint
+imports only that smaller module, so the optional table is outside its
+source closure and trusted base.
 -/
 
 namespace PeaceableQueens
 
 /-! ## Values of `H` (paper Table 1: `H q` is the paper's `H(2q)`) -/
-
-/-- `H(2) = 0`. -/
-theorem H_one : H 1 = 0 := by native_decide
-
-/-- `H(4) = 2`. -/
-theorem H_two : H 2 = 2 := by native_decide
 
 /-- `H(6) = 4`. -/
 theorem H_three : H 3 = 4 := by native_decide
@@ -80,23 +67,6 @@ theorem H_nineteen : H 19 = 190 := by native_decide
 
 /-- `H(40) = 210`. -/
 theorem H_twenty : H 20 = 210 := by native_decide
-
-/-! ## Unconditional instances of Theorem 1
-
-Via `t_eq_lineMax`, the noncomputable `t n` equals the computable
-`lineMax n`, so small instances of `t (2*q) = H q` — including the upper
-bound — reduce to a finite enumeration of all line colourings. -/
-
-/-- Theorem 1 for `q = 1`: `t 2 = H 1` (both sides are `0`). -/
-theorem t_two : t 2 = H 1 := by
-  rw [t_eq_lineMax]
-  native_decide
-
-/-- Theorem 1 for `q = 2`: `t 4 = H 2` (both sides are `2`).  The
-enumeration covers all `2^16` line colourings of the `4 × 4` torus. -/
-theorem t_four : t 4 = H 2 := by
-  rw [t_eq_lineMax]
-  native_decide
 
 /-! ## Trusted base
 

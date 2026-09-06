@@ -1,12 +1,10 @@
-import PeaceableQueens.Defs
-import PeaceableQueens.LowerBound
-import PeaceableQueens.LineColouring
-import PeaceableQueens.Values
+import PeaceableQueens.UpperBound.Assembly
+import PeaceableQueens.UpperBound.Generated.FiniteRange
 
 /-!
-# The even-torus theorem: statement and formalized part
+# The even-torus theorem
 
-Theorem 1 of the paper states `t (2*q) = H q` for every `q ≥ 1` (in the
+The main theorem (`thm:main`) of the paper states `t (2*q) = H q` for every `q ≥ 1` (in the
 paper's notation, `t(2q) = H(2q)`).  Its proof splits into
 
 * the **lower bound** `H q ≤ t (2*q)` — the parity-separated construction,
@@ -14,28 +12,27 @@ paper's notation, `t(2q) = H(2q)`).  Its proof splits into
 * the **upper bound** `t (2*q) ≤ H q` — proved in the paper by an exact
   moment relaxation, two rational branch certificates, an algebraic finish
   for `q ≥ 130` and an exact finite computation for `q ≤ 129`.  This half is
-  *not* formalized; `FORMAL_PROOF.md` specifies it as precise finite
-  statements suitable for a verified-checker formalization.
+  assembled here from the checked finite and large-order certificates.
 
-`evenTorusTheorem_of_upperBound` isolates the exact missing statement: the
-theorem follows from this development once the upper bound is provided.
-`PeaceableQueens.Values` proves unconditional small instances of Theorem 1,
-upper bound included, by exhaustive decision over the line-colouring space.
+`evenTorusTheorem_of_upperBound` remains available as a compatibility lemma.
+`PeaceableQueens.SmallBoards` proves the two base cases with a translated
+small-board argument and kernel decisions. The optional table and named
+consequences live in `Values` and `Corollaries`.
 -/
 
 namespace PeaceableQueens
 
-/-- Theorem 1 of the paper: `t(2q) = H(2q)` for every positive `q`. -/
-def EvenTorusTheorem : Prop := ∀ q : ℕ, 0 < q → t (2 * q) = H q
+/-- The certificate-backed upper bound for every positive even order. -/
+theorem upperBoundStatement : UpperBoundStatement :=
+  UpperBound.Assembly.upperBoundStatement_of_finite
+    UpperBound.Generated.Finite.finite_range_bound
 
-/-- The upper bound `t(2q) ≤ H(2q)` — established in the paper by exact
-certificates and computation (Sections 3–6), not formalized here. -/
-def UpperBoundStatement : Prop := ∀ q : ℕ, 0 < q → t (2 * q) ≤ H q
-
-/-- The even-torus theorem follows from this formalization together with the
-upper bound: the lower bound `H_le_t` is proved here for every `q`. -/
-theorem evenTorusTheorem_of_upperBound (upper : UpperBoundStatement) :
+/-- The parity-separated construction is optimal for every positive even order. -/
+theorem evenTorusTheorem :
     EvenTorusTheorem :=
-  fun q hq => le_antisymm (upper q hq) (H_le_t q hq)
+  evenTorusTheorem_of_upperBound upperBoundStatement
 
 end PeaceableQueens
+
+#print axioms PeaceableQueens.upperBoundStatement
+#print axioms PeaceableQueens.evenTorusTheorem

@@ -1,1 +1,10 @@
 .lake/
+
+# Redundant search/emitter output; complete proof data is embedded in Q*.lean.
+/certificates/finite/q*.json.gz
+
+# Typesetting intermediates for the companion guide.
+/FORMAL_PROOF_GUIDE.aux
+/FORMAL_PROOF_GUIDE.log
+/FORMAL_PROOF_GUIDE.out
+/FORMAL_PROOF_GUIDE.synctex.gz
