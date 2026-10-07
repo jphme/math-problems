@@ -1,0 +1,511 @@
+\documentclass[11pt]{article}
+\ifdefined\XeTeXrevision\else\ifdefined\pdfoutput\pdfoutput=1\fi\fi
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{xcolor}
+\definecolor{linkblue}{RGB}{25,60,120}
+\usepackage[colorlinks=true,linkcolor=linkblue,citecolor=linkblue,urlcolor=linkblue]{hyperref}
+\hypersetup{
+  pdftitle={Achievement numbers of four small polyominoes},
+  pdfauthor={Jan Philipp Harries},
+  pdfsubject={Polyomino achievement games},
+  pdfkeywords={polyomino achievement game, Harary's generalized tic-tac-toe, Maker-Breaker game, board number, move number, computer-assisted proof, certificate, OEIS A380597, OEIS A380598}
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\bweak}{b^{\mathrm w}}
+\newcommand{\mweak}{m^{\mathrm w}}
+\newcommand{\bstr}{b^{\mathrm s}}
+\newcommand{\mstr}{m^{\mathrm s}}
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\Pl}{\mathcal{P}}
+
+% one polyomino drawn from a list of cells (x,y), y upwards
+\newcommand{\poly}[1]{%
+  \begin{tikzpicture}[scale=0.32,baseline=0]
+    \foreach \x/\y in {#1} {\filldraw[fill=gray!35,draw=black] (\x,\y) rectangle ++(1,1);}
+  \end{tikzpicture}}
+
+\title{Achievement numbers of four small polyominoes}
+\author{Jan Philipp Harries\thanks{ellamind GmbH, Bremen, Germany. \textit{E-mail address:} \href{mailto:jan@ellamind.com}{jan@ellamind.com}}}
+\date{October 7, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In Harary's achievement game for a polyomino $P$ two players alternately claim cells of an
+$n\times n$ board, and the first player tries to own a congruent copy of $P$. Gardner's tables give,
+for each polyomino that the first player can achieve, a board number $b$ (the side of the smallest
+square board on which the first player wins) and a move number $m$ (the number of the first
+player's moves needed there); OEIS A380597 and A380598 reproduce the values of Gardner's 2001 book.
+For the I-tetromino and the L-, Y- and N-pentominoes we determine $(b,m)$ in the Maker--Breaker
+(weak) game as $(6,6)$, $(6,7)$, $(6,6)$ and $(5,6)$. In the strong game, in which a player who
+completes a copy first wins, we obtain $(6,6)$ for the Y-pentomino and $(5,6)$ for the
+N-pentomino; for the I-tetromino and the L-pentomino we show $b\in\{6,7\}$ and that the first
+player wins on $7\times 7$ within $7$ and $9$ moves. Hence the tabulated pairs $(7,9)$ for the
+Y-pentomino and the board number $6$ for the N-pentomino are wrong in both games, and for the
+I-tetromino $(7,8)$ and the L-pentomino $(7,10)$ at least one value of each pair is wrong in the
+strong game and both are wrong in the weak game. Every statement is proved by an explicit strategy
+that a short program checks exhaustively; the strategies and programs are in the ancillary files.
+\end{abstract}
+
+\section{Introduction}
+
+Harary's generalization of tic-tac-toe, popularized by Gardner in 1979~\cite{Gar79}, fixes a
+polyomino (an ``animal'') $P$ and a square board. Two players alternately claim free cells, and a
+player who owns all cells of a copy of $P$---rotations and reflections allowed---wins. By strategy
+stealing the second player cannot win with correct play, so the game is a first-player win or a
+draw. Gardner describes this \emph{strong} game: the first player to complete the animal wins, and
+for a polyomino that cannot be achieved the second player ``can always force a draw''
+\cite[p.~497]{Gar01}. Later work, for example~\cite{HSP07,Sie04}, studies the \emph{weak} or Maker--Breaker version, in
+which the second player only blocks.
+
+For every polyomino that the first player can achieve, Gardner tabulates the \emph{board number}
+$b$, the side of the smallest square board on which the first player can force a win, and the
+\emph{move number} $m$, the number of the first player's moves needed to win on that board. The
+tables in Gardner's 1992 and 2001 books~\cite{Gar92,Gar01} (in~\cite{Gar01}: chapter~37,
+Figures~37.2 and~37.3) give no proofs, and Gardner invites the reader to prove the
+values~\cite[p.~497]{Gar01}. They differ in several entries from the 1979 column as quoted
+in~\cite{Wiki}, whose table had already been questioned in~\cite{Tho96}. \emph{Winning Ways}~\cite{BCG82}
+apparently tabulates a different pair, the least number of moves on an unbounded board and the least
+board on which that number suffices~\cite{Tho96}; we do not compare with it.
+The OEIS entries A380597 and A380598~\cite{OEIS597,OEIS598}, by P.~von Br\"omssen (2025), list $b$
+and $m$ for the free polyominoes in the order of A246521~\cite{OEIS521}; for every polyomino that
+the first player can achieve they agree with Gardner's 2001 tables. Neither entry says which game
+is meant.
+
+This note settles the board and move numbers of four of these polyominoes in the weak game, and of
+two of them in the strong game (Section~\ref{sec:results}). The other entries of size at most five
+agree with the tables in the weak game (Remark~\ref{rem:small}). The proofs are finite: each
+statement is reduced to an explicit strategy for one of the players, written as a certificate file
+and checked exhaustively by programs that share no code with the search that found it
+(Section~\ref{sec:method}).
+
+\begin{figure}[ht]
+\centering
+\begin{tabular}{ccccc}
+\poly{0/0,1/0,2/0,3/0} &
+\poly{0/0,1/0,2/0,3/0,0/1} &
+\poly{0/0,1/0,2/0,3/0,1/1} &
+\poly{0/1,1/1,1/0,2/0,3/0} &
+\poly{0/0,1/0,2/0,3/0,3/1,4/1}\\[2pt]
+I-tetromino ($I_4$) & L-pentomino ($L_5$) & Y-pentomino ($Y_5$) & N-pentomino ($N_5$) & Snaky\\
+$n=9$ & $n=13$ & $n=14$ & $n=15$ & $n=45$
+\end{tabular}
+\caption{The polyominoes of this note and their indices $n$ in A380597/A380598 (the polyomino with
+code A246521$(n+1)$).}
+\label{fig:shapes}
+\end{figure}
+
+\section{Games, board numbers and move numbers}\label{sec:defs}
+
+Let $[n]=\{0,\dots,n-1\}$ and $B_n=[n]^2$. A \emph{placement} of a polyomino $P\subset\mathbb Z^2$
+on $B_n$ is a set $g(P)\subseteq B_n$, where $g$ is one of the eight symmetries of the square
+lattice followed by a translation; $\Pl_n(P)$ is the set of placements. Two players, $X$ (first)
+and $O$, alternately claim free cells of $B_n$, starting with $X$.
+
+\begin{definition}
+In the \emph{weak game} $X$ (Maker) wins as soon as he owns a placement; $O$ (Breaker) wins if this
+never happens. In the \emph{strong game} a player who owns a placement before the other does wins;
+if the board fills first, the game is a draw. For $d\ge 1$, \emph{$X$ wins within $d$ moves} if $X$
+has a strategy such that against every play of $O$ he owns a placement after at most $d$ of his own
+moves (in the strong game: and $O$ owns no placement before that moment). The \emph{board number}
+$\bweak(P)$ is the least $n$ such that $X$ wins the weak game on $B_n$ within some $d$, and the
+\emph{move number} $\mweak(P)$ is the least $d$ such that $X$ wins the weak game on $B_{\bweak(P)}$ within
+$d$ moves. $\bstr(P)$ and $\mstr(P)$ are defined in the same way with the strong game.
+\end{definition}
+
+This is the convention of Gardner's tables: for the I-tromino the board number is $4$ and the move
+number $3$~\cite[p.~494]{Gar01}. The following two facts are standard; we include proofs because
+the lower bounds below rest on them.
+
+\begin{lemma}\label{lem:weakstrong}
+Fix $P$, $n$ and $d$.
+\begin{enumerate}
+\item[(a)] If $O$ has a strategy in the weak game on $B_n$ against which $X$ owns no placement after
+any of his first $d$ moves, then $X$ does not win the strong game on $B_n$ within $d$ moves.
+\item[(b)] If $X$ wins the strong game on $B_n$ within $d$ moves, he wins the weak game on $B_n$
+within $d$ moves.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) In the strong game $O$ follows the blocking strategy. As long as the strong game goes on, the
+positions are positions of the weak game under that strategy, so $X$ owns no placement after any of
+his first $d$ moves; if the strong game stops earlier, it stops with a draw or a win for $O$.
+(b) $X$ uses the same strategy. Until $X$ completes a placement the two games pass through the same
+positions, and the strong strategy completes one within $d$ moves.
+\end{proof}
+
+\begin{lemma}\label{lem:monotone}
+If $k\le n$ and $X$ wins the weak game on $B_k$ within $d$ moves, then $X$ wins the weak game on
+$B_n$ within $d$ moves. Consequently a blocking strategy for $O$ against $d$ moves (or against any
+number of moves) on $B_n$ yields one on every $B_k$ with $k\le n$, since finite games of perfect information are
+determined.
+\end{lemma}
+
+\begin{proof}
+Let $\sigma$ be the winning strategy on $B_k\subseteq B_n$. $X$ plays $\sigma$ in an imagined game on
+$B_k$ in which $X$ owns the same cells as in reality and $O$ owns a superset of $O$'s real cells in
+$B_k$. A real move of $O$ on a cell of $B_k$ that is free in the imagined game is also $O$'s
+imagined move; any other move of $O$ is replaced in the imagined game by a move on an arbitrary
+free cell of $B_k$. Such a cell exists as long as $X$ has not won, since $\sigma$ wins before the
+imagined board is full. Every move of $\sigma$ is free in the imagined game and therefore in
+reality, and every placement on $B_k$ is a placement on $B_n$, so $X$ completes one within $d$
+moves.
+\end{proof}
+
+Lemma~\ref{lem:weakstrong} gives $\bweak\le\bstr$, and $\mweak\le\mstr$ when $\bweak=\bstr$. Lemmas
+\ref{lem:weakstrong}(a) and~\ref{lem:monotone} turn one blocking strategy on $B_{b-1}$ into the
+lower bound $b$ on the board number in both games.
+
+\section{Results}\label{sec:results}
+
+\emph{Proved} below means that the statement follows from Lemmas~\ref{lem:weakstrong}
+and~\ref{lem:monotone} and from certificates listed in Table~\ref{tab:evidence}, each accepted by the two
+checkers named there (Section~\ref{sec:method}). \emph{Computed} means a verdict of a search
+program for which no certificate exists.
+
+\begin{theorem}[weak game]\label{thm:weak}
+$(\bweak,\mweak)$ equals $(6,6)$ for $I_4$, $(6,7)$ for $L_5$, $(6,6)$ for $Y_5$ and $(5,6)$ for $N_5$.
+\end{theorem}
+
+\begin{theorem}[strong game]\label{thm:strong}
+$(\bstr,\mstr)$ equals $(6,6)$ for $Y_5$ and $(5,6)$ for $N_5$. For $I_4$ and for $L_5$ we have
+$\bstr\in\{6,7\}$, and $X$ wins the strong game on $B_7$ within $7$ moves ($I_4$) and within $9$ moves
+($L_5$).
+\end{theorem}
+
+\begin{proof}[Proof of Theorems~\ref{thm:weak} and~\ref{thm:strong}]
+Take $I_4$ in the weak game. The Breaker certificate for the full game on $B_5$ and
+Lemma~\ref{lem:monotone} give $\bweak\ge 6$; the Maker certificate on $B_6$ with budget $6$ gives
+$\bweak\le 6$ and $\mweak\le 6$; the Breaker certificate against $5$ moves on $B_6$ gives $\mweak\ge 6$. The
+other shapes are the same with the files of Table~\ref{tab:evidence}. In the strong game the two
+Breaker certificates of a shape give, by Lemma~\ref{lem:weakstrong}(a), $\bstr\ge\bweak$ and, for $Y_5$
+and $N_5$, that $X$ does not win on $B_{\bweak}$ within $\mweak-1$ moves; the strong strategies give the
+matching upper bounds. For $I_4$ and $L_5$ the strong strategies on $B_7$ give $\bstr\le 7$.
+\end{proof}
+
+The smallest certificate is a single pairing: on $B_4$, cells $(x,y)$, the six pairs
+$\{(x,0),(x,1)\}$ for $x\in[4]$ and $\{(0,2),(1,2)\}$, $\{(2,2),(3,2)\}$ meet every placement of $N_5$
+in a full pair, so $O$, answering each move of $X$ on a paired cell with its partner, prevents $N_5$
+on $B_4$ (and, by Lemma~\ref{lem:monotone}, on smaller boards).
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}lllrll@{}}
+\toprule
+shape & statement & file in \file{anc/certs/} & size & checked by\\
+\midrule
+$I_4$ & $O$ blocks on $B_5$ & \file{n9\_b5\_full} & 10{,}130 & A, B\\
+      & $X$ wins weak game on $B_6$ within 6 & \file{n9\_b6\_moves} & 2{,}615 & A, R\\
+      & $O$ blocks 5 moves on $B_6$ & \file{n9\_b6\_lt6} & 2{,}227 & A, B\\
+      & $X$ wins strong game on $B_7$ within 7 & \file{strong\_n9\_b7\_d7} & 333{,}113 & S, T\\
+$L_5$ & $O$ blocks on $B_5$ & \file{n13\_b5\_full} & 321 & A, B\\
+      & $X$ wins weak game on $B_6$ within 7 & \file{n13\_b6\_moves} & 11{,}075 & A, R\\
+      & $O$ blocks 6 moves on $B_6$ & \file{n13\_b6\_lt7} & 981 & A, B\\
+      & $X$ wins strong game on $B_7$ within 9 & \file{strong\_n13\_b7\_d9} & 948{,}483 & S, T\\
+$Y_5$ & $O$ blocks on $B_5$ & \file{n14\_b5\_full} & 293 & A, B\\
+      & $X$ wins weak game on $B_6$ within 6 & \file{n14\_b6\_moves} & 3{,}913 & A, R\\
+      & $O$ blocks 5 moves on $B_6$ & \file{n14\_b6\_lt6} & 213 & A, B\\
+      & $X$ wins strong game on $B_6$ within 6 & \file{strong\_n14\_b6\_d6} & 1{,}023{,}521 & S, T\\
+$N_5$ & $O$ blocks on $B_4$ & \file{n15\_b4\_full} & 1 & A, B\\
+      & $X$ wins weak game on $B_5$ within 6 & \file{n15\_b5\_moves} & 3{,}882 & A, R\\
+      & $O$ blocks 5 moves on $B_5$ & \file{n15\_b5\_lt6} & 84 & A, B\\
+      & $X$ wins strong game on $B_5$ within 6 & \file{strong\_n15\_b5\_d6} & 253{,}534 & S, T\\
+\bottomrule
+\end{tabular}
+\caption{Certificates behind Theorems~\ref{thm:weak} and~\ref{thm:strong}. ``Blocks'' means a
+Breaker strategy in the weak game, against the full game or against the stated number of Maker
+moves. Size: certificate nodes, or positions with $X$ to move for strong strategies. Checkers:
+A~\file{check\_cert.py}, B~\file{fresh\_checker/check\_breaker2.py}, R~\file{play\_cert.py}
+(exhaustive concrete replay), S~\file{check\_strong.py}, T~\file{fresh\_checker/check\_strong2.py}.}
+\label{tab:evidence}
+\end{table}
+
+\begin{corollary}\label{cor:oeis}
+In both games the values $(b,m)=(7,9)$ tabulated for $Y_5$ are wrong (both are $6$), and the board
+number $6$ tabulated for $N_5$ is wrong (it is $5$); the tabulated move number $6$ of $N_5$ is
+correct. For $I_4$, tabulated $(7,8)$, and $L_5$, tabulated $(7,10)$, both values are wrong in the
+weak game, and at least one of the two is wrong in the strong game: either $\bstr=6$, or $\bstr=7$ and
+then $\mstr\le 7<8$ for $I_4$ and $\mstr\le 9<10$ for $L_5$.
+\end{corollary}
+
+In particular the example line of A380597, that the I-tetromino is a draw on square boards of side
+less than $7$, is false in the weak game; in the strong game it holds exactly when $X$ does not win
+on $B_6$, which is open.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}llllll@{}}
+\toprule
+shape & $n$ & Gardner 1979$^{\ast}$ & Gardner 1992/2001, OEIS & weak game & strong game\\
+\midrule
+$I_4$ & 9  & $6$ / $8$ & $7$ / $8$  & $6$ / $6$ & $\bstr\in\{6,7\}$; on $B_7$ within $7$\\
+$L_5$ & 13 & $6$ / $9$ & $7$ / $10$ & $6$ / $7$ & $\bstr\in\{6,7\}$; on $B_7$ within $9$\\
+$Y_5$ & 14 & $6$ / --  & $7$ / $9$  & $6$ / $6$ & $6$ / $6$\\
+$N_5$ & 15 & --        & $6$ / $6$  & $5$ / $6$ & $5$ / $6$\\
+\bottomrule
+\end{tabular}
+\caption{Board number / move number. $^{\ast}$Not seen by the author; values as quoted
+in~\cite{Wiki}, which annotates only some 1979 entries (``--'': no 1979 value quoted there). The weak and strong columns are Theorems~\ref{thm:weak} and~\ref{thm:strong}.}
+\label{tab:compare}
+\end{table}
+
+The 1979 board number $6$ for $I_4$, $L_5$ and $Y_5$ agrees with the weak game, and for $Y_5$ with
+the strong game; we know of no source that gives board number $5$ for $N_5$. For $I_4$ a weak-game
+win on $7\times 7$ within $7$ moves was given earlier by Earnest and Mathias~\cite{EM22} (cited
+in~\cite{Wiki}); Theorem~\ref{thm:weak} improves it to $6\times 6$ within $6$ moves.
+
+\begin{remark}[computed, not certified]\label{rem:computed}
+(i) On $B_7$, $X$ does not win the strong game within $6$ moves for $I_4$ or within $8$ moves for
+$L_5$; both search programs of Section~\ref{sec:method} agree. If $\bstr=7$, then $\mstr(I_4)=7$ and
+$\mstr(L_5)=9$.
+(ii) On $B_6$ the strong game is undecided for both shapes. The second solver finds no win for $X$
+within $11$ moves for $I_4$ (151\,s) and within $13$ moves for $L_5$ (878\,s); the first solver
+reaches $8$ and $10$. The full game (at most $18$ moves of $X$) did not finish in $1700$\,s. A win
+for $X$ could be certified with the tools here; a draw would need a certificate for a drawing
+strategy of $O$, which they do not produce.
+(iii) As controls, the second solver gives $(5,4)$ for the T-tetromino, $(4,4)$ for the
+L-tetromino and $(3,5)$ for the S-tetromino in both games, as in the tables.
+\end{remark}
+
+\begin{remark}[checked with one checker]\label{rem:small}
+With the first solver, Breaker and Maker certificates of the kind in Table~\ref{tab:evidence} were
+also generated for all entries $n\le 21$ (polyominoes of size at most five), and each is accepted
+by \file{check\_cert.py}; no second checker was run on them. They reproduce A380597 and A380598 in
+the weak game except at $n=9,13,14,15$, and for the entries with value $0$ they show that $X$ does
+not win on boards up to $8\times 8$. These certificates are not in the ancillary files;
+\file{validate\_small.py} regenerates and checks them in under a minute.
+\end{remark}
+
+\begin{remark}[Snaky]\label{rem:snaky}
+A380597 lists Snaky, $n=45$ (Figure~\ref{fig:shapes}), as its only unknown value; by
+Theorem~\ref{thm:strong} the strong-game board numbers for $n=9$ and $n=13$ are open as well.
+Halupczok and Schlage-Puchta proved that Breaker wins the weak game on $8\times 8$, with a strategy
+found by computer~\cite[Theorem~1(3), Section~2]{HSP07}. Our solver produces Breaker certificates
+for this board, one for each of the $10$ classes of Maker's first cell under the symmetries of the
+board; each passes \file{check\_cert.py} (the largest has $1{,}126{,}032$ nodes). This reproduces
+the result as a checked certificate. By Lemmas~\ref{lem:weakstrong} and~\ref{lem:monotone}, if Snaky
+is achievable on some square board in either game, its board number is at least $9$. These
+certificates ($191$\,MB) are not in the ancillary files; \file{split\_run.py} regenerates and checks
+them in about $40$ minutes with three processes. Whether Snaky can be achieved on a finite board in
+the strong game is open, and its board number is unknown in both games; for the weak game a
+first-player strategy on $17\times 17$ has been announced in a preprint~\cite{OAI26}, which this
+note does not use.
+\end{remark}
+
+\section{Method}\label{sec:method}
+
+\paragraph{Representation and search.} Cells are numbered $y\cdot W+x$; positions are pairs of
+bitmasks $(M,B)$, and placements are enumerated from the shape by the eight lattice symmetries and
+all translations. The search program \file{solver.cpp} answers ``does $X$ win within $d$ moves?''
+by depth-first AND/OR search with a transposition table keyed by $64$-bit hashes, canonical under
+the symmetries of the board, and with pruning rules listed in the ancillary README. A hash collision
+or a pruning error could make a verdict wrong; therefore nothing is called proved on the strength of
+a verdict. For proved results the solver exports a certificate, and the certificate is checked by
+programs that use no hashing and no pruning beyond the rules proved below.
+
+\paragraph{Breaker certificates.} Let $d$ be Maker's remaining number of moves ($d=\infty$ for the
+full game). A placement $p$ is \emph{$d$-completable} at $(M,B)$ if $p\cap B=\emptyset$ and
+$|p\setminus M|\le d$; a free cell is \emph{$d$-relevant} if it lies in a $d$-completable
+placement. A certificate is a directed acyclic graph whose nodes are evaluated along every play from
+the empty board, with a \emph{virtual} position $(M,B,d)$ attached. The checker
+\file{check\_cert.py} requires at every reached node that $M$ contains no placement, and:
+\begin{itemize}
+\item[\texttt{m}] (Maker to move, $d\ge 1$): a child for every $d$-relevant cell $c$, at
+$(M\cup\{c\},B,d-1)$; if some free cell is not $d$-relevant, also a \emph{pass child} at
+$(M,B,d-1)$;
+\item[\texttt{b}] (Breaker to move): a free $d$-relevant cell $c$ and a child at $(M,B\cup\{c\},d)$;
+\item[\texttt{Z}, \texttt{D}] (leaves): $d=0$, or no $d$-relevant cell exists;
+\item[\texttt{P}] (leaf, Maker to move): pairwise disjoint pairs of free cells such that every
+$d$-completable placement contains one of the pairs.
+\end{itemize}
+
+\begin{lemma}\label{lem:perm}
+If $p$ is not $d$-completable at some position, it is not completable for the then remaining budget
+at any later position, also when Maker's moves are replaced by passes.
+\end{lemma}
+
+\begin{proof}
+A move of $O$ only enlarges $B$. A move of $X$ lowers $|p\setminus M|$ by at most one and $d$ by
+exactly one; a pass lowers only $d$. So $|p\setminus M|>d$ persists.
+\end{proof}
+
+\begin{proposition}\label{prop:breaker}
+If \file{check\_cert.py} accepts a Breaker certificate with budget $d_0$, then $O$ has a strategy in
+the weak game against which $X$ owns no placement after any of his first $d_0$ moves.
+\end{proposition}
+
+\begin{proof}
+$O$ walks the certificate. When $X$ plays a $d$-relevant cell, $O$ moves to its child; when $X$
+plays another cell $g$, $O$ moves to the pass child and calls $g$ a \emph{ghost}: the virtual
+position omits ghosts from $M$ and otherwise equals the real one, with the same budget. At
+\texttt{b} nodes $O$ plays the given cell.
+
+(1) \emph{No placement through a ghost is ever completable in reality.} When $g$ was played, every
+placement $p\ni g$ with $p\cap B=\emptyset$ had $|p\setminus M_{\mathrm{virt}}|>d$. If $p$ contains no
+earlier ghost, its real and virtual counts agree, so $p$ was not completable in reality, and it
+stays so by Lemma~\ref{lem:perm}; placements through earlier ghosts are covered by induction. In the
+virtual game a ghost is a pass, so by Lemma~\ref{lem:perm} it never becomes relevant there: $O$ is
+never told to play a ghost, and the cells $O$ plays are free in reality.
+
+(2) By (1), every placement that is completable in reality avoids the ghosts and is completable in
+the virtual position. Hence $X$ owns no real placement while the virtual $M$ contains none
+(checked at every node); at \texttt{Z} the budget is used up; at \texttt{D} nothing is completable;
+at \texttt{P} every placement that $X$ could still complete within the budget contains a pair of
+really free, non-ghost cells, and from then on $O$ answers each move of $X$ in a pair with its
+partner (by Lemma~\ref{lem:perm} no other placement becomes completable later).
+\end{proof}
+
+At a \texttt{P} leaf a placement with one missing cell cannot contain a pair of free cells, so the
+condition also excludes immediate threats. Pairing strategies are the classical way to show that a
+polyomino cannot be achieved (see~\cite{Tho96,HSP07}); here only the placements completable within
+the budget need to be covered.
+
+\paragraph{Maker certificates.} A Maker certificate gives $X$'s cell at each node and, at $O$'s
+turn, explicit children for some replies and a default child for the rest; \file{check\_cert.py}
+accepts a default only for replies outside the default subtree's envelope (the cells $X$ claims there
+and the cells of the placements he completes there). We do
+not rely on this rule: \file{play\_cert.py} follows each Maker certificate as a strategy against
+\emph{every} legal reply of $O$ at every reached position, memoized on (node, $M$, $B$), and
+requires a real placement within the budget. The four Maker certificates of
+Table~\ref{tab:evidence} pass this replay with $174{,}766$, $702{,}984$, $288{,}636$ and $89{,}274$
+distinct states.
+
+\paragraph{Strong-game strategies.} A strong certificate is a table from positions with $X$ to move
+to $X$'s move. \file{check\_strong.py} starts from the empty board, plays the table's move, stops if
+$X$ owns a placement, and otherwise fails if the budget is used up or the board is full; it then
+tries every free cell as $O$'s reply, fails if $O$ owns a placement, and continues. No pruning is
+used, so acceptance is a complete proof that $X$ wins within the budget. The tables were exported
+with every reply of $O$ enumerated; the four tables of Table~\ref{tab:evidence} have
+$253{,}534$ to $1{,}023{,}521$ positions, and every table entry is reached.
+
+\paragraph{Independent programs.} The directory \file{fresh\_checker/} holds a second checker for
+Breaker certificates, \file{check\_breaker2.py}, and for strong strategies,
+\file{check\_strong2.py}, written independently, from the format description alone, with their own
+placement enumeration; they accept every certificate of Table~\ref{tab:evidence}. A second solver,
+\file{fresh\_solver/ttt.cpp}, was written independently, from the rules of the game alone, with its own pruning; on boards
+up to $4\times4$ it agrees with an unpruned minimax (\file{naive.cpp}) and on $5\times 5$ with an
+unpruned budgeted search (\file{naive\_b.cpp}) for budgets $3$ to $5$, in both games. It reproduces
+every value of Theorem~\ref{thm:weak}, the values $(6,6)$ and $(5,6)$ of Theorem~\ref{thm:strong}
+and the move numbers of Remark~\ref{rem:computed}(i). \file{fresh\_checker/index\_own.py} enumerates
+the polyominoes of size at most five, recomputes A246521 and confirms the indices $9,13,14,15$.
+
+\paragraph{What is trusted.} The proofs depend on: the checkers (a few hundred lines of Python,
+available in two separately written versions for Breaker certificates and strong strategies) and
+their placement enumeration; the proof rules of Proposition~\ref{prop:breaker}; the
+replay \file{play\_cert.py} for the four weak Maker wins, which for $Y_5$ and $N_5$ also follow from
+the strong strategies by Lemma~\ref{lem:weakstrong}(b); and the Python interpreter. They do not
+depend on either solver.
+
+\section{Reproduction}\label{sec:repro}
+
+The ancillary directory \file{anc/} contains the certificates of Table~\ref{tab:evidence}, the
+programs named above, a manifest of SHA-256 sums and a README with every command and its expected
+output. With \texttt{uv} and a C++17 compiler:
+
+{\small
+\begin{verbatim}
+cd anc
+shasum -a 256 -c MANIFEST
+bash verify_all.sh      # 32 checks, about 1 minute; ends "ALL 32 CHECKS PASSED"
+
+clang++ -O2 -std=c++17 -o solver solver.cpp      # regenerate, e.g. N5 strong:
+./solver --board 5 --shape "1,0;0,1;2,0;1,1;3,0" --game strong --dmin 6 --dmax 6 \
+    --tt-mb 512 --cert s15.txt && uv run python check_strong.py s15.txt
+bash regenerate_weak.sh   # the 12 weak certificates, checked; a few seconds
+
+cd fresh_solver && clang++ -O2 -std=c++17 -o ttt ttt.cpp
+./ttt Y5 6 strong 7      # K=5 no_win_within_K, K=6 P1_WINS
+./ttt L5 7 strong 10     # K=8 no_win_within_K, K=9 P1_WINS
+\end{verbatim}
+}
+
+\noindent Regenerated certificates may differ in size from the included ones, which were exported
+by an earlier version of the solver; every regenerated certificate passes the checkers.
+
+\section*{Use of AI tools}
+
+The programs in the ancillary files---both solvers, all checkers and the driver scripts---and
+drafts of this note were developed in sessions assisted by large-language-model coding tools.
+The author checked the arguments and the proof-critical outputs and takes responsibility for the
+note. The proofs do not depend on
+the correctness of the search programs: they rest on the lemmas proved above and on certificates
+that anyone can recheck with the included checkers. Agreement between separately written,
+AI-assisted programs is an error filter, not an independent reproduction by other authors.
+
+\begin{thebibliography}{99}
+\raggedright
+
+\bibitem{BCG82}
+E.~R. Berlekamp, J.~H. Conway and R.~K. Guy,
+\emph{Winning Ways for your Mathematical Plays}, Vol.~2, Academic Press, London, 1982,
+pp.~684--685. (Not seen by the author; cited after~\cite{Tho96,Wiki}.)
+
+\bibitem{EM22}
+M.~Earnest and D.~Mathias, answer to ``Harary's generalized Tic-Tac-Toe; Winning strategy for
+Skinny on a $7\times 7$ board?'', Puzzling Stack Exchange, January~15, 2022,
+\url{https://puzzling.stackexchange.com/a/114453/3896}. (Not seen by the author; cited
+after~\cite{Wiki}.)
+
+\bibitem{Gar79}
+M.~Gardner, Mathematical Games: In which players of ticktacktoe are taught to hunt bigger game,
+\emph{Scientific American} \textbf{240}(4) (April 1979). (Not seen by the author; values quoted
+after~\cite{Wiki}.)
+
+\bibitem{Gar92}
+M.~Gardner, \emph{Fractal Music, Hypercards and More\ldots: Mathematical Recreations from Scientific
+American Magazine}, W.~H. Freeman, New York, 1992. (Table seen as reproduced at
+\url{https://mathlair.allfunandgames.ca/tictactoe.php}.)
+
+\bibitem{Gar01}
+M.~Gardner, Harary's generalized ticktacktoe, Chapter~37 in \emph{The Colossal Book of
+Mathematics}, W.~W. Norton, New York, 2001, pp.~493--503.
+
+\bibitem{HSP07}
+I.~Halupczok and J.-C. Schlage-Puchta, Achieving Snaky, \emph{Integers} \textbf{7} (2007), \#G02.
+
+\bibitem{OAI26}
+OpenAI, Snaky in 21 Maker moves, preprint, September~25, 2026,
+\url{https://github.com/openai/math/blob/main/preprints/Snaky-in-21-Maker-moves-September-25-2026/article.pdf}.
+
+\bibitem{OEIS521}
+OEIS Foundation Inc., The On-Line Encyclopedia of Integer Sequences, sequence A246521,
+\url{https://oeis.org/A246521}, accessed October 7, 2026.
+
+\bibitem{OEIS597}
+P.~von Br\"omssen, Sequence A380597, in \emph{The On-Line Encyclopedia of Integer Sequences},
+\url{https://oeis.org/A380597}, accessed October 7, 2026.
+
+\bibitem{OEIS598}
+P.~von Br\"omssen, Sequence A380598, in \emph{The On-Line Encyclopedia of Integer Sequences},
+\url{https://oeis.org/A380598}, accessed October 7, 2026.
+
+\bibitem{Sie04}
+N.~Sieben, Snaky is a 41-dimensional winner, \emph{Integers} \textbf{4} (2004), \#G5.
+
+\bibitem{Tho96}
+C.~Thompson, Harary's animal-achievement game -- some questions, posting to \texttt{sci.math},
+October 14, 1996, archived at \url{https://ics.uci.edu/~eppstein/junkyard/animal-game.html}.
+
+\bibitem{Wiki}
+Wikipedia, Harary's generalized tic-tac-toe,
+\url{https://en.wikipedia.org/wiki/Harary's_generalized_tic-tac-toe}, accessed October 7, 2026.
+
+\end{thebibliography}
+
+\end{document}
