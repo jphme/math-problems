@@ -12,6 +12,7 @@ the ancillary material needed to check the computer-assisted claims.
 | [`no19tiling/`](no19tiling/) | No triangle can be tiled by nineteen congruent triangles; more generally, not by \(p\) congruent triangles for any prime \(p>3\) with \(p\equiv3\pmod4\). | paper and exact-arithmetic verifier |
 | [`progress634/`](progress634/) | Progress on the full Erdős Problem 634: exact tilings at \(N=88,189\), a one-implementation computer-assisted exclusion of \(N=33\), a Laurent boundary quotient, and finite generator windows for the \(120^\circ\) families. The full classification remains open. | paper, exact certificates, exact-search sources, audits, and frozen outputs |
 | [`peaceable-queens-even-torus/`](peaceable-queens-even-torus/) | Exact formula for the peaceable queens number of every even toroidal board; even density \((2-\sqrt3)/2\); also \(t(15)=20\) and \(t(17)=28\). | unified paper, a complete Lean 4 proof of the even theorem, exact certificates, exhaustive-search sources, audits, and frozen outputs |
+| [`polyomino-achievement/`](polyomino-achievement/) | Achievement numbers of the I-tetromino and the L-, Y- and N-pentominoes in Harary's game: Maker–Breaker values (6,6), (6,7), (6,6), (5,6); strong-game values (7,7), (7,9), (6,6), (5,6). Corrects Gardner's tables and OEIS A380597/A380598. | note, certificates, three independent checkers, three solvers |
 
 ## Checking the results
 
