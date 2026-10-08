@@ -1,15 +1,26 @@
 # Ancillary files: Achievement numbers of four small polyominoes
 
-Jan Philipp Harries, October 7, 2026.
+Jan Philipp Harries, October 8, 2026.
 
 These files prove Theorems 4 and 5 of the note. Every statement there reduces to an explicit
-strategy for one player, stored as a certificate in `certs/`, and checked by short Python programs
-that share no code with the search programs. The solvers are included to regenerate the
-certificates, to reproduce the computed (uncertified) values of Remark 7 and to rerun the
+strategy for one player, stored as a certificate in `certs/`, and checked by short programs that
+share no code with the search programs. The strong-game values of the I-tetromino and the
+L-pentomino, (7, 7) and (7, 9), additionally rest on four strategies of the second player O
+(`certs/i4_*`, `certs/l5_*`) and their three checkers in `strong/`. The solvers are included to
+regenerate the certificates, to reproduce the computed values of Remark 7 and to rerun the
 single-checker comparison of Remark 8; the proofs do not depend on them.
 
-Tested with Python 3.14.6 (via `uv`), Apple clang 21 (C++17), macOS on arm64. The Python programs
-use only the standard library. Runtimes below are wall-clock times on that machine.
+Tested with Python 3.14.6 (via `uv`), Apple clang 21.0.0 (C++17), macOS on arm64. The Python
+programs use only the standard library. Runtimes below are wall-clock times on that machine.
+
+**Build note.** Apple clang 21.0.0 at plain `-O2` miscompiles a range-based min/max loop of the
+placement generator of `strong/solver_strong.cpp` (the loop vectoriser; `-O1`, `-O3` and
+`-O2 -fno-vectorize` are correct): it produced 114 instead of 56 placements for I4 on 7x7, and the
+solver stopped at its own symmetry self-check. The loop is written with indices, and
+`strong/solver_strong.cpp` and `strong/check6b.cpp` are built with `-O2 -fno-vectorize` throughout
+(`verify_all.sh` does this). GCC spells the flag `-fno-tree-vectorize`; `verify_all.sh` picks
+the right one for `$CXX`. The placement counts printed by the three checkers in `strong/` (36 and 120 for I4 and L5
+on 6x6, 56 and 192 on 7x7) equal the hand counts 2n(n-3) and 8(n-3)(n-1).
 
 ## Quick check
 
@@ -19,8 +30,10 @@ shasum -a 256 -c MANIFEST
 bash verify_all.sh
 ```
 
-`verify_all.sh` decompresses the weak-game certificates next to the `.gz` files and runs 32 checks
-(about 50 s; peak memory under 0.5 GB). Expected output:
+`verify_all.sh` decompresses the weak-game certificates and builds `strong/check6b` with
+`${CXX:-clang++} -O2 -fno-vectorize` in a temporary directory that it removes on exit, so it leaves
+no files inside `anc/`, and runs 44 checks (about 4 minutes;
+peak memory 2.7 GB, in `strong/chk.py` on `i4_b6_full`). Expected output:
 
 ```
 == weak-game certificates, check_cert.py
@@ -59,8 +72,24 @@ ok    PASS strongwin board=7x7 shape=4 cells: 333113 X-to-move positions, worst 
 ok    RESULT PASS positions visited 333113 of 333113 max X moves 7
 ok    PASS strongwin board=7x7 shape=5 cells: 948483 X-to-move positions, worst 9 X moves (budget 9)
 ok    RESULT PASS positions visited 948483 of 948483 max X moves 9
-ALL 32 CHECKS PASSED
+== strong-game O strategies, strong/check6.py, strong/check6b and strong/chk.py
+ok    PASS ostrategy board=6x6 shape=0,0;1,0;2,0;3,0 budget=18 placements=36 table=3880764 pairs=273450 unused_entries=0 x_nodes=231460 o_nodes=3880764 pair_leaves=273450 leaf_hopeless=3364 leaf_budget=0 leaf_full=0 o_completes=3331388 x_completes=0 max_x_moves=0 time=73.8s rss=1499MB
+ok    PASS ostrategy board=6x6 shapecells=4 budget=18 placements=36 lines X=0 O=3880764 P=273450 exact_positions X=2071013 O=15939736 pair_leaf_visits=1122780
+ok    PASS
+ok    PASS ostrategy board=6x6 shape=0,0;1,0;0,1;2,0;3,0 budget=18 placements=120 table=450562 pairs=21216 unused_entries=0 x_nodes=28869 o_nodes=450562 pair_leaves=21216 leaf_hopeless=2 leaf_budget=0 leaf_full=0 o_completes=397186 x_completes=0 max_x_moves=0 time=8.7s rss=196MB
+ok    PASS ostrategy board=6x6 shapecells=5 budget=18 placements=120 lines X=0 O=450562 P=21216 exact_positions X=324753 O=2880740 pair_leaf_visits=138388
+ok    PASS
+ok    PASS ostrategy board=7x7 shape=0,0;1,0;2,0;3,0 budget=6 placements=56 table=15912 pairs=5562 unused_entries=0 x_nodes=782 o_nodes=15912 pair_leaves=5562 leaf_hopeless=15903 leaf_budget=0 leaf_full=0 o_completes=7775 x_completes=0 max_x_moves=0 time=0.3s rss=33MB
+ok    PASS ostrategy board=7x7 shapecells=4 budget=6 placements=56 lines X=0 O=15912 P=5562 exact_positions X=35917 O=82564 pair_leaf_visits=32266
+ok    PASS
+ok    PASS ostrategy board=7x7 shape=0,0;1,0;0,1;2,0;3,0 budget=8 placements=192 table=815306 pairs=68750 unused_entries=0 x_nodes=35989 o_nodes=815306 pair_leaves=68750 leaf_hopeless=232936 leaf_budget=0 leaf_full=0 o_completes=697197 x_completes=0 max_x_moves=0 time=20.6s rss=376MB
+ok    PASS ostrategy board=7x7 shapecells=5 budget=8 placements=192 lines X=0 O=815306 P=68750 exact_positions X=700776 O=5479518 pair_leaf_visits=461579
+ok    PASS
+ALL 44 CHECKS PASSED
 ```
+
+The `time=` and `rss=` fields vary between runs. `strong/chk.py` prints only `PASS` as its last
+line; its leaf counts are on the lines above it (run it alone to see them).
 
 `check_breaker2.py` counts pairing leaves as `P_strict` (the pairs meet every live placement) or
 `P_relaxed` (they meet every placement still completable within Maker's remaining budget, which is
@@ -70,13 +99,17 @@ what the proof rule requires; see the note, Section 4).
 
 | file | role |
 |---|---|
-| `certs/*.txt.gz` | the 16 certificates of Table 1 (below) |
+| `certs/*.txt.gz` | the 20 certificates of Table 1 (below) |
 | `check_cert.py` | checker for weak-game certificates (Breaker and Maker), checker A |
 | `play_cert.py` | exhaustive concrete replay of a weak-game Maker certificate against every Breaker reply, checker R |
 | `check_strong.py` | exhaustive checker for strong-game strategies, checker S |
 | `fresh_checker/check_breaker2.py` | second, separately written checker for Breaker certificates, checker B |
 | `fresh_checker/check_strong2.py` | second, separately written checker for strong-game strategies, checker T |
 | `fresh_checker/common.py` | placement enumeration of the second checkers |
+| `strong/check6.py` | checker for strong-game certificates in the canonical-key format (`ostrategy`, `xwin`), memo on canonical keys, checker C |
+| `strong/check6b.cpp` | second checker for the same format, C++, memo on exact positions, own placement and symmetry code, checker D; build with `-O2 -fno-vectorize` |
+| `strong/chk.py` | third checker for the same format, written from the format description alone, checker E |
+| `strong/solver_strong.cpp` | df-pn solver for the strong game that produced the four O strategies (certificate export for both outcomes); build with `-O2 -fno-vectorize` |
 | `fresh_checker/index_own.py` | regenerates A246521 for sizes 1 to 5 and identifies the indices n = 9, 13, 14, 15 |
 | `solver.cpp` | the search program that produced the certificates (weak and strong game, certificate export) |
 | `regenerate_weak.sh` | regenerates and checks the 12 weak-game certificates of Table 1 |
@@ -86,7 +119,7 @@ what the proof rule requires; see the note, Section 4).
 | `fresh_solver/naive.cpp`, `naive_b.cpp` | unpruned minimax and unpruned budgeted search, used to validate `ttt.cpp` |
 | `fresh_solver/cmp.sh`, `cmp2.sh` | the validation runs (zsh scripts) |
 | `oeis_data/` | the terms of A380597 and A380598 (44 each, from the sequence entries, in b-file format) and the first 60 terms of A246521, read by `validate_small.py` and `index_own.py` |
-| `verify_all.sh` | runs every check of Table 1 |
+| `verify_all.sh` | runs every check of Table 1 (44 checks) |
 | `LICENSE.txt` | MIT license |
 | `MANIFEST` | SHA-256 of every file except itself |
 
@@ -114,17 +147,31 @@ N5 = `1,0;0,1;2,0;1,1;3,0`. The index n is the A380597/A380598 index.
 | `n15_b5_moves.txt.gz` | N5: Maker wins on 5x5 within 6 moves | 3,882 nodes | `4ed4f8a7a90214127eac5b6b4cadf7e84dd5721aafa5803b63216f401de6da27` | `0e4a648fbc02661106c14553b627532cc0fafc8a39d9c4017feadaf69e0d1ab2` |
 | `n15_b5_lt6.txt.gz` | N5: Breaker stops 5 Maker moves on 5x5 | 84 nodes | `4bcbf4c395a2af1f02171f868a447ed821c42ce95016c34954d2f8cc6962c096` | `635f49a8f4e0ec152f1a8cfb03d4e7816da4064c896a7f9e98f41f8677b8b9b6` |
 | `strong_n15_b5_d6.txt.gz` | N5: X wins the strong game on 5x5 within 6 moves | 253,534 positions | `e9f49ef34ad4fa2762cc3bf006c8016129a9d7cdf26921b64ab456131895184c` | `7011fb18b519782299682f8b047117374ca81296cfd57aab0ecc9a317b432b9b` |
+| `i4_b6_full.txt.gz` | I4: X does not win the strong game on 6x6 (budget 18, the whole game) | 3,880,764 O + 273,450 P lines; 16.2 MB gzipped, 96.6 MB text | `db84e1ddccc23ee2f52bf7ee62d586bf4205e6e965482abd408956d66fd91182` | `5c012715e6856495a895ec8bc3fc177c272b4594879cb8af41316091973681bf` |
+| `i4_b7_K6.txt.gz` | I4: X does not win the strong game on 7x7 within 6 moves | 15,912 O + 5,562 P lines; 0.10 MB gzipped | `a753e32e1d8a47c86eea5c925e3ed53bde5111b8a6693bc37f67297de4628f1c` | `95d8fa2c9f7ffecb898715bafb7fecb0f08347befb4054ec2f925622dc9099af` |
+| `l5_b6_full.txt.gz` | L5: X does not win the strong game on 6x6 (budget 18, the whole game) | 450,562 O + 21,216 P lines; 1.8 MB gzipped | `ea43be70a7dfc752245fe9652e6e88ff6ea9aa2150d52dc56e27e24bbb409433` | `5a53a643d4f2d4383b9bcbe2fd450099529006ad89fb0fc49127bae0261513fe` |
+| `l5_b7_K8.txt.gz` | L5: X does not win the strong game on 7x7 within 8 moves | 815,306 O + 68,750 P lines; 3.7 MB gzipped | `b5ea0d0b285657bfb52cc037a5476e36f07476db84a19f200c651e0d4c90fe83` | `ddb1cc09bc49272eef874a6ecf69854bc5c24a3808ed18e411183733c7ec9c09` |
+
+The gzip bytes depend on the gzip version; the SHA-256 of the decompressed text is the stable
+identifier. `strong/solver_strong.cpp` reproduces the decompressed text of the four O strategies
+byte for byte (commands below).
 
 How they combine (note, proof of Theorems 4 and 5): for each shape, the full-game Breaker
 certificate on (b-1)x(b-1) gives board number >= b in both games (Lemmas 2(a) and 3); the Maker
 certificate gives weak board number <= b and weak move number <= m; the budget Breaker certificate
 gives weak move number >= m, and strong move number >= m when the strong board number equals b
-(Y5, N5) (Lemma 2(a)); the strong strategy gives the strong upper bounds, and for I4 and L5 the
-strategy on 7x7 gives strong board number <= 7.
+(Y5, N5) (Lemma 2(a)); the strong strategy gives the strong upper bounds. For I4 and L5 in the strong
+game: the full-game Breaker certificate on 5x5 excludes an X win on every board up to 5x5 (Lemmas
+2(a) and 3); the O strategy `*_b6_full` excludes one on 6x6 (Proposition 12; budget 18 is the whole
+game); the strong strategy on 7x7 gives an X win within 7 (I4) / 9 (L5) moves, and the O strategy
+`i4_b7_K6` / `l5_b7_K8` excludes a win within 6 / 8 moves. So the strong values are (7, 7) and
+(7, 9).
 
 ## Running the checks one by one
 
 `check_cert.py` and `play_cert.py` read uncompressed files; the other checkers read `.gz` directly.
+The commands below write `certs/n*.txt` and `strong/check6b` inside `anc/`; delete them afterwards
+(`rm -f certs/n*.txt strong/check6b`) before copying or packaging the directory.
 
 ```
 for f in certs/n*.txt.gz; do gunzip -k -f "$f"; done
@@ -134,7 +181,21 @@ uv run python play_cert.py certs/n13_b6_moves.txt --games 1000 --exhaustive 2000
 uv run python check_strong.py certs/strong_n13_b7_d9.txt.gz                       # 19 s, about 0.4 GB
 (cd fresh_checker && uv run python check_strong2.py ../certs/strong_n13_b7_d9.txt.gz)   # 4 s
 (cd fresh_checker && uv run python index_own.py)
+
+# strategies of O (the three checkers read .gz; check6b reads plain text or - for stdin)
+clang++ -O2 -fno-vectorize -std=c++17 -o strong/check6b strong/check6b.cpp
+uv run python strong/check6.py certs/i4_b6_full.txt.gz --expect-kind ostrategy --expect-board 6 --expect-shape "0,0;1,0;2,0;3,0" --expect-budget 18   # 74 s, 1.5 GB
+gzip -dc certs/i4_b6_full.txt.gz | strong/check6b - --expect-kind ostrategy --expect-board 6 --expect-shape "0,0;1,0;2,0;3,0" --expect-budget 18 --expect-placements 36   # 18 s
+uv run python strong/chk.py certs/i4_b6_full.txt.gz --board 6 --shape "0,0;1,0;2,0;3,0" --kind ostrategy --budget 18   # 17 s, 2.7 GB
 ```
+
+Runtimes of the three O-strategy checkers (C / D / E): `i4_b6_full` 74 s / 18 s / 17 s,
+`l5_b6_full` 9 s / 2.4 s / 2.1 s, `i4_b7_K6` under 1 s each, `l5_b7_K8` 21 s / 6 s / 8 s. Peak
+memory: 1.5 GB (C), 1.2 GB (D) and 2.7 GB (E) on `i4_b6_full`, under 0.7 GB otherwise. `check6.py` takes
+`--max-rss-mb` and `--time-limit` (exit 2 = ABORT, no verdict); `chk.py` aborts above 5.5 GB and reports this as `FAIL: ABORT: RSS limit exceeded` with exit 1, which
+is no verdict (rerun with more memory). All
+three exit 0 on PASS and 1 on FAIL, and fail if the header differs from the claim given on the
+command line.
 
 `check_cert.py` options: `--expect-board WxH --expect-shape 'x,y;..' --expect-kind makerwin|breakerwin
 --expect-budget N` (-1 = full game), `--max-rss-mb` (default 4000) and `--time-limit SEC`; it prints
@@ -184,8 +245,46 @@ the empty board, apply X's move, accept if X owns a placement, fail if X's move 
 budget without one or the board is full, and otherwise try every free cell as O's reply, failing if O
 owns a placement. Every table entry is reached.
 
+**Strong game, canonical-key format** (`strong/check6.py`, `strong/check6b.cpp`, `strong/chk.py`;
+the four O strategies). Text, gzipped; `#` lines are comments. Header, table lines, then `end`:
+
+```
+board 6 6                 square board n x n, cell = y*n + x
+shape 0,0 1,0 2,0 3,0     cells of the polyomino; all 8 orientations and all translations are copies
+kind ostrategy            ostrategy: X does not win within budget | xwin: X wins within budget
+budget 18                 K, X's move budget
+keys canonical
+O <xhex> <ohex> <cell>    (ostrategy) O to move -> O's move
+P <xhex> <ohex> a,b c,d   (ostrategy) X to move -> pairing leaf with pairs {a,b}, {c,d}, ...
+X <xhex> <ohex> <cell>    (xwin) X to move -> X's move
+end
+```
+
+`<xhex>`, `<ohex>` are the X and O cell sets as hexadecimal bitmasks (bit c = cell c) of the
+canonical position: the least pair (g(X), g(O)), compared first on X then on O, over the 8
+symmetries g of the board. Cells in a line are in the canonical frame: at a real position Q a
+checker picks a g with g(Q) = key and maps a stored cell c to g^-1(c). Each key appears at most once.
+
+Semantics of `ostrategy` (r = K - |X| is the number of X moves left; a placement is r-live if it
+contains no O cell and misses at most r cells of X). From the empty board, at every X-to-move
+position the checker tries every free cell and fails if X completes a copy; at every O-to-move
+position it needs an `O` line with a free cell. A line of play ends, and is accepted, when (a) O's
+move completes an O copy, (b) X has made K moves, (c) the board is full, (d) no placement is r-live,
+or (e) X is to move and a `P` line gives pairs of distinct free cells, pairwise disjoint, such that
+every r-live placement contains both cells of some pair. Tests (b) to (d) are made at both kinds of
+position. Every other position must be expanded; unused table lines are reported (there are none).
+Semantics of `xwin`: at every X-to-move position an `X` line gives a free cell; if it completes a
+copy the line is won; otherwise X must have budget left and the board must not be full, and every
+free cell is tried as O's reply, failing if O completes a copy.
+
 The soundness of the three Breaker rules (pass children, pairing leaves, `D` leaves) is
-Proposition 11 of the note.
+Proposition 11 of the note; that of the `ostrategy` leaves (d) and (e) in the strong game, and of the
+use of canonical keys, is Proposition 12. In short: at (e) O answers each X move on a paired cell by
+the partner (and plays anywhere otherwise); any copy X could still complete within r moves is an
+r-live placement now, contains a pair, and X never gets both cells of a pair. `check6.py` and
+`chk.py` verify that the placement family is invariant under the 8 symmetries, which makes
+memoising on canonical keys sound; `check6b` memoises on exact positions and needs no symmetry
+argument.
 
 ## The search program `solver.cpp`
 
@@ -263,6 +362,45 @@ class (first cell 3) needs `--tt-mb 2048`. The final line is
 uv run python split_run.py --mode breaker --board 8 --tag b8_recheck --max-rss-mb 3500 --tt-mb 2048 --job-hours 1 --jobs 3
 ```
 
+## The strong-game solver `strong/solver_strong.cpp`
+
+Answers "can X force a win in the strong game within K of its own moves?" by depth-first
+proof-number search (df-pn) on bitboards (n <= 8), with a transposition table keyed by the full
+canonical position (no hash collisions). Search rules: immediate wins and double threats for both
+players, forced blocks, hopeless and pairing leaves (pairings found by bounded backtracking,
+`--pair-budget`, default 2000 steps), and a restriction of moves to cells in placements still
+completable by either player. That restriction is not proved for the strong game and only steers
+the search: the export enumerates every free cell at each X-to-move position (O strategies) or
+every O reply (X strategies), and solves every position the search pruned. Final line
+`DONE x_wins ...`, `DONE x_cannot_win ...` or `ABORT <reason>`; an aborted export deletes the
+partial certificate.
+
+```
+cd strong
+clang++ -O2 -fno-vectorize -std=c++17 -o solver_strong solver_strong.cpp
+./solver_strong --board N --shape 'x,y;..' --K K [--tt-log2 L] [--cert FILE] [--max-rss-mb MB]
+                [--time-limit SEC] [--max-cert-mb MB] [--no-pairing] [--pair-budget S]
+                [--checkpoint FILE --checkpoint-sec S] [--resume FILE] [--results FILE --tag T]
+```
+
+The table has 2^L buckets of 4 entries of 32 bytes (`--tt-log2 23`: 1 GB, 24: 2 GB). Regenerating
+the four O strategies (the export is deterministic; with these table sizes the decompressed SHA-256
+values above are reproduced):
+
+```
+I4="0,0;1,0;2,0;3,0"; L5="0,0;1,0;0,1;2,0;3,0"
+./solver_strong --board 6 --shape "$I4" --K 18 --tt-log2 23 --max-rss-mb 3800 --cert i4_b6_full.txt   # 6 s, 1.3 GB
+./solver_strong --board 6 --shape "$L5" --K 18 --tt-log2 23 --max-rss-mb 3800 --cert l5_b6_full.txt   # 2 s, 1.1 GB
+./solver_strong --board 7 --shape "$I4" --K 6  --tt-log2 24 --max-rss-mb 3800 --cert i4_b7_K6.txt     # 1 s, 2.0 GB
+./solver_strong --board 7 --shape "$L5" --K 8  --tt-log2 24 --max-rss-mb 3800 --cert l5_b7_K8.txt     # 67 s, 2.1 GB
+shasum -a 256 i4_b6_full.txt l5_b6_full.txt i4_b7_K6.txt l5_b7_K8.txt
+```
+
+Each ends with `DONE x_cannot_win board=... K=...`. The same program with `--K 7` (I4) and `--K 9`
+(L5) on 7x7 ends with `DONE x_wins` and exports X strategies in this format (168,616 and 374,690
+lines), which also pass `check6.py`, `check6b` and `chk.py`; the proofs use the X strategies
+`strong_n9_b7_d7` and `strong_n13_b7_d9` instead.
+
 ## The second solver `fresh_solver/ttt.cpp`
 
 Written separately from the rules, without certificates; boards up to 8x8; built-in shapes I3, L3,
@@ -295,7 +433,8 @@ about 0.8 GB). Values used in the note (each under 4 s with `300 24`):
 
 A budget equal to the board's capacity (13 on 5x5, 8 on 4x4) is the full game.
 
-6x6 strong game, Remark 7(ii) (about 1.6 GB with ttBits 26):
+6x6 strong game, partial budgets, Remark 7(i) (about 1.6 GB with ttBits 26; the full game is decided
+by the O strategies, not by this solver):
 
 ```
 ./ttt I4 6 strong -11 600 26     # K=11 no_win_within_K, about 150 s

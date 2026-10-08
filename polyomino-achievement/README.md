@@ -9,21 +9,24 @@ number m is the number of the first player's moves needed there. Gardner's table
 
 | polyomino | A380597/A380598 index | tabulated (b, m) | weak (Maker-Breaker) game | strong game |
 |---|---|---|---|---|
-| I-tetromino | 9 | (7, 8) | (6, 6) | b is 6 or 7; first player wins on 7x7 within 7 moves |
-| L-pentomino | 13 | (7, 10) | (6, 7) | b is 6 or 7; first player wins on 7x7 within 9 moves |
+| I-tetromino | 9 | (7, 8) | (6, 6) | (7, 7) |
+| L-pentomino | 13 | (7, 10) | (6, 7) | (7, 9) |
 | Y-pentomino | 14 | (7, 9) | (6, 6) | (6, 6) |
 | N-pentomino | 15 | (6, 6) | (5, 6) | (5, 6) |
 
 So the tabulated values (7, 9) of the Y-pentomino and the board number 6 of the N-pentomino are
-wrong in both games; for the I-tetromino and the L-pentomino both values are wrong in the weak game
-and at least one of each pair is wrong in the strong game. Whether the first player wins the 6x6
-strong game for these two shapes is open (no win within 11 and 13 moves, computed).
+wrong in both games. For the I-tetromino and the L-pentomino both values are wrong in the weak game;
+in the strong game the board number 7 is correct and the move numbers 8 and 10 are wrong (they are
+7 and 9). In the strong game the first player does not win these two shapes on 6x6, so Gardner's
+1979 board number 6 holds for them only in the weak game, and the statement of the A380597 example line that the I-tetromino game "is a draw for square
+boards of side length less than 7" is true in the strong game and false in the weak game.
 
-Every statement is proved by an explicit strategy (a certificate) that short Python checkers verify
-exhaustively. Every Breaker certificate and every strong-game strategy is accepted by two
-separately written checkers; the weak-game Maker strategies are replayed exhaustively against every
-Breaker reply. The search programs that found the strategies are included but not needed for the
-proofs.
+Every statement is proved by an explicit strategy (a certificate) that short checkers verify
+exhaustively. Every Breaker certificate and every strategy of the first player in the strong game
+is accepted by two separately written checkers, and every strategy of the second player in the
+strong game (the 6x6 games and the 7x7 lower bounds for the I-tetromino and the L-pentomino) by
+three; the weak-game Maker strategies are replayed exhaustively against every Breaker reply. The
+search programs that found the strategies are included but not needed for the proofs.
 
 ## Contents
 
@@ -32,7 +35,7 @@ proofs.
 | [`polyomino_achievement.pdf`](polyomino_achievement.pdf) | the note |
 | [`polyomino_achievement.tex`](polyomino_achievement.tex) | LaTeX source (article class) |
 | [`polyomino_achievement-arxiv.tar.gz`](polyomino_achievement-arxiv.tar.gz) | arXiv source package (the `.tex` and `anc/`) |
-| [`anc/`](anc/) | certificates, checkers, both solvers, scripts; see [`anc/README.md`](anc/README.md) |
+| [`anc/`](anc/) | certificates, checkers, the three solvers, scripts; see [`anc/README.md`](anc/README.md) |
 | [`anc/MANIFEST`](anc/MANIFEST) | SHA-256 of every ancillary file |
 | [`anc/LICENSE.txt`](anc/LICENSE.txt) | MIT license for the programs and certificates |
 
@@ -44,10 +47,24 @@ shasum -a 256 -c MANIFEST
 bash verify_all.sh
 ```
 
-Needs [uv](https://docs.astral.sh/uv/) (Python standard library only). The script runs 32 checks in
-about one minute and ends with `ALL 32 CHECKS PASSED`. `anc/README.md` lists every command with its
-expected output, the certificate formats, the SHA-256 of each certificate, and how to regenerate the
-certificates and the computed values with the two solvers (a C++17 compiler is needed for those).
+Needs [uv](https://docs.astral.sh/uv/) (Python standard library only) and a C++17 compiler for one
+of the checkers (built with `-O2 -fno-vectorize`, see the build note in `anc/README.md`). The script
+runs 44 checks in about 4 minutes, with peak memory 2.7 GB, and ends with
+`ALL 44 CHECKS PASSED`. `anc/README.md` lists every command with its expected output, the
+certificate formats, the SHA-256 of each certificate, and how to regenerate the certificates and
+the computed values with the three solvers.
+
+## Build
+
+```
+tectonic polyomino_achievement.tex
+COPYFILE_DISABLE=1 tar --no-xattrs --exclude='.DS_Store' --exclude='__pycache__' \
+  -czf polyomino_achievement-arxiv.tar.gz polyomino_achievement.tex anc
+```
+
+Run the second command after `anc/` has been cleaned (no `certs/n*.txt` or `strong/check6b`).
+The tarball has the `.tex` at top level and `anc/` as a directory; `shasum -a 256 -c MANIFEST`
+inside the unpacked `anc/` passes.
 
 ## AI disclosure
 
