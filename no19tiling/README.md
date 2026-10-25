@@ -1,43 +1,85 @@
 # No triangle can be cut into nineteen congruent triangles
 
-The prime case of [Erdős Problem 634](https://www.erdosproblems.com/634): paper + exact-arithmetic verification script.
+The prime case of [Erdős Problem 634](https://www.erdosproblems.com/634): paper, exact-arithmetic
+check scripts, and a Lean 4 formalization of the paper's arithmetic.
 
-**Theorem.** For every prime $p>3$ with $p \equiv 3 \pmod 4$, no triangle can be tiled by exactly $p$ congruent triangles. In particular, no triangle can be cut into 19 congruent triangles. Combined with the classical constructions this settles the prime case completely: a triangle can be tiled by a prime number $p$ of congruent triangles if and only if $p = 2$, $p = 3$, or $p \equiv 1 \pmod 4$.
+> **Version 2 (25 October 2026) corrects version 1 (24 July 2026).** The theorem is unchanged, but
+> the proof in version 1 was incomplete. It imported two results that are no longer available:
+> Beeson's theorem that no isosceles triangle can be cut into a prime number of congruent triangles
+> ([arXiv:2607.19572](https://arxiv.org/abs/2607.19572), withdrawn on 24 September 2026: "Lemma 9 is
+> not correct as stated"), and the non-primality of tile counts for tiles with 3α + 2β = π
+> ([arXiv:1206.2229v3](https://arxiv.org/abs/1206.2229v3), retracted for two of the five target shapes
+> in v4 of 25 September 2026). Version 2 proves those cases with arguments of its own wherever they
+> suffice, and imports a theorem of Beeson and Roşu ([arXiv:2607.23453v3](https://arxiv.org/abs/2607.23453))
+> for the rest. For primes p ≡ 19 (mod 24), including 19, the corrected proof does not need the
+> Beeson–Roşu theorem. Section 8 of the paper lists every change and the reason for it. Version 1
+> is kept under the git tag
+> [`no19tiling-v1`](https://github.com/jphme/math-problems/tree/no19tiling-v1/no19tiling).
+
+**Theorem.** For every prime $p>3$ with $p \equiv 3 \pmod 4$, no triangle can be tiled by exactly
+$p$ congruent triangles. In particular, no triangle can be cut into 19 congruent triangles. Combined
+with the classical constructions this settles the prime case: a triangle can be tiled by a prime
+number $p$ of congruent triangles if and only if $p = 2$, $p = 3$, or $p \equiv 1 \pmod 4$.
+
+## What the proof rests on
+
+The proof reduces the problem, through the classification theorems of Laczkovich and Beeson, to a
+short list of tile and triangle shapes, and settles them as follows.
+
+* Tiles with a 2π/3 angle: an arithmetic lemma on integer side lengths and the area equation (the
+  four scalene shapes, unchanged from version 1), and a boundary-character argument for the
+  isosceles and equilateral shapes (new).
+* Tiles with 3α + 2β = π: count equations with an integer scale for all five shapes, a congruence
+  argument, and an angle count (new). Two shapes remain at scale one for primes p ≡ 7 (mod 8) and
+  p ≡ 11 (mod 12). They are excluded by Beeson and Roşu, arXiv:2607.23453v3, Theorems 37 and 41.
+* Other tiles: published or accepted results of Laczkovich, Snover–Waiveris–Williams and Beeson, and
+  Beeson's preprint on equilateral triangles.
+
+Several imported results are preprints; the paper states each imported theorem with its source and
+says which of them are refereed. A complete proof of the prime case, formalized in Lean, is also
+available from Vico Bonfioli ([`ElVec1o/erdos634_primes_and_N200`](https://github.com/ElVec1o/erdos634_primes_and_N200)).
 
 ## Contents
 
 | File | Description |
 |------|-------------|
-| [`no19tiling.pdf`](no19tiling.pdf) | The paper (6 pages) |
+| [`no19tiling.pdf`](no19tiling.pdf) | The paper, version 2 |
 | [`no19tiling.tex`](no19tiling.tex) | LaTeX source (amsart) |
-| [`no19tiling-arxiv.tar.gz`](no19tiling-arxiv.tar.gz) | arXiv submission bundle |
-| [`anc/verify_triangle19.py`](anc/verify_triangle19.py) | Exact-arithmetic (SymPy) checks of the algebra in Lemma 9 |
-| [`anc/README.txt`](anc/README.txt) | What the script checks — and what that does and doesn't establish |
+| [`no19tiling-arxiv.tar.gz`](no19tiling-arxiv.tar.gz) | arXiv submission bundle (source and ancillary files) |
+| [`anc/verify_triangle19.py`](anc/verify_triangle19.py) | Exact SymPy checks of the lemma on tiles with a 2π/3 angle (from version 1) |
+| [`anc/verify_lemmas_v2.py`](anc/verify_lemmas_v2.py) | Exact checks of the lemmas that are new in version 2 |
+| [`anc/README.txt`](anc/README.txt) | What the scripts check, what they do not establish, expected output |
+| [`lean/`](lean/) | Lean 4 formalization of the integer arithmetic and of the case analysis ([`lean/README.md`](lean/README.md)) |
 
-The proof stands on recent structural theorems of Beeson, Laczkovich, and Zhang ([arXiv:2604.03609](https://arxiv.org/abs/2604.03609), [arXiv:2604.01314](https://arxiv.org/abs/2604.01314), [arXiv:2607.19572](https://arxiv.org/abs/2607.19572), [arXiv:1206.2229](https://arxiv.org/abs/1206.2229)), plus an elementary arithmetic argument excluding a prime tile count in the remaining configurations where the tile has a $2\pi/3$ angle. Several of the imported results are currently preprints; the paper reproduces the precise statements used and gives detailed attributions.
-
-## Run the verification script
-
-```bash
-uv run --with sympy anc/verify_triangle19.py
-```
-
-or
+## Checks
 
 ```bash
-pip install sympy
-python3 anc/verify_triangle19.py
+uv run --with sympy python anc/verify_triangle19.py
+uv run --with sympy python anc/verify_lemmas_v2.py
 ```
 
-All checks pass in under a second (tested with Python 3.14.6, SymPy 1.14.0). The script performs exact symbolic verification of the trigonometric identities and area-ratio formulas, stress-tests the gcd claims on 41,112 primitive solutions of $c^2 = a^2 + ab + b^2$, and cross-checks the $N=19$ case directly. The proofs in the paper are self-contained; the script is a supplementary check and does not re-prove the cited classification theorems.
+Both finish in a few seconds and end with `ALL CHECKS PASSED`. The proofs in the paper are
+self-contained; the scripts are error detection, not proofs, and they check no geometry.
+
+The Lean development builds against Mathlib v4.30.0 and is checked on every change by the
+repository's GitHub Actions workflow, which also asserts that it contains no `sorry` and that every
+theorem depends only on the standard axioms. To build it locally, install
+[elan](https://github.com/leanprover/elan) and run `lake exe cache get && lake build` in `lean/`.
+It formalizes the arithmetic and the case analysis; the geometric lemmas and the imported theorems
+enter as hypotheses, listed in `lean/README.md`.
 
 ## AI disclosure
 
-An initial version of the arithmetic lemma, the proof assembly, and the verification script was generated by OpenAI GPT-5.6 Pro on 2026-07-24; Claude (Anthropic) was used as a second-model cross-check. See the "Use of AI tools" section of the paper for the full disclosure. The author reviewed the manuscript and takes full responsibility for its content.
+Version 1: an initial version of the arithmetic lemma, the proof assembly and the first check
+script was generated by OpenAI GPT-5.6 Pro on 24 July 2026; Claude (Anthropic) was used as a
+second-model cross-check. That check compared the imported statements with their sources but did
+not examine their proofs, which is how the two failed imports passed it. Version 2: Claude
+(Anthropic; Opus 5.5 and Fable 5.1) re-checked every import against the current sources, drafted
+the new lemmas and the corrected proof, wrote the second script and the Lean formalization, and
+refereed the revised text. See the "Use of AI tools" section of the paper. The author reviewed the
+manuscript and takes full responsibility for its content.
 
 ## Citation
-
-arXiv link will be added once the submission is announced. Until then:
 
 ```bibtex
 @misc{harries2026no19tiling,
@@ -45,8 +87,9 @@ arXiv link will be added once the submission is announced. Until then:
   title  = {No triangle can be cut into nineteen congruent triangles:
             the prime case of Erd\H{o}s Problem 634},
   year   = {2026},
+  note   = {Version 2, October 25, 2026},
   url    = {https://github.com/jphme/math-problems/tree/main/no19tiling}
 }
 ```
 
-*This paper previously lived in the standalone repository `jphme/no19tiling`, now deprecated.*
+*This paper previously lived in the standalone repository `jphme/no19tiling`, now archived.*
