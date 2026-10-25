@@ -21,13 +21,14 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
 
 \title[The prime case of Erd\H{o}s Problem 634]{No triangle can be cut into nineteen congruent triangles:\\ the prime case of Erd\H{o}s Problem 634}
 
 \author{Jan Philipp Harries}
 \thanks{ellamind GmbH, Bremen, Germany. \textit{E-mail address:} \href{mailto:jan@ellamind.com}{jan@ellamind.com}}
 
-\date{July 24, 2026}
+\date{October 25, 2026 (version 2). Version 1: July 24, 2026}
 
 \subjclass[2020]{Primary 52C20; Secondary 51M04, 11D09}
 \keywords{triangle tilings, congruent triangles, Erd\H{o}s problem 634, prime tilings}
@@ -35,22 +36,20 @@
 \begin{document}
 
 \begin{abstract}
-We prove that for every prime $p>3$ with $p\equiv 3 \pmod 4$, no nondegenerate Euclidean triangle can be tiled by exactly $p$ pairwise interior-disjoint congruent triangles. In particular, no triangle can be cut into nineteen congruent triangles, answering a question highlighted in Erd\H{o}s Problem~634. Combined with the classical constructions realizing $p=2$, $p=3$, and every prime $p\equiv 1\pmod 4$, this determines the prime tile counts completely: a triangle can be tiled by a prime number $p$ of congruent triangles if and only if $p=2$, $p=3$, or $p\equiv 1\pmod 4$. The proof combines recent classification theorems of Beeson, Laczkovich, and Zhang with an elementary arithmetic argument excluding a prime tile count in the remaining configurations, in which the tile has a $2\pi/3$ angle. Several of the structural results we use are at present available only as preprints.
+We prove that for every prime $p>3$ with $p\equiv 3 \pmod 4$, no triangle can be tiled by exactly $p$ pairwise interior-disjoint congruent triangles. With the classical constructions for $p=2$, $p=3$ and every prime $p\equiv 1\pmod 4$, this settles the prime case of Erd\H{o}s Problem~634: a triangle can be cut into a prime number $p$ of congruent triangles if and only if $p=2$, $p=3$, or $p\equiv 1\pmod 4$. The proof combines the classification theorems of Laczkovich and Beeson with elementary arguments about integer side lengths, the area equation, and a boundary character. These arguments exclude a prime count in every configuration except the scale-one tilings of two triangle shapes for tiles with $3\alpha+2\beta=\pi$; those two are excluded by a recent theorem of Beeson and Ro\c{s}u, of which we include a self-contained proof, and they arise only for $p\equiv 7$, $11$ or $23\pmod{24}$. For $p\equiv 19\pmod{24}$, in particular for $p=19$, the proof does not use that theorem. This is version~2. The proof in version~1 relied on a theorem about isosceles triangles that its author has since withdrawn and on a non-primality claim that has since been retracted; Section~\ref{sec:changes} lists what changed and why.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
 
-Any triangle can be cut into $n^2$ congruent triangles similar to itself, for every $n\ge 1$. Erd\H{o}s asked, in a question reported by Soifer \cite{Soifer09}, for which $N$ there exists \emph{some} triangle that can be cut into $N$ congruent triangles; this is Problem~634 in Bloom's collection \cite{EP634}. Soifer showed that all $N$ of the forms $n^2$, $2n^2$, $3n^2$, $6n^2$, and $n^2+m^2$ are realizable, and Zhang \cite{Zhang25} recently gave further constructive families. In the other direction, Beeson proved that no triangle can be cut into $7$ or into $11$ congruent triangles \cite{Beeson7}, and in July 2026 that no \emph{isosceles} triangle can be cut into a prime number $N>3$ of congruent triangles \cite{BeesonPrime}. The page \cite{EP634} states: ``It is possible that any prime of the form $4n+3$ does not have this property. In particular, it is not known if $19$ has this property.''
-
-We settle this question.\footnote{A withdrawn preprint of Beeson \cite{Beeson2228} had claimed, among other results, that no $19$-tiling exists. It was withdrawn in 2024 after its main theorem was found to be false; the arXiv record notes that tilings described in later papers contradict it. The present proof makes no use of that manuscript.}
+Any triangle can be cut into $n^2$ congruent triangles similar to itself, for every $n\ge 1$. Erd\H{o}s asked, in a question reported by Soifer \cite{Soifer09}, for which $N$ there exists \emph{some} triangle that can be cut into $N$ congruent triangles; this is Problem~634 in Bloom's collection \cite{EP634}. Soifer showed that all $N$ of the forms $n^2$, $2n^2$, $3n^2$, $6n^2$, and $n^2+m^2$ are realizable, and Zhang \cite{Zhang25} recently gave further constructive families. In the other direction, Beeson proved that no triangle can be cut into $7$ or into $11$ congruent triangles \cite{Beeson7}. The page \cite{EP634} states: ``It is possible that any prime of the form $4n+3$ does not have this property. In particular, it is not known if $19$ has this property.''\footnote{A withdrawn preprint of Beeson \cite{Beeson2228} had claimed, among other results, that no $19$-tiling exists. It was withdrawn in 2024 after its main theorem was found to be false; the arXiv record notes that tilings described in later papers contradict it. The present proof makes no use of that manuscript.}
 
 \begin{theorem}\label{thm:main}
 Let $p>3$ be a prime with $p\equiv 3\pmod 4$. No nondegenerate Euclidean triangle can be tiled by exactly $p$ pairwise interior-disjoint congruent triangles. In particular, no triangle can be cut into $19$ congruent triangles.
 \end{theorem}
 
-Here a \emph{tiling} of a triangle $T$ by a triangle $R$ is a finite family of triangles congruent to $R$ (reflections allowed), with pairwise disjoint interiors, whose union is $T$; the tiling is not assumed edge-to-edge. Following \cite{BLZ633}, a tiling is a \emph{reptiling} if $R$ is similar to $T$; a triangle has \emph{commensurable angles} if all of its angles are rational multiples of $\pi$, and \emph{incommensurable angles} otherwise; and a triangle has \emph{commensurable sides} if the pairwise ratios of its side lengths are rational. We call a triangle \emph{scalene} if no two of its sides are equal; ``isosceles'' is used inclusively, so that equilateral triangles are isosceles and ``not isosceles'' means scalene.
+Here a \emph{tiling} of a triangle $T$ by a triangle $R$ is a finite family of triangles congruent to $R$ (reflections allowed), with pairwise disjoint interiors, whose union is $T$; the tiling is not assumed to be edge-to-edge. Following \cite{BLZ633}, a tiling is a \emph{reptiling} if $R$ is similar to $T$; a triangle has \emph{commensurable angles} if all of its angles are rational multiples of $\pi$, and \emph{incommensurable angles} otherwise; and a triangle has \emph{commensurable sides} if the pairwise ratios of its side lengths are rational. We call a triangle \emph{scalene} if no two of its sides are equal; ``isosceles'' is used inclusively, so that equilateral triangles are isosceles and ``not isosceles'' means scalene.
 
 Since every prime $p\equiv 1\pmod 4$ is a sum of two squares (Fermat), the classical hypotenuse construction of Snover, Waiveris, and Williams \cite{SWW91} realizes such $p$ as tile counts for a right triangle, and $2$ and $3$ are realized by bisecting an isosceles right triangle and by the $3$-tiling of the equilateral triangle. Theorem~\ref{thm:main} is therefore sharp and yields:
 
@@ -58,26 +57,34 @@ Since every prime $p\equiv 1\pmod 4$ is a sum of two squares (Fermat), the class
 A prime $p$ is the tile count of some tiling of some triangle by congruent triangles if and only if $p=2$, $p=3$, or $p\equiv 1\pmod 4$.
 \end{corollary}
 
-This completes the prime case of Erd\H{o}s Problem~634. In passing it recovers the cases $N=7$ and $N=11$, first proved by Beeson \cite{Beeson7} by different methods.
+This completes the prime case of Erd\H{o}s Problem~634, and it recovers the cases $N=7$ and $N=11$ of \cite{Beeson7}.
 
-The proof of Theorem~\ref{thm:main} is short because it stands on recent structural results of Beeson, Laczkovich, and Zhang, recalled in Section~\ref{sec:imports}, which reduce the problem to tiles with a $2\pi/3$ angle and commensurable sides. The remaining arithmetic input is Lemma~\ref{lem:group2} in Section~\ref{sec:lemma}. We do not claim novelty for its algebraic ingredients: the side vectors and tile-count expressions occurring there appear in Zhang's constructions \cite{Zhang25}, and the basic arithmetic of the equation $c^2=a^2+ab+b^2$ is developed by Beeson in \cite{BeesonPrime}; detailed attributions are given in Section~\ref{sec:lemma}. The point of Lemma~\ref{lem:group2} is the necessity statement needed here: in each of the four remaining configurations, for an \emph{arbitrary} tiling, boundary integrality and primitivity force the scale factor between tile and tiled triangle to be an integer, and the resulting tile counts are never prime. Section~\ref{sec:proof} assembles the proof, and Section~\ref{sec:verification} describes supplementary computational checks of the algebra.
+\subsection*{History of the problem in 2026, and what this version changes}
+Within a few days in July 2026 three proofs of Theorem~\ref{thm:main} were posted: a manuscript of R.~J.~George, posted as a proof claim on \cite{EP634} on July~17 \cite{George}; version~1 of the present note (July~24); and a manuscript of Beeson, the first version of \cite{BR}. All three reduce the problem, through the classification theorems of Laczkovich and Beeson, to configurations whose tile has a $2\pi/3$ angle, and treat those by integer side lengths and the area equation; according to its summary, George's proof treats the isosceles case with Laczkovich's boundary invariant. Version~1 of this note took two further cases from results of Beeson that have not survived: Step~1 used his theorem that no isosceles triangle can be cut into a prime number $N>3$ of congruent triangles \cite[Theorem~11]{BeesonPrime}, and Step~4 used his theorem that $N$ is not prime for tiles with $3\alpha+2\beta=\pi$ \cite[Theorem~1]{BeesonPrime}, proved in \cite{Beeson2229}. In September 2026 Beeson withdrew \cite{BeesonPrime} (``Lemma~9 is not correct as stated'') and retracted the second statement for two of the five shapes it covers \cite[version~4]{Beeson2229}. Two complete proofs of the prime case are now available: Beeson and Ro\c{s}u \cite{BR} give a new argument for those two shapes, and Bonfioli \cite{Bonfioli1,Bonfioli2} gives a proof that is formalized in Lean.
 
-Theorem~\ref{thm:main} relies on several recent results that are currently available only as preprints---\cite{BLZ633,BZRat,BeesonPrime} and, through Theorem~\ref{thm:group1prime} below, the manuscript \cite{Beeson2229}---and these have not all appeared in refereed venues at the time of writing. The precise statements used are reproduced in Section~\ref{sec:imports}; we use them as black boxes and do not re-derive their hypotheses or conclusions.
+This version gives a corrected proof. Its own contributions are elementary: the arithmetic lemma for the four scalene configurations with a $2\pi/3$ tile (Lemma~\ref{lem:group2}, unchanged from version~1); a short boundary-character proof that an isosceles triangle tiled by a $2\pi/3$ tile has a composite tile count (Lemma~\ref{lem:rowI}); and count equations with an integer scale for all five shapes with $3\alpha+2\beta=\pi$ (Lemmas~\ref{lem:g1counts}--\ref{lem:shape5}). Together with a congruence and an angle count, these exclude every prime $p\equiv3\pmod4$ for three of the five shapes, and for the other two they exclude all such primes outside one residue class each. For those two classes we use the theorem of Beeson and Ro\c{s}u that the two shapes admit no tiling at scale one (Theorem~\ref{thm:BR}). It is the only result from the 2026 work on the prime case that the proof uses, it is needed only for $p\equiv 7$, $11$ and $23\pmod{24}$, and Appendix~\ref{app:BR} gives a self-contained proof of it: a compact version of their run-growth argument, in which the scalene shape is treated directly. For the remaining residue class the elementary arguments suffice:
+
+\begin{theorem}\label{thm:nineteen}
+The case $p\equiv 19\pmod{24}$ of Theorem~\ref{thm:main}, in particular the case $p=19$, follows from Theorems~\ref{thm:commensurable}--\ref{thm:counts} and the lemmas of Sections~\ref{sec:tools}--\ref{sec:group1}, without Theorem~\ref{thm:BR}.
+\end{theorem}
+
+\subsection*{Dependencies}
+The proof stands on structural theorems that are recalled with their exact statements in Section~\ref{sec:imports} and used as black boxes. Of these, the theorems of Laczkovich \cite{Lacz95,Lacz12} and Snover, Waiveris, and Williams \cite{SWW91} are published in refereed journals, and Beeson's paper on isosceles triangles \cite{BeesonIso} was accepted by \emph{Integers}; we cite its version~8, which corrects several proofs and lemma statements. The others are preprints at the time of writing: the packaging of Laczkovich's classification in \cite{BLZ633}, the rationality theorems of Beeson and Zhang \cite{BZRat} and of Beeson \cite[Theorem~9]{Beeson2229} (whose proof is new in the version of September 2026), and Beeson's paper on equilateral triangles \cite{BeesonEqui}. The theorem of Beeson and Ro\c{s}u \cite{BR} is not used as a black box, since Appendix~\ref{app:BR} proves it. Several of the cited papers declare the use of AI assistance. Section~\ref{sec:verification} describes the computational and formal checks of our own arguments; Bonfioli's Lean development \cite{Bonfioli2} is, according to its documentation, an independent formalization of Corollary~\ref{cor:primes}, including the classification.
 
 \section{Imported results}\label{sec:imports}
 
-Throughout, $T$ denotes the tiled triangle and $R$ the tile. We use the following results.
+Throughout, $T$ denotes the tiled triangle and $R$ the tile, with angles $(\alpha,\beta,\gamma)$ opposite the sides $(a,b,c)$. Theorem numbers are those printed in the cited versions.
 
-\begin{theorem}[{Laczkovich \cite{Lacz95,Lacz12}; stated as \cite[Theorem~3]{BLZ633}}]\label{thm:commensurable}
-Suppose $T$ has commensurable angles and is tiled by $R$. If $T$ is not an isosceles (or equilateral) triangle, then the tiling is a reptiling.
+\begin{theorem}[{Laczkovich \cite{Lacz95,Lacz12}; stated as \cite[Theorem~5]{BLZ633}}]\label{thm:commensurable}
+Suppose $T$ has commensurable angles and is tiled by $R$. If $T$ is not an isosceles triangle (equilateral triangles included), then the tiling is a reptiling.
 \end{theorem}
 
-\begin{theorem}[{Snover--Waiveris--Williams \cite{SWW91}; stated as \cite[Theorem~4]{BLZ633}}]\label{thm:reptile}
+\begin{theorem}[{Snover--Waiveris--Williams \cite{SWW91}; stated as \cite[Theorem~6]{BLZ633}}]\label{thm:reptile}
 If $T$ can be reptiled into $N$ tiles, then $N=M^2$, or $N=M^2+K^2$, or $N=3M^2$ for some positive integers $M,K$.
 \end{theorem}
 
-\begin{theorem}[{Beeson--Laczkovich--Zhang \cite[Theorem~9]{BLZ633}, from Laczkovich \cite[Theorem~4.1]{Lacz95}}]\label{thm:classification}
-Let a non-isosceles triangle $T$ be tiled by a tile $R$ with incommensurable angles $(\alpha,\beta,\gamma)$. Then one of the following holds:
+\begin{theorem}[{Laczkovich \cite[Theorem~4.1]{Lacz95}; stated as \cite[Theorem~11]{BLZ633}}]\label{thm:classification}
+Let a non-isosceles triangle $T$ be tiled with a triangle with angles $(\alpha,\beta,\gamma)$. Then one of the following holds:
 \begin{enumerate}
 \item the tiling is a reptiling;
 \item \textup{(Group 1)} $3\alpha+2\beta=\pi$, and $T$ has angles $(\alpha,2\alpha,2\beta)$ or $(2\alpha,\beta,\alpha+\beta)$;
@@ -91,21 +98,129 @@ Let a non-isosceles triangle $T$ be tiled by a tile $R$ with incommensurable ang
 \end{enumerate}
 \end{theorem}
 
-\begin{theorem}[{Beeson \cite[Theorem~1]{BeesonPrime}, proved in \cite{Beeson2229}}]\label{thm:group1prime}
-Let $T$ be tiled by $N$ copies of a tile $R$ with angles $(\alpha,\beta,\gamma)$ satisfying $3\alpha+2\beta=\pi$, where $T$ is not similar to $R$. Then $N$ is not prime.
+In Theorem~\ref{thm:classification}, and in Theorem~\ref{thm:isoclass} below, the labeling of the two angles $\alpha,\beta$ is not ordered: the triples are to be read up to the interchange $\alpha\leftrightarrow\beta$ in Group~2, and up to a permutation of the tile's angles in Theorem~\ref{thm:isoclass}.
+
+\begin{theorem}[{Laczkovich \cite{Lacz95}; stated as \cite[Theorem~3.1 and Table~1]{BeesonIso}}]\label{thm:isoclass}
+Let an isosceles, not equilateral, triangle $T$ be tiled by a tile with angles $(\alpha,\beta,\gamma)$. Then $T$ and the tile are as in one of the following lines:
+\begin{center}
+\begin{tabular}{@{}cll@{}}
+\toprule
+line & angles of $T$ & tile \\
+\midrule
+1 & $(\beta,\beta,\pi-2\beta)$ & similar to $T$ \\
+2 & $(\beta,\beta,2\alpha)$ & $\gamma=\pi/2$ \\
+3 & $(\alpha,\alpha,\pi-2\alpha)$ & $\gamma=2\alpha$ \\
+4 & $(\alpha,\alpha,\pi-2\alpha)$ & $\gamma=2\pi/3$ \\
+5 & $(\alpha,\alpha,\alpha+2\beta)$ & $3\alpha+2\beta=\pi$ \\
+6 & $(\beta,\beta,3\alpha)$ & $3\alpha+2\beta=\pi$ \\
+7 & $(\alpha+\beta,\alpha+\beta,\alpha)$ & $3\alpha+2\beta=\pi$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+If the angles of the tile are commensurable, then line~$1$ or line~$2$ applies; otherwise $\alpha$ is not a rational multiple of $\pi$.
 \end{theorem}
 
-\begin{theorem}[{Beeson--Zhang \cite[Theorem~1.2]{BZRat}; stated as \cite[Theorem~6]{BLZ633}}]\label{thm:rationality}
-Let $T$ be tiled by a tile $R$ such that $R$ is not similar to $T$, $R$ is not a right triangle, and $R$ has incommensurable angles. Then $R$ has commensurable sides.
+\begin{theorem}[{Laczkovich \cite[Theorem~3.3]{Lacz12}, as quoted in \cite[p.~1]{BeesonEqui} and in the proof of \cite[Theorem~3]{BR}}]\label{thm:equiclass}
+If an equilateral triangle is tiled by a tile $R$, then the angles of $R$ are $(\pi/3,\pi/3,\pi/3)$, $(\pi/6,\pi/6,2\pi/3)$, $(\pi/6,\pi/2,\pi/3)$, or $(\alpha,\beta,\pi/3)$ or $(\alpha,\beta,2\pi/3)$ with $\alpha$ not a rational multiple of $\pi$.
 \end{theorem}
 
-\begin{theorem}[{Beeson \cite[Theorem~11]{BeesonPrime}}]\label{thm:isosceles}
-Let $T$ be an isosceles triangle tiled into $N$ copies of a triangle $R$. Then $N$ is not a prime greater than three.
+\begin{theorem}[Commensurable sides]\label{thm:rational}
+Let $T$ be tiled by a tile $R$ with angles $(\alpha,\beta,\gamma)$ such that $T$ is not similar to $R$.
+\begin{enumerate}
+\item[(a)] \textup{(Beeson--Zhang \cite[Theorem~1.1]{BZRat})} If $\gamma=2\pi/3$ and the angles of $R$ are incommensurable, then $R$ has commensurable sides.
+\item[(b)] \textup{(Beeson \cite[Theorem~9]{Beeson2229})} If $3\alpha+2\beta=\pi$, then $R$ has commensurable sides.
+\end{enumerate}
 \end{theorem}
 
-In Theorem~\ref{thm:classification}, the labeling of the two acute tile angles $\alpha,\beta$ in Group~2 is not ordered, so the four listed triples are to be read up to the interchange $\alpha\leftrightarrow\beta$. Lemma~\ref{lem:group2} below is symmetric under this interchange, and the computational checks of Section~\ref{sec:verification} run both labelings.
+\begin{theorem}\label{thm:counts}
+\begin{enumerate}
+\item[(a)] \textup{(Beeson \cite[Corollary~7.9]{BeesonIso})} If an isosceles, not equilateral, triangle is tiled by $N>2$ copies of a right triangle, then $N$ is not a prime.
+\item[(b)] \textup{(Beeson \cite[Theorem~11.7]{BeesonIso})} If an isosceles triangle with base angles $\alpha$, where $\alpha$ is not a rational multiple of $\pi$, is tiled by $N$ copies of a tile with angles $(\alpha,\beta,2\alpha)$, then $N$ is not squarefree.
+\item[(c)] \textup{(Beeson \cite[Theorem~3]{BeesonEqui})} If an equilateral triangle is tiled by $N$ copies of a tile with angles $(\alpha,\beta,\pi/3)$, where $\alpha$ is not a rational multiple of $\pi$, then $N$ is not prime.
+\end{enumerate}
+\end{theorem}
 
-\section{An arithmetic lemma for tiles with a \texorpdfstring{$2\pi/3$}{2pi/3} angle}\label{sec:lemma}
+\begin{theorem}[{Beeson--Ro\c{s}u \cite[Theorems~37 and~41]{BR}}]\label{thm:BR}
+Let the tile $R$ have angles $(\alpha,\beta,\gamma)$ with $3\alpha+2\beta=\pi$, $\alpha$ not a rational multiple of $\pi$, and commensurable sides, scaled to the integer sides $(a,b,c)=(mk,k^2-m^2,k^2)$ of Lemma~\ref{lem:g1tile} below. Then the triangle with angles $(\beta,\beta,3\alpha)$ and sides $(k^3,k^3,m(3k^2-m^2))$, and the triangle with angles $(2\alpha,\beta,\alpha+\beta)$ and sides $(m(2k^2-m^2),k(k^2-m^2),k^3)$, cannot be tiled by copies of $R$.
+\end{theorem}
+
+In the terminology of \cite{BR}, these are the tilings ``with $j=1$'' of the isosceles-$\beta$ and the triquadratic triangle; by Lemma~\ref{lem:g1counts} below, the sides of any tiled triangle of these two shapes are $j$ times the displayed ones for a positive integer $j$. For the tile $(2,3,4)$, both shapes are tiled with $j=2$, by $28$ and $44$ tiles \cite{Beeson2229}, and with $j=3$, by $63$ and $99$ tiles \cite{Bonfioli2}; we checked the last two tilings with an exact checker. So Theorem~\ref{thm:BR} is a statement about scale one only. Appendix~\ref{app:BR} gives a self-contained proof of it, which re-derives the run-growth argument of \cite{BR}.
+
+\section{Tools}\label{sec:tools}
+
+Directions of directed segments are taken in $\R/2\pi\Z$, and $\theta(\sigma)$ denotes the direction of a directed segment $\sigma$. For a triangle whose vertices $P_1,P_2,P_3$ are listed counterclockwise, with angles $\varphi_1,\varphi_2,\varphi_3$, the \emph{turning rule}
+\begin{equation}\label{eq:turning}
+\theta(P_2P_3)=\theta(P_1P_2)+\pi-\varphi_2,\qquad
+\theta(P_3P_1)=\theta(P_2P_3)+\pi-\varphi_3
+\end{equation}
+holds; the same rule holds for any convex polygon traversed counterclockwise.
+
+\begin{lemma}[Boundary decomposition]\label{lem:bdry}
+Let a convex polygon $P$ be tiled by finitely many triangles, and let $S$ be a side of $P$.
+\begin{enumerate}
+\item[(a)] Every tile meeting $S$ in more than one point meets the line of $S$ in one of its edges, and that edge lies in $S$. The tile edges lying in $S$ have pairwise disjoint relative interiors, belong to distinct tiles, and their union is $S$.
+\item[(b)] Each corner of $P$ is a vertex of every tile containing it.
+\item[(c)] If every tile is congruent to a triangle with integer sides $a,b,c$, then $|S|=Aa+Bb+Cc$, where $A$, $B$, $C$ are the numbers of tile edges in $S$ that are the $a$-edge, the $b$-edge and the $c$-edge of their tile. In particular $|S|$ is a positive integer.
+\item[(d)] Let $x\in P$, and let $\Phi$ be the angle of $P$ at $x$: the corner angle if $x$ is a corner, $\pi$ if $x$ lies in the relative interior of a side, $2\pi$ if $x$ is an interior point. Then the angles at $x$ of the tiles having a vertex at $x$ add up to at most $\Phi$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Let $\ell$ be the line of $S$. The polygon $P$ lies in a closed half-plane bounded by $\ell$, and $P\cap\ell=S$. Let a tile $t$ meet $S$ in two points. As $t\subseteq P$, the line $\ell$ supports $t$, so $t\cap\ell$ is a face of $t$; containing two points, it is an edge $e$ of $t$, and $e\subseteq P\cap\ell=S$. A triangle has no two edges on one line, so $t$ has only one edge in $S$. If edges $e\subseteq t$ and $e'\subseteq t'$ in $S$, with $t\neq t'$, overlapped in a nondegenerate segment, then for a point $y$ of the relative interior of the overlap both $t$ and $t'$ would contain a small half-disk at $y$ on the side of $\ell$ facing $P$, contradicting disjoint interiors. Every point of $S$ lies in some tile; the tiles meeting $S$ in at most one point meet it in finitely many points altogether, so the union of the edges in $S$ is a closed subset of $S$ that misses at most finitely many points of $S$, hence equals $S$.
+
+(b) A corner $v$ of $P$ is an extreme point of $P$. If $v\in t$ for a tile $t\subseteq P$, then $v$ is an extreme point of $t$, and the extreme points of a triangle are its vertices.
+
+(c) By (a) the edges in $S$ have disjoint relative interiors and cover $S$, so their lengths add up to $|S|$.
+
+(d) Choose a disk $D$ centred at $x$ so small that it meets only tiles containing $x$, meets no edge of such a tile that does not contain $x$, and satisfies $D\cap P=D\cap W$ for the sector $W$ of opening $\Phi$ at $x$ (a half-plane if $\Phi=\pi$). A tile with a vertex at $x$ meets $D$ in a sector at $x$ whose opening is its angle at $x$. These sectors lie in $D\cap W$ and have pairwise disjoint interiors, so their openings add up to at most $\Phi$.
+\end{proof}
+
+\begin{lemma}\label{lem:irr}
+If $0<\varphi<\pi$ and $2\cos\varphi$ is rational but not an integer, then $\varphi/\pi$ is irrational.
+\end{lemma}
+
+\begin{proof}
+If $\varphi=2\pi r/s$ with integers $r,s$, $s>0$, then $\zeta=e^{i\varphi}$ satisfies $\zeta^s=1$, so $\zeta$ and $\zeta^{-1}$ are algebraic integers, and so is $2\cos\varphi=\zeta+\zeta^{-1}$. A rational algebraic integer is a rational integer.
+\end{proof}
+
+\begin{lemma}[Boundary character]\label{lem:character}
+Let a convex polygon $P$ be tiled by triangles $t_1,\dots,t_N$. Let $\Lambda\subseteq\R/2\pi\Z$ be a subgroup containing $\pi$ and every angle of every tile, and let $\psi$ be a group homomorphism from $\Lambda$ to the group $\{\pm z^n:n\in\Z\}$ of units of the Laurent polynomial ring $\R[z,z^{-1}]$, with $\psi(\pi)=-1$. Let $E$ be the union of the cosets $\theta+\Lambda$, where $\theta$ runs over the directions of all tile edges traversed in either sense. Then there is a map $\chi:E\to\{\pm z^n:n\in\Z\}$ such that:
+\begin{enumerate}
+\item[(i)] $\chi(\theta+\lambda)=\chi(\theta)\,\psi(\lambda)$ for all $\theta\in E$ and $\lambda\in\Lambda$;
+\item[(ii)] the directions of the sides of $P$, in either sense, lie in $E$; and if $B(\sigma)=|\sigma|\,\chi(\theta(\sigma))$ for directed segments $\sigma$ with $\theta(\sigma)\in E$, extended additively to closed polygonal paths, then
+\[
+\sum_{i=1}^{N}B(\partial t_i)=B(\partial P),
+\]
+where $\partial$ denotes the boundary traversed counterclockwise.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+By the turning rule \eqref{eq:turning} the three directed edges of one tile, traversed counterclockwise, have directions $\theta$, $\theta+\pi-\varphi_2$ and $\theta+2\pi-\varphi_2-\varphi_3$, where $\varphi_2,\varphi_3$ are angles of the tile; reversing an edge adds $\pi$. Since $\pi$ and all tile angles lie in $\Lambda$, all directed edges of one tile have directions in one coset of $\Lambda$, so $E$ is the union of finitely many cosets $\Gamma_1,\dots,\Gamma_r$. Choose $\theta_i\in\Gamma_i$ and put $\chi(\theta_i+\lambda)=\psi(\lambda)$ for $\lambda\in\Lambda$. This is well defined, since $\theta_i+\lambda=\theta_i+\lambda'$ in $\R/2\pi\Z$ forces $\lambda=\lambda'$, and (i) follows from the multiplicativity of $\psi$. In particular
+\begin{equation}\label{eq:chi-reverse}
+\chi(\theta+\pi)=-\chi(\theta)\qquad(\theta\in E).
+\end{equation}
+Each side $S$ of $P$ contains a tile edge parallel to it (Lemma~\ref{lem:bdry}(a)), so the directions of $S$ lie in $E$.
+
+Let $V$ be the finite set of all vertices of all tiles. The points of $V$ lying on an edge $e$ of a tile $t$ cut $e$ into closed segments, the \emph{elementary segments} of $t$. Since $B$ is additive on collinear segments of the same direction, $B(\partial t)$ is the sum of $B(\sigma)$ over the elementary segments $\sigma$ of $t$, each traversed in the counterclockwise sense of $t$.
+
+Fix an elementary segment $\sigma$ of an edge $e$ of a tile $t$, and a point $x$ in the relative interior of $\sigma$; then $x\notin V$. If $x$ lay in the interior of a tile $t'$, then $t'\neq t$ and the open set $\operatorname{int}t'$ would contain $x\in t=\overline{\operatorname{int}t}$, hence meet $\operatorname{int}t$, which is impossible. So every tile $t'$ containing $x$ has $x$ on its boundary and not at a vertex, that is, in the relative interior of a unique edge $e'$ of $t'$. Let $H'$ be the closed half-plane bounded by the line of $e'$ that contains $t'$ (for $t'=t$ we write $H_t$). The lines of the other two edges of $t'$ meet the line of $e'$ only at vertices of $t'$, so they do not pass through $x$. Choose an open disk $D$ centred at $x$ that misses every tile not containing $x$ and, for every tile $t'$ containing $x$, misses the lines of the two edges of $t'$ other than $e'$. Then $D\cap t'=D\cap H'$ for every tile $t'$ containing $x$, and these half-disks have pairwise disjoint interiors and union $D\cap P$. Two closed half-planes whose boundary lines pass through $x$ have disjoint interiors near $x$ only if they have the same boundary line and lie on opposite sides of it. There are two cases.
+
+\emph{Interior segments.} Suppose the relative interior of $\sigma$ lies in $\operatorname{int}P$. Shrinking $D$, we may assume $D\subseteq P$. The open half-disk $D\setminus H_t$ is then covered by half-disks $D\cap H'$ of tiles $t'\neq t$, each of which must be the half-disk opposite to $D\cap H_t$; two of them would overlap. Hence exactly one tile $t'\neq t$ contains $x$, its edge $e'$ lies on the line of $e$, and $t$ and $t'$ lie on opposite sides of that line. The segment $e'$ contains $x$ in its relative interior and has its endpoints in $V$; as no point of $V$ lies in the relative interior of $\sigma$, we get $\sigma\subseteq e'$, and $\sigma$ is an elementary segment of $t'$ as well. Any tile having $\sigma$ as an elementary segment contains $x$, so it is $t$ or $t'$.
+
+\emph{Boundary segments.} Otherwise some point $y$ of the relative interior of $\sigma$ lies on a side $S$ of $P$, with line $\ell$. Since $P$ lies on one side of $\ell$ and $\sigma\subseteq P$ passes through $y\in\ell$ with $y$ in its relative interior, $\sigma\subseteq\ell\cap P=S$. The point $x$ is not a corner of $P$, because corners belong to $V$ by Lemma~\ref{lem:bdry}(b); shrinking $D$, we may assume $D\cap P=D\cap H_P$, where $H_P$ is the closed half-plane bounded by $\ell$ that contains $P$. Then $D\cap H_t\subseteq D\cap H_P$ forces $H_t=H_P$, so $D\cap t=D\cap P$ and no other tile contains $x$. Thus $t$ is the only tile having $\sigma$ as an elementary segment.
+
+Now group the terms of $\sum_i B(\partial t_i)$ by the underlying elementary segment. A tile lies to the left of its boundary traversed counterclockwise. An interior elementary segment occurs exactly twice, for two tiles on opposite sides of it, hence with opposite directions, and the two terms cancel by \eqref{eq:chi-reverse}. A boundary elementary segment $\sigma\subseteq S$ occurs once, for a tile lying on the same side of $S$ as $P$, so it is traversed in the counterclockwise direction $\theta_S$ of the side $S$ of $\partial P$. The boundary elementary segments in $S$ are exactly the elementary segments of the tile edges lying in $S$, which cover $S$ with disjoint relative interiors by Lemma~\ref{lem:bdry}(a); so their lengths add up to $|S|$. Therefore
+\[
+\sum_{i=1}^{N}B(\partial t_i)=\sum_{S}|S|\,\chi(\theta_S)=B(\partial P).\qedhere
+\]
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:character} is the cancellation principle behind Laczkovich's boundary invariant \cite[p.~351]{Lacz12}, in the Laurent-polynomial form of \cite[Section~4]{Progress634}. Choosing one base direction in each coset of $\Lambda$ separately removes the need to show that all tile edges lie in a single coset, and no edge-to-edge or connectivity assumption on the tiling is used. In the applications below every tile edge has integer length, so all values $B(\partial t_i)$ lie in $\Z[z,z^{-1}]$.
+\end{remark}
+
+\section{Tiles with a \texorpdfstring{$2\pi/3$}{2pi/3} angle}\label{sec:lemma}
 
 \begin{lemma}\label{lem:group2}
 Let $R$ have angles $(\alpha,\beta,\gamma)$ with $\gamma=2\pi/3$ and commensurable sides, scaled so that the sides opposite $(\alpha,\beta,\gamma)$ are positive integers $(a,b,c)$ with $\gcd(a,b,c)=1$; we call such a triple \emph{primitive}. If $T$ has one of the four Group~2 angle triples of Theorem~\ref{thm:classification} and is tiled by $N$ copies of $R$, then $N$ is not prime.
@@ -116,14 +231,14 @@ The law of cosines with $\gamma=2\pi/3$ gives
 \begin{equation}\label{eq:norm}
 c^2=a^2+ab+b^2 .
 \end{equation}
-Primitivity implies pairwise coprimality: a prime dividing two of $a,b,c$ divides the third by \eqref{eq:norm} (cf.\ \cite[Lemma~5]{BeesonPrime}). Moreover
+Primitivity implies pairwise coprimality: a prime dividing two of $a,b,c$ divides the third by \eqref{eq:norm} (cf.\ \cite[Lemma~13]{BR}). Moreover
 \begin{equation}\label{eq:not3}
 3\nmid c :
 \end{equation}
-if $3\mid c$, then \eqref{eq:norm} modulo $3$ gives $(a-b)^2\equiv 0\pmod 3$, so $a=b+3k$; substituting, $c^2=3b^2+9bk+9k^2$, and $9\mid c^2$ forces $3\mid b$ and then $3\mid a$, contradicting primitivity (cf.\ the proof of \cite[Theorem~6]{BeesonPrime}).
+if $3\mid c$, then \eqref{eq:norm} modulo $3$ gives $(a-b)^2\equiv 0\pmod 3$, so $a=b+3k$; substituting, $c^2=3b^2+9bk+9k^2$, and $9\mid c^2$ forces $3\mid b$ and then $3\mid a$, contradicting primitivity (cf.\ \cite[Lemma~14]{BR}).
 
 \subsection*{Boundary integrality}
-With this scaling, every side of $T$ has integer length; no edge-to-edge assumption is needed. Let $S$ be a side of $T$ and let $\ell$ be the line containing $S$. Every tile is contained in $T$, hence in the closed half-plane bounded by $\ell$ that contains $T$; thus $\ell$ supports each tile it meets. If a tile meets the relative interior of $S$ in more than one point, its intersection with $\ell$ is a face of the tile---a vertex or an entire edge---and, containing two points, it is an entire edge, of length $a$, $b$, or $c$. Two such edges have disjoint relative interiors: if the edges of two tiles overlapped in a nondegenerate segment of $S$, the two tiles would occupy a common half-neighborhood of an interior point of the overlap on the inner side of $\ell$, contradicting disjoint interiors. The tiling is finite and covers $S$, and only finitely many points of $S$ lie solely in tiles meeting $S$ in a single point; hence $S$ is partitioned, up to finitely many points, into complete tile edges, and $|S|$ is a sum of elements of $\{a,b,c\}$---an integer.
+By Lemma~\ref{lem:bdry}(c), every side of $T$ has integer length; no edge-to-edge assumption is needed.
 
 \subsection*{Side and area computations}
 Let $K=2c/\sqrt 3$, the circumdiameter of $R$. The laws of sines and cosines give
@@ -159,7 +274,7 @@ D & $(2\alpha,2\beta,\alpha+\beta)$ & $\bigl(a(a+2b),\;b(2a+b),\;c^2\bigr)$ & $m
 \smallskip
 Here $N$ is the ratio of areas, computed from the sine products and the ratio of sine-law scales; the scale ratios $K_T/K$ are $mc^2/a$, $mc$, $m$, and $mc$ in cases A--D respectively. Primitivity of the four vectors is proved below.
 
-Side vectors and tile counts equivalent to the rows of this table appear in Zhang's paper \cite{Zhang25}, where they arise from explicit constructions: for case~D in \cite[Section~4]{Zhang25} (Proposition~6), and for cases B, C, and A in \cite[Propositions~10, 9, and~11]{Zhang25}, respectively. Moreover, for case~D, Zhang's Lemma~5 already proves the necessity statement we are after, under the hypothesis $a\not\equiv b\pmod 3$---which holds for every primitive triple, since $c^2\equiv(a-b)^2\pmod 3$ and $3\nmid c$ by \eqref{eq:not3}. What the present lemma adds is the same necessity statement in all four cases, together with the exclusion of a prime count.
+Side vectors and tile counts equivalent to the rows of this table appear in Zhang's paper \cite{Zhang25}, where they arise from explicit constructions: for case~D in \cite[Section~4]{Zhang25} (Proposition~6), and for cases B, C, and A in \cite[Propositions~10, 9, and~11]{Zhang25}, respectively. Moreover, for case~D, Zhang's Lemma~5 already proves the necessity statement we are after, under the hypothesis $a\not\equiv b\pmod 3$---which holds for every primitive triple, since $c^2\equiv(a-b)^2\pmod 3$ and $3\nmid c$ by \eqref{eq:not3}. What the present lemma adds is the same necessity statement in all four cases, together with the exclusion of a prime count. Beeson and Ro\c{s}u \cite[Theorems~19--22]{BR} give the same four counts with an independent proof.
 
 \subsection*{The vectors are primitive}
 In case C, $\gcd(a,c)=1$. In case B, a common prime divisor $q$ of all three entries satisfies $q\mid c$ (if $q\nmid c$ then $q\mid a$ and $q\mid a+b$, so $q\mid b$, impossible); then $q\nmid b$, so $q\mid 2a+b$, and reducing \eqref{eq:norm} modulo $q$ using $b\equiv-2a$ gives $3a^2\equiv 0\pmod q$, so $q=3$, contradicting \eqref{eq:not3}. In case D, a common prime $q$ divides $c^2$ but neither $a$ nor $b$, hence divides $a+2b$ and $2a+b$, hence $2(a+2b)-(2a+b)=3b$; since $q\nmid b$, this forces $q=3$, again contradicting \eqref{eq:not3}. In case A, a common prime $q$ divides $c$, hence not $3b$ by \eqref{eq:not3} and coprimality, hence $q \mid a+b$; reducing \eqref{eq:norm} modulo $q$ with $a\equiv-b$ gives $b^2\equiv 0\pmod q$, contradicting $\gcd(b,c)=1$.
@@ -183,37 +298,524 @@ Now \eqref{eq:norm} gives $c^2=(a+b)^2-ab=p^2-ab$, so $0<c<p$. Modulo $p$ we hav
 All four cases (and, by the $a\leftrightarrow b$ symmetry of the argument, their relabelings) are settled.
 \end{proof}
 
-\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+\begin{lemma}[Isosceles and equilateral targets]\label{lem:rowI}
+Let $R$ have angles $(\alpha,\beta,\gamma)$ with $\gamma=2\pi/3$ and commensurable sides, scaled so that the sides opposite $(\alpha,\beta,\gamma)$ form a primitive integer triple $(a,b,c)$, and let a triangle $T$ be tiled by $N$ copies of $R$.
+\begin{enumerate}
+\item[(a)] If $T$ has angles $(\alpha,\alpha,\pi-2\alpha)$, then the sides of $T$ are $k\,(c,\,c,\,a+2b)$ for a positive integer $k$ divisible by $b$, and with $k=bm$,
+\[
+N=m^2\,b\,(a+2b).
+\]
+Interchanging the names of $\alpha,a$ and $\beta,b$: if $T$ has angles $(\beta,\beta,\pi-2\beta)$, then its sides are $k(c,c,2a+b)$ with $a\mid k$, and $N=m^2a(2a+b)$ with $k=am$.
+\item[(b)] If $T$ is equilateral with side $L$, then $ab\mid L$, and $N=m^2ab$ with $L=abm$.
+\end{enumerate}
+In particular $N$ is not prime.
+\end{lemma}
 
 \begin{proof}
+\emph{Arithmetic of the tile.} By the first paragraph of the proof of Lemma~\ref{lem:group2}, $c^2=a^2+ab+b^2$, the integers $a,b,c$ are pairwise coprime, and $3\nmid c$. Put $d=a-b$ and $U=a+2b$. Then $\gcd(d,a)=\gcd(b,a)=1$, $\gcd(d,b)=1$, and $d^2=c^2-3ab\equiv c^2\not\equiv0\pmod3$; so $c$ and $d$ are units modulo $3ab$. Also $a,b\ge2$: for $b=1$ the number $c^2=a^2+a+1$ would lie strictly between $a^2$ and $(a+1)^2$, and symmetrically for $a=1$.
+
+\emph{The character.} The law of cosines gives $\cos\alpha=U/(2c)$. Since $0<\alpha<\pi/3$, $2\cos\alpha=U/c$ lies strictly between $1$ and $2$, so $\alpha/\pi$ is irrational by Lemma~\ref{lem:irr}. Let $\Lambda=\{j\pi/3+n\alpha:j,n\in\Z\}\subseteq\R/2\pi\Z$. It contains $\pi$, $\alpha$, $\beta=\pi/3-\alpha$, $\gamma=2\pi/3$ and $\pi-2\alpha$. If $j\pi/3+n\alpha=j'\pi/3+n'\alpha$ in $\R/2\pi\Z$, then $n=n'$ by the irrationality of $\alpha/\pi$, and then $j\equiv j'\pmod 6$; hence $\psi(j\pi/3+n\alpha)=(-1)^jz^n$ is a well-defined homomorphism with $\psi(\pi)=-1$. Let $\chi$ and $B$ be as in Lemma~\ref{lem:character}.
+
+\emph{Tile values.} Label the vertices of a tile as $A,B',C'$ by the angles $\alpha,\beta,\gamma$. Call the tile \emph{direct} if $A,B',C'$ is its counterclockwise order and \emph{reflected} otherwise, and let $\varphi$ be the direction of its $a$-edge traversed counterclockwise. For a direct tile, the turning rule gives the directions $\varphi$, $\varphi+\pi-\gamma=\varphi+\pi/3$ and $\varphi+2\pi-\gamma-\alpha=\varphi+4\pi/3-\alpha$ for $B'C'$, $C'A$, $AB'$, of lengths $a,b,c$; for a reflected tile, the directions of $C'B'$, $B'A$, $AC'$, of lengths $a,c,b$, are $\varphi$, $\varphi+\pi-\beta=\varphi+2\pi/3+\alpha$ and $\varphi+2\pi-\alpha-\beta=\varphi+5\pi/3$. Hence
+\[
+B(\partial t)=\chi(\varphi)\,(d+cz^{-1})\ \text{(direct)},\qquad
+B(\partial t)=\chi(\varphi)\,(d+cz)\ \text{(reflected)}.
+\]
+By Lemma~\ref{lem:character}(ii), $B(\partial T)$ lies in the ideal $I=(d+cz,\;d+cz^{-1})$ of $\Z[z,z^{-1}]$.
+
+\emph{Evaluation.} Let $c'$ and $d'$ be inverses of $c$ and $d$ modulo $3ab$, and let $\varepsilon:\Z[z,z^{-1}]\to\Z/3ab\Z$ be the ring homomorphism with $\varepsilon(z)=w=-dc'$, a unit with $w^{-1}=-cd'$. It kills $I$:
+\[
+\varepsilon(d+cz)=d-cc'd=0,\qquad
+\varepsilon(d+cz^{-1})=d-c^2d'=d'(d^2-c^2)=-3ab\,d'=0 .
+\]
+Hence $\varepsilon(B(\partial T))=0$.
+
+(a) The legs of $T$ are opposite $\alpha$ and the base is opposite $\pi-2\alpha$, so base and leg are in the ratio $\sin2\alpha:\sin\alpha=U:c$. A prime $\ell$ dividing $c$ and $U$ satisfies $a\equiv-2b$ and hence $0\equiv c^2\equiv 3b^2\pmod\ell$; since $\ell\nmid b$, $\ell=3$, contradicting $3\nmid c$. So $\gcd(c,U)=1$, and by Lemma~\ref{lem:bdry}(c) and B\'ezout, as in the proof of Lemma~\ref{lem:group2}, the sides of $T$ are $k(c,c,U)$ with $k\in\Z_{>0}$. The area of $T$ is $\tfrac12(kc)^2\sin2\alpha$ and that of $R$ is $\tfrac12bc\sin\alpha$, so
+\[
+N=\frac{k^2c\cdot2\cos\alpha}{b}=\frac{k^2U}{b}.
+\]
+With the base corners $X,Y$ and the apex $Z$ in counterclockwise order and $\theta_0=\theta(XY)$, the turning rule gives $\theta(YZ)=\theta_0+\pi-\alpha$ and $\theta(ZX)=\theta(YZ)+\pi-(\pi-2\alpha)=\theta_0+\pi+\alpha$, so
+\[
+B(\partial T)=\chi(\theta_0)\,k\,\bigl(U-cz^{-1}-cz\bigr).
+\]
+Therefore $0=\varepsilon\bigl(k(U-cz^{-1}-cz)\bigr)=k\,(U+c^2d'+d)$, and multiplying by $d$,
+\[
+0=k\,(dU+c^2+d^2)=3a^2k\quad\text{in }\Z/3ab\Z,
+\]
+by the identity $(a-b)(a+2b)+(a^2+ab+b^2)+(a-b)^2=3a^2$. Thus $3ab\mid3a^2k$, so $b\mid a^2k$ and, as $\gcd(a,b)=1$, $b\mid k$. Writing $k=bm$ gives $N=m^2bU$, a product of the integers $m^2b\ge2$ and $U\ge6$. The statement for base angles $\beta$ is the same statement for the relabeled tile.
+
+(b) The side $L$ of $T$ is a positive integer by Lemma~\ref{lem:bdry}(c). With the corners in counterclockwise order, the turning rule gives the directions $\theta_0$, $\theta_0+2\pi/3$ and $\theta_0+4\pi/3$ for the three sides, and $\psi(2\pi/3)=\psi(4\pi/3)=1$, so $B(\partial T)=3L\,\chi(\theta_0)$. Hence $\varepsilon(3L)=0$, that is, $3ab\mid 3L$ and $ab\mid L$. The areas of $T$ and $R$ are $\tfrac{\sqrt3}{4}L^2$ and $\tfrac12ab\sin\tfrac{2\pi}{3}=\tfrac{\sqrt3}{4}ab$, so $N=L^2/(ab)=m^2ab$ with $L=abm$, a product of $m^2a\ge2$ and $b\ge2$.
+\end{proof}
+
+\begin{remark}
+In part (a) the count formula alone does not exclude a prime: the primitive triple $(a,b,c)=(39,16,49)$ and $k=4$ give $T=4\,(49,49,71)$ with $N=k^2U/b=71$, a prime $\equiv3\pmod4$, which is excluded because $16\nmid4$. Part (a) is the row-I case, and part (b) the row-E case, of the Laurent boundary quotient of \cite[Theorem~19 and Corollary~22]{Progress634}, reduced to what these two rows need. Part (a) settles line~4 of Theorem~\ref{thm:isoclass} for every $N$. This is the case of \cite[Theorem~10]{BeesonPrime}, whose proof used the incorrect Lemma~9 there, and of \cite[Theorem~42]{Bonfioli1}, which \cite[Section~2 and Corollary~8]{BR} cite for this line; Beeson and Ro\c{s}u \cite[Section~8]{BR} derive the count formula and note that it allows primes. Part (b) gives an independent proof of \cite[Theorem~6]{BeesonEqui}.
+\end{remark}
+
+\section{Tiles with \texorpdfstring{$3\alpha+2\beta=\pi$}{3alpha+2beta=pi}}\label{sec:group1}
+
+\begin{lemma}[Group-1 tiles]\label{lem:g1tile}
+Let $R$ have angles $(\alpha,\beta,\gamma)$ with $3\alpha+2\beta=\pi$ and commensurable sides, and let $a,b,c$ be the sides opposite $\alpha,\beta,\gamma$. Then $\sin(\alpha/2)=m/(2k)$ for coprime integers $0<m<k$, and after scaling
+\begin{equation}\label{eq:g1tile}
+(a,b,c)=(mk,\;k^2-m^2,\;k^2),
+\end{equation}
+a primitive integer triple. Moreover $k\ge 2$, $\gamma=\pi/2+\alpha/2>\pi/2$, and with
+\[
+h=2k^2-m^2,\qquad g=3k^2-m^2
+\]
+we have
+\begin{equation}\label{eq:g1cos}
+\cos\alpha=\frac{h}{2k^2},\qquad \cos\beta=\frac{mg}{2k^3}.
+\end{equation}
+Finally $\alpha/\pi$ and $\gamma/\pi$ are irrational.
+\end{lemma}
+
+\begin{proof}
+Put $\vartheta=\alpha/2$. From $3\alpha<\pi$ we get $0<\vartheta<\pi/6$, and $\beta=\pi/2-3\vartheta$, $\gamma=\pi-\alpha-\beta=\pi/2+\vartheta$. By the law of sines,
+\[
+a:b:c=\sin2\vartheta:\cos3\vartheta:\cos\vartheta .
+\]
+Since $\sin2\vartheta=2\sin\vartheta\cos\vartheta$ and $\cos3\vartheta=4\cos^3\vartheta-3\cos\vartheta=\cos\vartheta\,(1-4\sin^2\vartheta)$, this gives $a/c=2\sin\vartheta$ and $b/c=1-(a/c)^2$. The sides are commensurable, so $a/c$ is a positive rational number; write $a/c=m/k$ in lowest terms with $m,k>0$. Then $\sin\vartheta=m/(2k)$ and $b/c=(k^2-m^2)/k^2$, so $(a,b,c)$ is proportional to $(mk,k^2-m^2,k^2)$. As $b>0$, $m<k$, hence $k\ge2$. A prime dividing $k^2$ and $k^2-m^2$ divides $m$ and $k$, so the triple is primitive, and we scale $R$ to make \eqref{eq:g1tile} hold. Next, $\cos\alpha=1-2\sin^2\vartheta=1-m^2/(2k^2)=h/(2k^2)$ and $\cos\beta=\sin3\vartheta=3\sin\vartheta-4\sin^3\vartheta=m(3k^2-m^2)/(2k^3)$. Finally $2\cos\alpha=2-m^2/k^2$ lies strictly between $1$ and $2$, so $\alpha/\pi$ is irrational by Lemma~\ref{lem:irr}, and so is $\gamma/\pi=\tfrac12+\alpha/(2\pi)$.
+\end{proof}
+
+\begin{remark}\label{rem:g1rational}
+The hypothesis of commensurable sides holds whenever $R$ tiles a triangle not similar to $R$, by Theorem~\ref{thm:rational}(b). Beeson and Zhang \cite[Theorem~1.2]{BZRat} state the same conclusion for tiles that are not right triangles and have incommensurable angles, but for tiles with $3\alpha+2\beta=\pi$ their proof cites \cite[Theorem~3]{Beeson2229} in its 2019 version, the statement whose proof version~4 replaces by Theorem~9. So both references rest on \cite[Theorem~9]{Beeson2229}. The derivation of \eqref{eq:g1tile} follows \cite[Lemmas~2--4]{Beeson2229}.
+\end{remark}
+
+\begin{lemma}[Group-1 count equations]\label{lem:g1counts}
+Let $R$ be as in Lemma~\ref{lem:g1tile}, and let a triangle $T$ be tiled by $N$ copies of $R$.
+\begin{enumerate}
+\item[(a)] If $T$ has angles $(2\alpha,\beta,\alpha+\beta)$, then its sides opposite these angles are $j\bigl(mh,\;k(k^2-m^2),\;k^3\bigr)$ for a positive integer $j$, and $N=j^2h$.
+\item[(b)] If $T$ has angles $(\beta,\beta,3\alpha)$, then its sides are $j\bigl(k^3,\;k^3,\;mg\bigr)$ for a positive integer $j$, and $N=j^2g$.
+\item[(c)] If $T$ has angles $(\alpha,2\alpha,2\beta)$, then its sides are $j\bigl(k^4,\;k^2h,\;(k^2-m^2)g\bigr)$ for a positive integer $j$, and $N=j^2hg$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Let $K=c/\sin\gamma$ be the circumdiameter of $R$, so that $K\sin\alpha=mk$, $K\sin\beta=k^2-m^2$ and $K\sin\gamma=k^2$. By \eqref{eq:g1cos},
+\[
+K\sin2\alpha=2K\sin\alpha\cos\alpha=\frac{mh}{k},\qquad
+K\sin2\beta=2K\sin\beta\cos\beta=\frac{(k^2-m^2)\,mg}{k^3},
+\]
+and $\sin(\alpha+\beta)=\sin\gamma$, $\sin3\alpha=\sin(\pi-2\beta)=\sin2\beta$. By the law of sines in $T$, its sides are proportional to
+\[
+\text{(a) }\Bigl(\frac{mh}{k},\,k^2-m^2,\,k^2\Bigr),\qquad
+\text{(b) }\Bigl(1,\,1,\,\frac{mg}{k^3}\Bigr),\qquad
+\text{(c) }\Bigl(mk,\,\frac{mh}{k},\,\frac{(k^2-m^2)mg}{k^3}\Bigr),
+\]
+that is, to the integer vectors $v$ in the statement. Each $v$ is primitive: a prime $\ell$ dividing all entries divides a power of $k$ (the last entry in (a), the first in (b) and (c)), hence $k$, hence not $m$. Then $\ell$ divides $h$ in case (a), $g$ in case (b), and $k^2-m^2$ or $g$ in case (c). But $k^2-m^2\equiv h\equiv g\equiv-m^2\pmod k$, so in each case $\ell\mid m^2$, a contradiction. Write the sides of $T$ as $jv$ with $j>0$. They are integers by Lemma~\ref{lem:bdry}(c). By B\'ezout there are integers $r_i$ with $\sum_i r_iv_i=1$, so $j=\sum_i r_i(jv_i)\in\Z$.
+
+A triangle with angles $(A_1,A_2,A_3)$ and circumdiameter $K'$ has area $\tfrac12K'^2\sin A_1\sin A_2\sin A_3$. Hence, with $K_T$ the circumdiameter of $T$,
+\[
+N=\Bigl(\frac{K_T}{K}\Bigr)^2\frac{\sin A_1\sin A_2\sin A_3}{\sin\alpha\sin\beta\sin\gamma}.
+\]
+(a) The side opposite $\beta$ gives $K_T\sin\beta=jk(k^2-m^2)$, so $K_T/K=jk$, and $N=j^2k^2\sin2\alpha/\sin\alpha=2j^2k^2\cos\alpha=j^2h$.
+(b) $K_T\sin\beta=jk^3$, so $K_T/K=jk^3/(k^2-m^2)$, and
+\[
+N=\frac{j^2k^6}{(k^2-m^2)^2}\cdot\frac{(K\sin\beta)(K\sin2\beta)}{(K\sin\alpha)(K\sin\gamma)}
+=\frac{j^2k^6}{(k^2-m^2)^2}\cdot\frac{(k^2-m^2)^2mg/k^3}{mk\cdot k^2}=j^2g .
+\]
+(c) $K_T\sin\alpha=jk^4$, so $K_T/K=jk^3/m$, and
+\[
+N=\frac{j^2k^6}{m^2}\cdot\frac{(K\sin2\alpha)(K\sin2\beta)}{(K\sin\beta)(K\sin\gamma)}
+=\frac{j^2k^6}{m^2}\cdot\frac{(mh/k)\,(k^2-m^2)mg/k^3}{(k^2-m^2)k^2}=j^2hg.\qedhere
+\]
+\end{proof}
+
+\begin{remark}
+With $(M,K)=j(m,k)$, part (a) is the tiling equation $N=2K^2-M^2$ of \cite[Theorem~10 and Corollary~1]{Beeson2229}, and part (b) is \cite[Theorem~19]{Beeson2229}; part (c) agrees with \cite[Theorem~15]{Beeson2229}. The proof above uses none of them. The integrality of $j$ is what matters: version~4 of \cite{Beeson2229} retracts the stronger claims $k\mid j$ for the shapes (a) and (b), and Theorem~\ref{thm:BR} states $j\ne1$ for them.
+\end{remark}
+
+\begin{lemma}[Residues]\label{lem:g1residues}
+Let $0<m<k$ be coprime integers, $h=2k^2-m^2$ and $g=3k^2-m^2$.
+\begin{enumerate}
+\item[(a)] If $h$ is odd, then $h\equiv\pm1\pmod 8$.
+\item[(b)] $g\not\equiv1\pmod3$.
+\end{enumerate}
+Consequently, in Lemma~\ref{lem:g1counts}, if $N$ is prime then case (c) does not occur, $N=h\equiv\pm1\pmod8$ in case (a), and $N=g\equiv2\pmod3$ in case (b). If moreover $N\equiv3\pmod4$, then $N\equiv7\pmod8$ in case (a) and $N\equiv11\pmod{12}$ in case (b). A prime $N\equiv19\pmod{24}$ occurs in none of the three cases.
+\end{lemma}
+
+\begin{proof}
+(a) If $h$ is odd then $m$ is odd and $m^2\equiv1\pmod8$, while $2k^2\equiv0$ or $2\pmod8$ according as $k$ is even or odd. (b) $g\equiv-m^2\equiv0$ or $2\pmod3$.
+
+Since $k\ge2$ and $m<k$, we have $h=k^2+(k^2-m^2)\ge7$ and $g=2k^2+(k^2-m^2)\ge11$. In case (c), $N=j^2hg$ is a product of the integers $j^2h>1$ and $g>1$. In cases (a) and (b), a prime $N=j^2h$ or $N=j^2g$ forces $j=1$; then $N=h\ge7$ is odd and (a) applies, or $N=g\ge11$ is a prime, hence prime to $3$, and (b) gives $N\equiv2\pmod 3$. Combining with $N\equiv3\pmod4$ gives the two stated residues, and $19\pmod{24}$ is neither $7\pmod 8$ nor $2\pmod3$.
+\end{proof}
+
+The congruences in Lemma~\ref{lem:g1residues} cannot replace Theorem~\ref{thm:BR}: every prime $p\equiv7\pmod8$ below $5000$ is of the form $2k^2-m^2$, and every prime $p\equiv11\pmod{12}$ below $5000$ of the form $3k^2-m^2$, with coprime $0<m<k$ (ancillary script), and Beeson and Ro\c{s}u remark that this holds for all such primes \cite[Sections~12 and~13]{BR}.
+
+\begin{lemma}[The shape $(\alpha+\beta,\alpha+\beta,\alpha)$]\label{lem:shape4}
+Let $R$ be as in Lemma~\ref{lem:g1tile}, and let a triangle $T$ with angles $(\alpha+\beta,\alpha+\beta,\alpha)$ be tiled by $N$ copies of $R$. Then the sides of $T$ are $t(k,k,m)$ for a positive integer $t$, $N=t^2/(k^2-m^2)$, and $N$ is not prime.
+\end{lemma}
+
+\begin{proof}
+Put $b=k^2-m^2$. The legs of $T$ are opposite the angles $\alpha+\beta=\pi-\gamma$ and the base is opposite $\alpha$, so by the law of sines legs and base are in the ratio $\sin\gamma:\sin\alpha=k^2:mk=k:m$. Since $\gcd(k,m)=1$, the sides are $t(k,k,m)$ with $t\in\Z_{>0}$, by Lemma~\ref{lem:bdry}(c) and B\'ezout as in the proof of Lemma~\ref{lem:g1counts}. With the notation used there, $K_T\sin\gamma=tk$ and $K\sin\gamma=k^2$, so $K_T/K=t/k$ and
+\[
+N=\frac{t^2}{k^2}\cdot\frac{\sin^2\gamma\,\sin\alpha}{\sin\alpha\sin\beta\sin\gamma}
+=\frac{t^2}{k^2}\cdot\frac{K\sin\gamma}{K\sin\beta}=\frac{t^2}{b}.
+\]
+
+Suppose $N$ is prime. From $t^2=Nb$ we get $N\mid t$; writing $t=Ns$ gives $b=Ns^2$. The base $XY$ of $T$ has length $tm=Nsm$. By Lemma~\ref{lem:bdry}(a),(c), it is the union of complete tile edges with disjoint relative interiors, and
+\begin{equation}\label{eq:base4}
+Nsm=A\,mk+B\,b+C\,k^2
+\end{equation}
+with $A,B,C\ge0$ the numbers of $a$-, $b$- and $c$-edges among them. Modulo $k$, \eqref{eq:base4} reads $Nsm\equiv-Bm^2$; multiplying by $s$ and using $Ns^2=b\equiv-m^2\pmod k$ gives $m^3\equiv Bsm^2\pmod k$, so $Bs\equiv m\pmod k$ because $\gcd(m,k)=1$. Also $Bb\le Nsm$, that is $BNs^2\le Nsm$, so $0\le Bs\le m<k$. Hence $Bs=m$, so $Bb=Nsm$, and \eqref{eq:base4} forces $A=C=0$. In particular no $c$-edge lies on the base.
+
+Let $x_0=X,x_1,\dots,x_n=Y$ be the endpoints of the base edges in order, so that $[x_{i-1},x_i]$ is an edge of a tile $t_i$, and the $t_i$ are distinct (Lemma~\ref{lem:bdry}(a)). The edge $[x_{i-1},x_i]$ is the $a$-edge or the $b$-edge of $t_i$, so the vertex of $t_i$ opposite it carries the angle $\alpha$ or $\beta$, and the $\gamma$-vertex of $t_i$ is $x_{i-1}$ or $x_i$. Now $\gamma>\pi/2$ by Lemma~\ref{lem:g1tile}, so $\gamma>\pi-\gamma=\alpha+\beta$. By Lemma~\ref{lem:bdry}(d), no tile has its $\gamma$-vertex at the corners $X,Y$, whose angle is $\alpha+\beta<\gamma$, and at each point $x_i$ with $0<i<n$ at most one tile has its $\gamma$-vertex, since $2\gamma>\pi$. Thus $i\mapsto(\text{$\gamma$-vertex of }t_i)$ is an injective map from $\{1,\dots,n\}$ to $\{x_1,\dots,x_{n-1}\}$, which is impossible. So $N$ is not prime.
+\end{proof}
+
+\begin{remark}
+The angle count is needed even for $N=19$: the tile $(m,k)=(9,10)$, with sides $(90,19,100)$, has $b=19$, and $T=19\,(10,10,9)$ satisfies $N=t^2/b=19$. The arithmetic forces its base to consist of nine $b$-edges, and the angle count excludes that. The counting argument is the one of \cite[Lemmas~6 and~7]{Beeson2229}.
+\end{remark}
+
+\begin{lemma}[The shape $(\alpha,\alpha,\alpha+2\beta)$]\label{lem:shape5}
+Let $R$ be as in Lemma~\ref{lem:g1tile}, put $b=k^2-m^2$, and let a triangle $T$ with angles $(\alpha,\alpha,\alpha+2\beta)$ be tiled by $N$ copies of $R$. Then the sides of $T$ are $t(k^2,k^2,h)$ for a positive integer $t$, and $N=t^2h/b$. If $N$ is prime, then $t^2=b$ and $N=h=k^2+t^2$; in particular $N\not\equiv3\pmod4$.
+\end{lemma}
+
+\begin{proof}
+The legs are opposite the base angles $\alpha$, and the base is opposite $\alpha+2\beta=\pi-2\alpha$; so base and leg are in the ratio $\sin2\alpha:\sin\alpha=2\cos\alpha=h/k^2$ by \eqref{eq:g1cos}. A prime dividing $k^2$ and $h$ divides $m^2$, so $\gcd(k^2,h)=1$, and the sides are $t(k^2,k^2,h)$ with $t\in\Z_{>0}$ as before. Now $K_T\sin\alpha=tk^2$ gives $K_T/K=tk/m$, and
+\[
+N=\frac{t^2k^2}{m^2}\cdot\frac{(K\sin\alpha)(K\sin2\alpha)}{(K\sin\beta)(K\sin\gamma)}
+=\frac{t^2k^2}{m^2}\cdot\frac{mk\cdot mh/k}{b\,k^2}=\frac{t^2h}{b}.
+\]
+We have $\gcd(h,b)=\gcd(k^2,b)=\gcd(k^2,m^2)=1$. If $N$ is prime, then $Nb=t^2h$, so $h\mid Nb$ and hence $h\mid N$; as $h\ge7$, $h=N$, and then $t^2=b$. So $N=2k^2-m^2=k^2+t^2$ is a sum of two squares, and a sum of two squares is not $\equiv3\pmod4$.
+\end{proof}
+
+\begin{remark}
+For this shape the boundary character of Lemma~\ref{lem:character} gives more, $b\mid t$, so $N=bhn^2$ is never prime \cite[Appendix~B.2]{Progress634}; see also \cite[Theorem~26]{Beeson2229}. We do not need this: for $(m,k)=(3,5)$ and $t=4$ the count $N=41$ is prime, but $41\equiv1\pmod4$.
+\end{remark}
+
+\begin{corollary}\label{cor:g1prime}
+Let a triangle $T$ be tiled by $N$ copies of a tile $R$ with angles $(\alpha,\beta,\gamma)$, $3\alpha+2\beta=\pi$, and commensurable sides, where $T$ has one of the angle triples
+\[
+(2\alpha,\beta,\alpha+\beta),\quad(\alpha,2\alpha,2\beta),\quad(\beta,\beta,3\alpha),\quad(\alpha+\beta,\alpha+\beta,\alpha),\quad(\alpha,\alpha,\alpha+2\beta).
+\]
+If $N$ is a prime with $N\equiv3\pmod 4$, then either $T$ has angles $(2\alpha,\beta,\alpha+\beta)$, $N=h\equiv7\pmod8$ and the sides of $T$ are $(mh,k(k^2-m^2),k^3)$, or $T$ has angles $(\beta,\beta,3\alpha)$, $N=g\equiv11\pmod{12}$ and the sides of $T$ are $(k^3,k^3,mg)$. In particular $N\not\equiv19\pmod{24}$.
+\end{corollary}
+
+\begin{proof}
+Lemmas~\ref{lem:g1counts} and~\ref{lem:g1residues} treat the first three triples and show $j=1$ in the two surviving cases, Lemma~\ref{lem:shape4} treats the fourth, and Lemma~\ref{lem:shape5} the fifth.
+\end{proof}
+
+\section{Proof of Theorems~\ref{thm:main} and~\ref{thm:nineteen}}\label{sec:proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
 Let $p>3$ be prime with $p\equiv 3\pmod 4$ and suppose a triangle $T$ is tiled by $p$ congruent copies of a tile $R$.
 
-\emph{Step 1: $T$ is not isosceles.} This is Theorem~\ref{thm:isosceles}, since $p>3$. In particular $T$ is scalene.
+\emph{Step 1a: $T$ is not equilateral.} Suppose it is, with side $L$. By Theorem~\ref{thm:equiclass} the tile is one of five kinds. (i) If $R$ is equilateral with side $s$, then $L$ is an integer multiple of $s$ by Lemma~\ref{lem:bdry}(c) (scaled so that $s=1$), and $p=(L/s)^2$ is a square. (ii) If $R$ has angles $(\pi/6,\pi/6,2\pi/3)$, its sides are $s(1,1,\sqrt3)$, so summing the lengths of the tile edges in a side of $T$ (Lemma~\ref{lem:bdry}(a)) gives $L=s(u+v\sqrt3)$ with non-negative integers $u,v$, and the area equation gives $p=L^2/s^2=u^2+3v^2+2uv\sqrt3$; as $p$ is rational and $\sqrt3$ is irrational, $uv=0$, so $p=u^2$ or $p=3v^2$. (iii) If $R$ has angles $(\pi/6,\pi/3,\pi/2)$, its sides are $s(1,\sqrt3,2)$, so again $L=s(u+v\sqrt3)$, and $p=L^2/(2s^2)$ gives $uv=0$ and $p=u^2/2$ or $p=3v^2/2$; as $p$ is an integer, $u$ or $v$ is even, and $p$ is even. (iv) If $R$ has angles $(\alpha,\beta,\pi/3)$ with $\alpha/\pi$ irrational, $p$ is not prime by Theorem~\ref{thm:counts}(c). (v) If $R$ has angles $(\alpha,\beta,2\pi/3)$ with $\alpha/\pi$ irrational, then $R$ has commensurable sides by Theorem~\ref{thm:rational}(a), since an equilateral triangle is not similar to $R$, and $p$ is not prime by Lemma~\ref{lem:rowI}(b). In all five cases $p$ is not a prime greater than $3$.
+
+\emph{Step 1b: $T$ is not isosceles.} Suppose $T$ is isosceles but not equilateral. By Theorem~\ref{thm:isoclass} the tiling is on one of the lines~1--7, and on line~1 or line~2 if the tile has commensurable angles. Line~1 is a reptiling, excluded as in Step~2 below, and line~2 is excluded by Theorem~\ref{thm:counts}(a). Otherwise the tile has incommensurable angles, $\alpha/\pi$ is irrational, and $T$, being isosceles, is not similar to the tile, whose three angles are then distinct. Line~3 is excluded by Theorem~\ref{thm:counts}(b). On line~4, $R$ has commensurable sides by Theorem~\ref{thm:rational}(a), and Lemma~\ref{lem:rowI}(a) shows that $p$ is not prime. On lines~5--7 we have $3\alpha+2\beta=\pi$, so $R$ has commensurable sides by Theorem~\ref{thm:rational}(b), and Corollary~\ref{cor:g1prime} leaves only line~6, with $p\equiv11\pmod{12}$ and $T$ the triangle with sides $(k^3,k^3,mg)$. That triangle cannot be tiled by $R$, by Theorem~\ref{thm:BR}. Hence $T$ is scalene.
 
 \emph{Step 2: the tiling is not a reptiling.} Otherwise Theorem~\ref{thm:reptile} gives $p=M^2$, $p=M^2+K^2$, or $p=3M^2$. A prime is not a square. If $p=3M^2$, then $3\mid p$, so $p=3$ and $M=1$, contrary to $p>3$. And $p\equiv 3\pmod 4$ is not a sum of two squares, since squares are $0$ or $1$ modulo $4$. In particular $R$ is not similar to $T$.
 
-\emph{Step 3: $R$ has incommensurable angles.} Each corner of $T$ has angle less than $\pi$. The corner point cannot lie in the interior of a tile, where the tile would contribute angle $2\pi$, nor in the relative interior of a tile edge, where it would contribute angle $\pi$; hence it is a vertex of every tile containing it, and each angle of $T$ is a finite sum of tile angles. If all angles of $R$ were rational multiples of $\pi$, the same would hold for $T$; then Theorem~\ref{thm:commensurable} ($T$ being scalene) would force a reptiling, contradicting Step~2.
+\emph{Step 3: $R$ has incommensurable angles.} Each corner of $T$ is a vertex of every tile containing it (Lemma~\ref{lem:bdry}(b)), and a small disk around the corner meets only these tiles, whose sectors at the corner have disjoint interiors and fill the corner of $T$; so each angle of $T$ is a finite sum of tile angles. If all angles of $R$ were rational multiples of $\pi$, the same would hold for $T$; then Theorem~\ref{thm:commensurable} ($T$ being scalene) would force a reptiling, contradicting Step~2.
 
-\emph{Step 4: the two remaining groups.} By Theorem~\ref{thm:classification} and Step~2, the tiling belongs to Group~1 or Group~2. In Group~1, Theorem~\ref{thm:group1prime} applies ($T$ is not similar to $R$ by Step~2) and shows $N=p$ is not prime, a contradiction. In Group~2, the tile satisfies $\gamma=2\pi/3$, so $\alpha+\beta=\pi/3$ and $0<\alpha,\beta<\pi/3$; in particular $R$ is not a right triangle. Since $R$ is not similar to $T$ and has incommensurable angles, Theorem~\ref{thm:rationality} shows $R$ has commensurable sides, and Lemma~\ref{lem:group2} shows $N=p$ is not prime, again a contradiction.
+\emph{Step 4: the two remaining groups.} By Theorem~\ref{thm:classification} and Step~2, the tiling belongs to Group~1 or Group~2. In Group~1, $R$ has commensurable sides by Theorem~\ref{thm:rational}(b), and $T$ has angles $(\alpha,2\alpha,2\beta)$ or $(2\alpha,\beta,\alpha+\beta)$; by Corollary~\ref{cor:g1prime} only the second remains, with $p\equiv7\pmod8$ and $T$ the triangle with sides $(mh,k(k^2-m^2),k^3)$, which cannot be tiled by $R$ by Theorem~\ref{thm:BR}. In Group~2, the tile satisfies $\gamma=2\pi/3$, so $\alpha+\beta=\pi/3$ and $0<\alpha,\beta<\pi/3$. Since $R$ is not similar to $T$ and has incommensurable angles, Theorem~\ref{thm:rational}(a) shows that $R$ has commensurable sides, and Lemma~\ref{lem:group2} shows that $p$ is not prime, again a contradiction.
 
 All cases are impossible, so no such tiling exists. Taking $p=19$ gives the titular statement.
 \end{proof}
 
-\section{Computational checks}\label{sec:verification}
+\begin{proof}[Proof of Theorem~\ref{thm:nineteen}]
+Theorem~\ref{thm:BR} enters the proof above only in Step~1b, line~6, with $p\equiv11\pmod{12}$, and in Step~4, Group~1, with $p\equiv7\pmod8$. A prime $p\equiv19\pmod{24}$ satisfies $p\equiv1\pmod3$ and $p\equiv3\pmod8$, so in these two places Corollary~\ref{cor:g1prime} already gives a contradiction.
+\end{proof}
 
-The proofs of all assertions in this note are contained in the text; the computations described here are supplementary checks. An accompanying Python script uses exact symbolic arithmetic (SymPy) throughout, with no floating-point computation; see the ancillary files \texttt{verify\_triangle19.py} and \texttt{README.txt}.
+\begin{remark}
+For $p=19$ the proof uses Theorems~\ref{thm:commensurable}--\ref{thm:counts}, Lemmas~\ref{lem:bdry}--\ref{lem:shape5} and Corollary~\ref{cor:g1prime}. Each of the configurations that the arithmetic alone leaves open for $p=19$ is closed by an argument of this paper: the isosceles $2\pi/3$ configurations by the boundary character (Lemma~\ref{lem:rowI}), and the configuration of Lemma~\ref{lem:shape4} by the angle count. The congruences of Lemma~\ref{lem:g1residues} close the two shapes of Theorem~\ref{thm:BR}.
+\end{remark}
 
-\emph{Exact symbolic checks.} The script verifies the six trigonometric identities \eqref{eq:trig} and the four area-ratio formulas of the table symbolically, modulo the relation \eqref{eq:norm} and in both labelings of the acute angles.
+\section{Verification}\label{sec:verification}
 
-\emph{Finite stress tests.} The primitivity (gcd) assertions for the four side vectors are universal statements, proved above; the script additionally tests them on $41{,}112$ primitive solutions of \eqref{eq:norm}, generated in both labelings from the two-branch parametrization of \cite[Theorem~6]{BeesonPrime} over $2\le s\le 300$, $1\le t<s$, $\gcd(s,t)=1$, $s\not\equiv t\pmod 3$. Such finite testing serves as error detection and is not a proof. As a further audit of case C for $p=19$, the script checks that all four candidate pairs $(a,b)=(19-m^2,m^2)$, $1\le m\le 4$, fail to make $c^2=a^2+ab+b^2$ a perfect square. It also verifies the identity $a+b=s(s+2t)$ on the parametrization, which yields a second route to the case C conclusion, since $s\ge 2$ and $s+2t\ge 4$ make $a+b$ composite.
+The proofs of all assertions in this note are contained in the text; the checks described here are supplementary. The ancillary files are described in \texttt{anc/README.txt}.
+
+\emph{Exact symbolic checks.} The script \texttt{verify\_triangle19.py} (SymPy, exact arithmetic, no floating point) verifies the identities \eqref{eq:trig} and the four area-ratio formulas of Lemma~\ref{lem:group2} modulo \eqref{eq:norm} in both labelings of the acute angles, stress-tests the primitivity assertions on $41{,}112$ primitive solutions of \eqref{eq:norm}, and checks the case-C instance $N=19$ directly. The script \texttt{verify\_lemmas\_v2.py} checks the side vectors and counts of Lemmas~\ref{lem:rowI}--\ref{lem:shape5} symbolically from the laws of sines and cosines and Heron's formula; the primitivity claims for all coprime $m<k\le400$ and for all primitive triples with $a,b\le1200$; the residue claims and their sharpness for all primes below $5000$; the base decompositions of Lemma~\ref{lem:shape4} for all prime instances with $k\le80$; and the tile and target values of the boundary character together with the criterion ``$\varepsilon(B(\partial T))=0$ if and only if $b\mid k$'' in Lemma~\ref{lem:rowI}. Given a directory of exact tiling certificates, it also checks the identity of Lemma~\ref{lem:character} tile by tile on six tilings with $63$, $77$, $88$, $99$, $143$ and $189$ tiles. Finite testing serves as error detection and is not a proof.
+
+\emph{Formal verification.} The Lean development (directory \texttt{lean/} next to the paper in the public repository, and \texttt{anc/lean/} among the arXiv ancillary files) is a Lean~4 formalization, against Mathlib, of the integer arithmetic of Lemmas~\ref{lem:group2}--\ref{lem:shape5} and Corollary~\ref{cor:g1prime} and of the case analysis of Section~\ref{sec:proof}. It formalizes, among others: the primitivity of every side vector and the integrality of the scale factors; the non-primality of all counts in Lemma~\ref{lem:group2}; the residues of Lemma~\ref{lem:g1residues}; the arithmetic half of Lemma~\ref{lem:shape4} (a prime count forces a base without $c$-edges); Lemma~\ref{lem:shape5}; in Lemma~\ref{lem:rowI}, the facts $3ab\in I$, $\varepsilon(I)=0$, and $\varepsilon\bigl(k(U-cz^{-1}-cz)\bigr)=0$ if and only if $b\mid k$, in the Laurent polynomial ring over $\Z$; and the lattice facts of Appendix~\ref{app:BR} (Lemmas~\ref{app:lattice} and~\ref{app:decomp}). The case analysis is formalized as a statement: if a prime $N>3$ with $N\equiv3\pmod4$ admits one of the outcomes that the imported theorems and the geometric lemmas provide, then a contradiction follows, with Theorem~\ref{thm:BR} as an explicit hypothesis about an abstract tiling predicate; and without that hypothesis for $N\equiv19\pmod{24}$. Not formalized are the geometry (Lemmas~\ref{lem:bdry} and~\ref{lem:character}, the angle count in Lemma~\ref{lem:shape4}, the side vectors and area equations) and the imported theorems, which enter as hypotheses. The development is free of \texttt{sorry}, and \texttt{\#print axioms} reports only \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} for every main theorem.
+
+\emph{An independent formalization.} Bonfioli's Lean development \cite{Bonfioli2} states Corollary~\ref{cor:primes} for tilings of triangles in the Euclidean plane by congruent triangles, without edge-to-edge or rationality assumptions. According to its documentation it proves the statement, including the classification theorems, the rationality theorems and the scale-one statements of Theorem~\ref{thm:BR}, by arguments of its own. We have read its definitions and main statements, which match the problem, but we have not built it.
+
+\section{Changes from version 1}\label{sec:changes}
+
+Version~1 (July 24, 2026) is available from the history of the repository listed in the ancillary README. Its Theorem~1 and Corollary~2 are unchanged; their proof in version~1 was incomplete for the following reason.
+
+\begin{enumerate}
+\item \emph{Two imported results are gone.} Version~1 imported, as its Theorem~8, the statement that no isosceles triangle can be tiled by a prime number $N>3$ of congruent triangles \cite[Theorem~11]{BeesonPrime}, and used it in Step~1. The preprint \cite{BeesonPrime} was withdrawn on September~24, 2026, with the comment ``Lemma~9 is not correct as stated.'' Its Theorem~11 also depended, through its Theorem~3(iv) and Theorem~1, on the non-primality claim for tiles with $3\alpha+2\beta=\pi$ discussed next. Version~1 imported that claim as its Theorem~6 \cite[Theorem~1]{BeesonPrime}, proved in \cite{Beeson2229} (version~3), and used it in Step~4. Version~4 of \cite{Beeson2229} (September~25, 2026) retracts it for the shapes $(2\alpha,\beta,\alpha+\beta)$ and $(\beta,\beta,3\alpha)$ and keeps it for the other three. Steps~1 and~4 of version~1 were therefore unsupported. What this note needs from the two statements, namely the primes $p\equiv3\pmod4$, is proved in Section~\ref{sec:proof}, with Theorem~\ref{thm:BR} as the only new import.
+\item \emph{Step~1 is new.} It is now a case analysis over Laczkovich's classification of tilings of isosceles and equilateral triangles (Theorems~\ref{thm:isoclass} and~\ref{thm:equiclass}). The new Lemmas~\ref{lem:bdry}, \ref{lem:irr}, \ref{lem:character} and~\ref{lem:rowI} settle the $2\pi/3$ tiles, Lemmas~\ref{lem:g1tile}--\ref{lem:shape5} the tiles with $3\alpha+2\beta=\pi$, and Theorem~\ref{thm:counts} the remaining kinds of tiles, using results that were not withdrawn or retracted.
+\item \emph{Step~4, Group~1, is new.} It now uses Lemmas~\ref{lem:g1tile}--\ref{lem:g1residues}, the rationality theorem \cite[Theorem~9]{Beeson2229}, and Theorem~\ref{thm:BR}.
+\item \emph{New imports.} Version~2 imports Laczkovich's classification of tilings of isosceles and equilateral triangles (Theorems~\ref{thm:isoclass} and~\ref{thm:equiclass}), three results of Beeson for tiles that our arithmetic does not cover (Theorem~\ref{thm:counts}), the rationality theorem \cite[Theorem~9]{Beeson2229}, and Theorem~\ref{thm:BR} (Beeson--Ro\c{s}u, October~2026). Theorem~\ref{thm:BR} is needed for $p\equiv7$, $11$ and $23\pmod{24}$ only, and Appendix~\ref{app:BR}, which is new, proves it. Theorem~\ref{thm:nineteen} is new.
+\item \emph{Other imports.} The classification theorems are now cited from version~3 of \cite{BLZ633} (Theorems~5, 6 and~11 there, formerly~3, 4 and~9). The rationality theorem for $2\pi/3$ tiles is cited as \cite[Theorem~1.1]{BZRat}, which has a self-contained proof, instead of Theorem~1.2.
+\item \emph{Lemma~\ref{lem:group2}} is mathematically unchanged. Its two ``cf.''\ attributions pointed to the withdrawn \cite{BeesonPrime}; they now point to \cite[Lemmas~13 and~14]{BR}. Its boundary-integrality paragraph now cites Lemma~\ref{lem:bdry}, which adds the observation that a tile edge on a side of $T$ lies inside that side.
+\item \emph{Verification.} A second check script and a Lean formalization (Section~\ref{sec:verification}) are new. The output of the first script no longer states that $N=19$ is impossible, since the script checks only the arithmetic of Lemma~\ref{lem:group2}; and the parametrization of primitive solutions of \eqref{eq:norm} that it uses is no longer attributed to the withdrawn preprint.
+\item \emph{Text.} The abstract, the introduction and the disclosure of the use of AI tools are rewritten.
+\end{enumerate}
 
 \section*{Use of AI tools}
 
-This note was produced with substantial use of AI systems, which we disclose in the interest of transparency. An initial version of Lemma~\ref{lem:group2}, of the assembly in Section~\ref{sec:proof}, and of the verification script was generated by OpenAI GPT-5.6~Pro on July~24, 2026. Claude (Anthropic, Fable~5) was used as a second-model cross-check: it re-derived the identities and arguments of Lemma~\ref{lem:group2} and Section~\ref{sec:proof}, compared the statements of the imported theorems against the cited arXiv versions, and audited and executed the verification script. Cross-checking by a second model is a useful error filter, but it is not independent verification in the scholarly sense, and neither the model-based checks nor the computations of Section~\ref{sec:verification} replace the proofs given in the text. The author reviewed the manuscript and takes full responsibility for its content. The imported Theorems~\ref{thm:commensurable}--\ref{thm:isosceles} are human mathematics due to the cited authors; no claim of AI contribution is made for them.
+This note was produced with substantial use of AI systems, which we disclose in the interest of transparency. Version~1: an initial version of Lemma~\ref{lem:group2}, of the proof assembly, and of the first verification script was generated by OpenAI GPT-5.6~Pro on July~24, 2026; Claude (Anthropic, Fable~5) re-derived its identities and arguments, compared the statements of the imported theorems against the cited arXiv versions, and audited and executed the verification script. Version~2: Claude (Anthropic; Opus~5.5 and Fable~5.1) checked every imported statement against the current versions of the sources, drafted Lemmas~\ref{lem:bdry}--\ref{lem:shape5} and the corrected proof, wrote the second verification script and the Lean formalization, and refereed the revised text. Two independent attempts to prove Theorem~\ref{thm:BR} by a method different from that of \cite{BR} did not succeed; one of them produced the compact proof of Appendix~\ref{app:BR}, which follows the mechanism of \cite{BR} and was refereed separately by a second model. Cross-checking by AI systems is a useful error filter, but it is not independent verification in the scholarly sense; version~1 had passed such a check, which compared the imported statements with their sources but did not examine their proofs. Neither the model-based checks nor the computations of Section~\ref{sec:verification} replace the proofs given in the text. The author reviewed the manuscript and takes full responsibility for its content. Several of the imported results declare AI assistance by their authors, among them \cite{Beeson2229}, \cite{BeesonIso} and \cite{BR}.
 
 \section*{Acknowledgements}
 
-This note builds directly on the program of Michael Beeson, Mikl\'os Laczkovich, and Yan~X.~Zhang, whose structural theorems carry the bulk of the mathematical weight, and on Thomas Bloom's curation of the Erd\H{o}s problems collection.
+This note builds directly on the program of Michael Beeson, Mikl\'os Laczkovich, and Yan~X.~Zhang, whose structural theorems carry the bulk of the mathematical weight, on the work of Michael Beeson and Grigore Ro\c{s}u and of Vico Bonfioli on the cases that version~1 left incomplete, and on Thomas Bloom's curation of the Erd\H{o}s problems collection.
+
+\appendix
+
+\section{A self-contained proof of Theorem~\ref{thm:BR}}\label{app:BR}
+
+This appendix proves Theorem~\ref{thm:BR}. The proof is not new in substance. Its core, the run lemma (Lemma~\ref{app:run}) together with the lemma on doubly stopped runs (Lemma~\ref{app:dsr}), is the run-growth mechanism of Beeson and Ro\c{s}u \cite[Lemmas~32--34]{BR}, which we re-prove here in full, and the relation lattice (Lemma~\ref{app:lattice}) is \cite[Lemma~28]{BR}. What differs from \cite{BR} is the organization. The triangle with angles $(2\alpha,\beta,\alpha+\beta)$ is treated directly on its side of length $mh$ (Lemma~\ref{app:X2}), without the trisector decomposition \cite[Lemma~40]{BR}, through which \cite[Theorem~41]{BR} reduces this case to the isosceles one. The end of the proof for the isosceles triangle (Lemma~\ref{app:X1}) uses one lattice fact, Lemma~\ref{app:decomp}\,(L3)(i), in place of \cite[Lemma~30\,(D)]{BR}, and the triquadratic case uses Lemma~\ref{app:decomp}\,(L3)(ii), a sharper form of \cite[Lemma~30\,(E)]{BR}; all lattice facts are derived directly from Lemma~\ref{app:lattice}, without the minimum-length table \cite[Theorem~29]{BR}. The remaining ingredients correspond to \cite{BR} as follows: Lemma~\ref{app:angles}(b) and~(d) to \cite[Lemmas~23 and~24]{BR}; Lemma~\ref{app:decomp}\,(L2) to \cite[Lemma~30\,(A)--(C)]{BR}, proved here directly from the lattice; Lemma~\ref{app:C} to the second paragraph of the proof of \cite[Lemma~31]{BR}; Lemmas~\ref{app:PH} and~\ref{app:dsr} to the two halves of the proof of \cite[Lemma~34]{BR}; and Lemma~\ref{app:X1} to \cite[Lemma~36 and Theorem~37]{BR}. The side lengths of the two triangles come from Lemma~\ref{lem:g1counts}, as in \cite[Lemmas~35 and~39]{BR}. The notation in the proof of Lemma~\ref{app:run} and the definitions of runs are those of \cite[Section~11]{BR}, and the count behind Lemma~\ref{app:C} goes back to \cite[Lemma~8]{Beeson2229}, of which \cite[Lemma~31]{BR} is an improved version.
+
+\emph{Setting.} Throughout this appendix, $0<m<k$ are coprime integers and $R$ is the tile of Lemma~\ref{lem:g1tile}: its angles $\alpha,\beta,\gamma$ satisfy $3\alpha+2\beta=\pi$ and are opposite the sides $(a,b,c)=(mk,k^2-m^2,k^2)$ of \eqref{eq:g1tile}. With $h=2k^2-m^2$ and $g=3k^2-m^2$ as in Lemma~\ref{lem:g1tile} we have
+\[
+b+c=h,\qquad b+2c=g .
+\]
+The two triangles of Theorem~\ref{thm:BR} are the isosceles triangle with angles $(\beta,\beta,3\alpha)$, legs $k^3=kc$ and base $m(3k^2-m^2)=mg$, and the triangle with angles $(2\alpha,\beta,\alpha+\beta)$ and sides $m(2k^2-m^2)=mh$, $k(k^2-m^2)=kb$ and $k^3=kc$ opposite them; they are the triangles of Lemma~\ref{lem:g1counts}(b) and~(a) with scale factor~$1$ (the $j$ of that lemma). Tilings are as in the introduction: finitely many triangles congruent to $R$, reflections allowed, with pairwise disjoint interiors and union the tiled triangle, not necessarily edge to edge. In a given tiling, a \emph{tile} is a member of the tiling. We write $T$ for the tiled triangle and $t,t',t_0,t_1,\dots$ for tiles; the letters $i,j$ are indices. In this appendix $p,q,r$ denote numbers of edges (not the prime of Theorem~\ref{thm:main}), and $A,B,C$ denote corners of triangles (not the edge counts of Lemma~\ref{lem:bdry}(c)).
+
+By Lemma~\ref{lem:g1tile}, $\gamma=\pi-\alpha-\beta=2\alpha+\beta=(\pi+\alpha)/2>\pi/2$, so
+\begin{equation}\label{eq:app-gamma}
+2\gamma=\pi+\alpha>\pi,\qquad \alpha+\beta<\gamma,
+\end{equation}
+and $\alpha/\pi$ is irrational. Hence $\alpha$ and $\beta$ are linearly independent over $\mathbb{Q}$: if $u\alpha+v\beta=0$ with $u,v\in\Z$, then substituting $2\beta=\pi-3\alpha$ gives $(2u-3v)\alpha=-v\pi$; as $\alpha/\pi$ is irrational, $2u=3v$, then $v\pi=0$, so $u=v=0$. In particular the three angles of $R$ are distinct ($\alpha=\beta$ would give $5\alpha=\pi$), so the vertices and the $a$-, $b$- and $c$-edges of every tile are well defined; the $a$-, $b$-, $c$-edge is the one opposite the angle $\alpha$, $\beta$, $\gamma$.
+
+\subsection{Angles and lines}
+
+Let $T$ be a triangle tiled by $R$, let $x\in T$, and let $D$ be a disk centred at $x$ chosen as in the proof of Lemma~\ref{lem:bdry}(d): it meets only tiles containing $x$, meets no edge of such a tile that does not contain $x$, and $D\cap T=D\cap W_T$ for the closed sector $W_T$ at $x$ of opening $\Phi$, where $\Phi$ is the angle of $T$ at $x$ as in Lemma~\ref{lem:bdry}(d). For a tile $t\ni x$, the set $D\cap t$ is a closed circular sector at $x$, the \emph{sector of $t$ at $x$}; its opening, the \emph{angle of $t$ at $x$}, is the angle of the tile at that vertex if $x$ is a vertex of $t$, it is $\pi$ if $x$ lies in the relative interior of an edge of $t$, and $2\pi$ if $x$ is an interior point of $t$. A closed sector $W$ at $x$ is \emph{filled} by some tiles if, inside $D$, it is the union of their sectors at $x$. When we say that a tile \emph{has its $\gamma$ at $x$}, we mean that $x$ is the vertex of the tile with angle $\gamma$; likewise for $\alpha$ and $\beta$.
+
+\begin{lemma}[Angles at a point]\label{app:angles}
+Let $T$ be a triangle tiled by $R$ and $x\in T$.
+\begin{enumerate}
+\item[(a)] \textup{(Angle sums)} The sectors at $x$ of the tiles containing $x$ have pairwise disjoint interiors and fill the sector $W_T$; their openings add up to $\Phi$. Consequently, if some of these tiles fill a set $W'$ that is a finite union of closed sectors at $x$ with pairwise disjoint interiors, and $W$ is a closed sector at $x$ with interior disjoint from $W'$ such that $W\cup W'=W_T$ near $x$, then the other tiles containing $x$ fill $W$, and their angles at $x$ add up to the opening of $W$.
+\item[(b)] \textup{(Sector filling)} Let $W$ be a closed sector at $x$ of opening $p\alpha+q\beta<\pi$, with integers $p,q\ge0$, filled by some tiles. Then each of these tiles has a vertex at $x$, and if $n_\alpha$, $n_\beta$, $n_\gamma$ of them have there the angle $\alpha$, $\beta$, $\gamma$, then
+\[
+n_\alpha+2n_\gamma=p,\qquad n_\beta+n_\gamma=q .
+\]
+In particular a sector of opening $\alpha$, $\beta$, $\alpha+\beta$, $\alpha+2\beta$, $2\alpha$ or $3\alpha$ is filled by tiles whose angles there are exactly $\{\alpha\}$, $\{\beta\}$, $\{\alpha,\beta\}$, $\{\alpha,\beta,\beta\}$, $\{\alpha,\alpha\}$ or $\{\alpha,\alpha,\alpha\}$, respectively. We use $\pi-\alpha-\gamma=\beta$, $\pi-\beta-\gamma=\alpha$ and $\pi-2\alpha=\alpha+2\beta$.
+\item[(c)] \textup{(One $\gamma$)} If the angles at $x$ of some tiles add up to at most $\pi$, at most one of them is $\gamma$.
+\item[(d)] \textup{(No $\gamma$ at a corner)} If $T$ is one of the two triangles of Theorem~\ref{thm:BR}, no tile has its $\gamma$ at a corner of $T$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Every point of $D\cap T$ lies in a tile, and $D$ meets only tiles containing $x$, so the sectors at $x$ cover $D\cap T=D\cap W_T$. The interior of the sector of $t$ lies in the interior of $t$, so the sectors have pairwise disjoint interiors. Comparing areas (the boundary of a sector has area zero), their openings add up to $\Phi$. For the consequence, let $t$ be one of the other tiles. Its sector at $x$ has interior disjoint from $W'$ and lies in $W\cup W'$; so its interior lies in $W$ together with the finitely many bounding rays of the sectors forming $W'$, and since these rays contain no open set, the interior lies in $W$, and so does the sector. Conversely, the interior of $W$ is disjoint from $W'$ and hence covered by the sectors of the other tiles; their union is closed, so it contains $D\cap W$. The statement about the angles follows by comparing areas.
+
+(b) By (a) the angles at $x$ of these tiles add up to $p\alpha+q\beta<\pi$, so none of them is $\pi$ or $2\pi$, and each tile has a vertex at $x$. Then $n_\alpha\alpha+n_\beta\beta+n_\gamma(2\alpha+\beta)=p\alpha+q\beta$, and the linear independence of $\alpha$ and $\beta$ gives the two equations. The listed openings are $(p,q)=(1,0)$, $(0,1)$, $(1,1)$, $(1,2)$, $(2,0)$, $(3,0)$, all less than $\pi$ (note $\alpha+2\beta=\pi-2\alpha$ and $3\alpha=\pi-2\beta$); in each case $n_\gamma\ge1$ would need $p\ge2$ and $q\ge1$, so $n_\gamma=0$, $n_\alpha=p$ and $n_\beta=q$.
+
+(c) Two angles $\gamma$ add up to $\pi+\alpha>\pi$ by \eqref{eq:app-gamma}.
+
+(d) A corner $x$ of $T$ is a vertex of every tile containing it (Lemma~\ref{lem:bdry}(b)), and by (a) these tiles fill the corner sector. The corner angles are $\beta$, $\beta$, $3\alpha$ for the isosceles triangle and $2\alpha$, $\beta$, $\alpha+\beta$ for the other one; each is less than $\pi$ and of the form $p\alpha+q\beta$ with $(p,q)$ among $(0,1)$, $(3,0)$, $(2,0)$, $(1,1)$. A tile with its $\gamma$ at $x$ would give $n_\gamma\ge1$ in (b), hence $p\ge2$ and $q\ge1$, which none of these pairs satisfies.
+\end{proof}
+
+\begin{lemma}[Lines through tile edges]\label{app:lines}
+Let $T$ be a triangle tiled by $R$.
+\begin{enumerate}
+\item[(F0)] \textup{(Chords)} If a segment $\sigma\subseteq T$ is not contained in a side of $T$, its relative interior lies in the interior of $T$.
+\item[(F1)] \textup{(Covering and partition)} Let $\sigma=[Y,Y']\subseteq T$ be a nondegenerate segment, not contained in a side of $T$, on a line $\lambda$, and let $\sigma$ be the union of edges, lying on $\lambda$, of tiles contained in one closed half-plane $\Pi^+$ of $\lambda$. Then the edges lying on $\lambda$ of the tiles contained in the other closed half-plane $\Pi^-$ cover $\sigma$, and no two of them overlap in a nondegenerate segment. If none of these $\Pi^-$-edges contains $Y$ or $Y'$ in its relative interior, those meeting the open segment $(Y,Y')$ partition $\sigma$, so $|\sigma|=pa+qb+rc$, where $p,q,r$ are the numbers of $a$-, $b$- and $c$-edges among them.
+\item[(F2)] \textup{(One line)} A point lies in the relative interior of edges on at most one line. If $y$ lies in the relative interior of an edge $e$ of a tile $t$, with $e$ on a line $\lambda$, then the sector at $y$ of every other tile containing $y$ lies in the closed half-plane of $\lambda$ not containing $t$; if moreover $y$ is an interior point of $T$, the angles at $y$ of these other tiles add up to $\pi$.
+\item[(F3)] \textup{(Sides)} Each side $S$ of $T$ is partitioned by the edges lying in $S$ of the tiles meeting $S$ in more than one point; these edges belong to distinct tiles. An $a$-edge has its tile's $\beta$ and $\gamma$ at its ends, a $b$-edge $\alpha$ and $\gamma$, a $c$-edge $\alpha$ and $\beta$. Equivalently, the two edges of a tile at its vertex with angle $\alpha$ are its $b$- and $c$-edges, at $\beta$ its $a$- and $c$-edges, at $\gamma$ its $a$- and $b$-edges.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(F0) Suppose a point $y$ of the relative interior of $\sigma$ lies on the boundary of $T$, on a side $S'$ with line $\ell'$. Then $T$ lies in a closed half-plane bounded by $\ell'$, and a segment in that half-plane with a point of $\ell'$ in its relative interior lies on $\ell'$; so $\sigma\subseteq T\cap\ell'=S'$.
+
+(F2) The sector of $t$ at $y$ is the half-disk $D\cap H_t$, where $H_t$ is the closed half-plane of $\lambda$ containing $t$. The sector of another tile $t'\ni y$ has interior disjoint from it by Lemma~\ref{app:angles}(a), so it lies in the opposite closed half-disk. If $y$ were in the relative interior of an edge of $t'$ on a line $\lambda'\neq\lambda$, the sector of $t'$ at $y$ would be a half-disk bounded by $\lambda'$, which does not lie in a closed half-disk bounded by $\lambda$. As a triangle has no point in the relative interiors of two of its edges, all edges having $y$ in their relative interior lie on $\lambda$. If $y$ is interior to $T$, then $\Phi=2\pi$ in Lemma~\ref{app:angles}(a) and $t$ contributes $\pi$, so the other tiles contribute $\pi$.
+
+(F1) Let $y\in(Y,Y')$ be a point that is not a vertex of any tile; all but finitely many points of $\sigma$ are of this kind. By (F0), $y$ is interior to $T$. It lies on one of the $\Pi^+$-edges forming $\sigma$, and not at an endpoint, so in the relative interior of an edge $e$ of a tile $t\subseteq\Pi^+$. By (F2) the other tiles containing $y$ have angles adding up to $\pi>0$, so there is such a tile $t'$; it does not have $y$ as a vertex, and not in its interior (that would overlap $t$), so $y$ lies in the relative interior of an edge of $t'$, which lies on $\lambda$ by (F2), and $t'\subseteq\Pi^-$, again by (F2). So the union of the $\Pi^-$-edges on $\lambda$, a closed set, contains all but finitely many points of $\sigma$, hence all of $\sigma$. If two $\Pi^-$-edges on $\lambda$ overlapped in a nondegenerate segment, both tiles would contain a half-disk on the $\Pi^-$ side at a point of the overlap, and their interiors would meet. Finally, suppose no $\Pi^-$-edge on $\lambda$ contains $Y$ or $Y'$ in its relative interior. An edge on $\lambda$ that meets $(Y,Y')$ and is not contained in $\sigma$ contains $Y$ or $Y'$ in its relative interior; so the $\Pi^-$-edges meeting $(Y,Y')$ lie in $\sigma$. The others meet $\sigma$ at most in $\{Y,Y'\}$, so those meeting $(Y,Y')$ cover $(Y,Y')$, and, their union being closed, all of $\sigma$. They have pairwise disjoint relative interiors, so their lengths add up to $|\sigma|$.
+
+(F3) The first two statements are Lemma~\ref{lem:bdry}(a). The rest holds because an edge joins the two vertices of its tile other than the vertex opposite it.
+\end{proof}
+
+\subsection{Edge decompositions}
+
+An \emph{edge decomposition} of a length $L$ is a triple $(p,q,r)$ of non-negative integers with $pa+qb+rc=L$; it \emph{contains a $b$-edge} if $q\ge1$, and similarly for $a$- and $c$-edges. A segment partitioned by tile edges gives an edge decomposition of its length, by counting the edges of each kind.
+
+\begin{lemma}[The relation lattice; {\cite[Lemma~28]{BR}}]\label{app:lattice}
+\[
+\mathcal{L}=\{(x_1,x_2,x_3)\in\Z^3:\ x_1a+x_2b+x_3c=0\}
+=\{(\xi k+\eta m,\ \eta k,\ -\xi m-\eta k):\ \xi,\eta\in\Z\}.
+\]
+\end{lemma}
+
+\begin{proof}
+Both generators lie in $\mathcal{L}$: $k\cdot mk-m\cdot k^2=0$ for $(k,0,-m)$, and $m\cdot mk+k(k^2-m^2)-k\cdot k^2=0$ for $(m,k,-k)$. Conversely, let $(x_1,x_2,x_3)\in\mathcal{L}$. Reducing $x_1a+x_2b+x_3c=0$ modulo $k$ gives $-x_2m^2\equiv0$, so $k\mid x_2$ as $\gcd(m,k)=1$; write $x_2=\eta k$. Subtracting $\eta(m,k,-k)$ leaves $(x_1',0,x_3')\in\mathcal{L}$ with $x_1'mk=-x_3'k^2$, that is $x_1'm=-x_3'k$; hence $x_1'=\xi k$ and $x_3'=-\xi m$ for an integer $\xi$.
+\end{proof}
+
+\begin{lemma}[Edge decompositions]\label{app:decomp}
+The two parts are labelled (L2) and (L3), Lemma~\ref{app:lattice} being (L1); part (L2) is \cite[Lemma~30\,(A)--(C)]{BR}.
+\begin{enumerate}
+\item[(L2)] Let $1\le n<k$. \textup{(A)} The only edge decomposition of $na$ is $(n,0,0)$. \textup{(B)} The only edge decomposition of $nb$ is $(0,n,0)$. \textup{(C)} No edge decomposition of $nc$ contains a $b$-edge.
+\item[(L3)] \textup{(i)} Every edge decomposition of $mg=m(b+2c)$ that contains an $a$-edge has fewer than $k$ $c$-edges. \textup{(ii)} The edge decompositions of $mh=m(b+c)$ are $(0,m,m)$ and $(k,m,0)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+In each case we subtract the obvious decomposition and use Lemma~\ref{app:lattice}, with integers $\xi,\eta$.
+
+(A) $(p-n,q,r)\in\mathcal{L}$, so $q=\eta k$, $r=-\xi m-\eta k$ and $p=n+\xi k+\eta m$. From $q\ge0$, $\eta\ge0$. If $\eta=0$, then $r\ge0$ gives $\xi\le0$, and $p\ge0$ with $n<k$ gives $\xi\ge0$; so $\xi=0$ and $(p,q,r)=(n,0,0)$. If $\eta\ge1$, then $r\ge0$ gives $\xi\le-\eta k/m<-\eta$, so $\xi\le-\eta-1$ and $p\le n-(\eta+1)k+\eta m=n-k-\eta(k-m)<0$, impossible.
+
+(B) $(p,q-n,r)\in\mathcal{L}$, so $p=\xi k+\eta m$, $q=n+\eta k$, $r=-\xi m-\eta k$. From $q\ge0$ and $n<k$, $\eta\ge0$. If $\eta=0$, then $p\ge0$ and $r\ge0$ give $\xi=0$. If $\eta\ge1$, then $r\ge0$ gives $\xi\le-\eta k/m$ and $p\le-\eta k^2/m+\eta m=-\eta(k^2-m^2)/m<0$, impossible.
+
+(C) Let $(p,q,r)$ be a decomposition of $nc$ with $q\ge1$. Then $(p,q,r-n)\in\mathcal{L}$, so $q=\eta k$ and $\eta\ge1$; $p=\xi k+\eta m\ge0$ gives $\xi\ge-\eta m/k>-\eta$, so $\xi\ge1-\eta$; and then $r=n-\xi m-\eta k\le n-(1-\eta)m-\eta k=n-m-\eta(k-m)\le n-k<0$, impossible.
+
+(L3)(i) $(p,q-m,r-2m)\in\mathcal{L}$, so $p=\xi k+\eta m$, $q=m+\eta k$, $r=(2-\xi)m-\eta k$, and $q\ge0$ gives $\eta\ge0$. If $\eta\ge1$, then $p\ge0$ gives $\xi\ge1-\eta$ and $r\le m-\eta(k-m)<m<k$. If $\eta=0$, then $p=\xi k\ge1$ gives $\xi\ge1$ and $r\le m<k$.
+
+(L3)(ii) $(p,q-m,r-m)\in\mathcal{L}$, so $p=\xi k+\eta m$, $q=m+\eta k$, $r=(1-\xi)m-\eta k$, and $\eta\ge0$. If $\eta\ge1$, then $\xi\ge1-\eta$ as before and $r\le-\eta(k-m)<0$, impossible. If $\eta=0$, then $p=\xi k\ge0$ and $r=(1-\xi)m\ge0$ give $\xi\in\{0,1\}$, that is $(p,q,r)=(0,m,m)$ or $(k,m,0)$; both are decompositions of $mh$, as $k\cdot mk+m(k^2-m^2)=m(2k^2-m^2)$.
+\end{proof}
+
+\subsection{Runs on a side}
+
+In Lemmas~\ref{app:C}--\ref{app:dsr}, $T$ is a triangle tiled by $R$ such that no tile has its $\gamma$ at a corner of $T$; by Lemma~\ref{app:angles}(d) this holds for both triangles of Theorem~\ref{thm:BR}. Let $S$ be a side of $T$. By (F3) the edges lying in $S$ partition $S$, so they are linearly ordered along $S$.
+
+A \emph{run} on $S$ is a sequence $t_1,\dots,t_n$ ($n\ge1$) of tiles whose $c$-edges lie in $S$ and, in this order, partition a segment $[U,V]\subseteq S$, with $U$ an end of the $c$-edge of $t_1$ and $V$ an end of the $c$-edge of $t_n$; the run is \emph{supported by} $[U,V]$, and $n$ is its \emph{length}. The tiles of a run are distinct by (F3), and the reversed sequence $t_n,\dots,t_1$ is a run supported by $[V,U]$. A run is \emph{maximal} if neither edge of the partition of $S$ adjacent to $[U,V]$ is a $c$-edge. A run supported by $[U,V]$ is \emph{stopped at $V$} if $V$ is a corner of $T$, or if the edge in $S$ beyond $V$ that ends at $V$ belongs to a tile with its $\gamma$ at $V$; similarly at $U$.
+
+\begin{lemma}[Every side carries a $c$-edge]\label{app:C}
+Every side $S$ of $T$ contains the $c$-edge of some tile.
+\end{lemma}
+
+\begin{proof}
+Otherwise, by (F3), $S$ is partitioned by $n\ge1$ $a$- and $b$-edges of distinct tiles, with $n-1$ division points in the relative interior of $S$, and each of these $n$ tiles has its $\gamma$ at an end of its edge. Not at an end of $S$, which is a corner of $T$; and not two at one division point $x$, since the angles of the tiles at $x$ add up to $\pi$ (Lemma~\ref{app:angles}(a)) and Lemma~\ref{app:angles}(c) applies. So $n$ angles $\gamma$ lie at $n-1$ points, at most one at each, which is impossible.
+\end{proof}
+
+This is the angle count in the proof of Lemma~\ref{lem:shape4}, and the second paragraph of the proof of \cite[Lemma~31]{BR}.
+
+\begin{lemma}[Pigeonhole]\label{app:PH}
+Some maximal run on $S$ is stopped at both ends.
+\end{lemma}
+
+\begin{proof}
+Let $S=[E,E']$. By Lemma~\ref{app:C} the $c$-edges in $S$ form $\nu\ge1$ maximal blocks of consecutive edges, that is, maximal runs $\rho_1,\dots,\rho_\nu$, numbered in order from $E$ to $E'$. Each run has two ends, the one towards $E$ and the one towards $E'$; we count the $2\nu$ pairs (run, end) and show that at least $\nu+1$ of them are stopped.
+
+Between $\rho_i$ and $\rho_{i+1}$ there is a nonempty block $e_1,\dots,e_u$ of consecutive $a$- and $b$-edges (nonempty because $\rho_i$ is maximal), numbered from $\rho_i$ towards $\rho_{i+1}$. By (F3) the tile of each $e_l$ has its $\gamma$ at one end of $e_l$. If the tile of $e_1$ has its $\gamma$ at the end shared with $\rho_i$, then $\rho_i$ is stopped at its end towards $E'$. Otherwise it has its $\gamma$ at the other end of $e_1$; if $u\ge2$, that end is a point of the relative interior of $S$ shared with $e_2$, so by Lemma~\ref{app:angles}(a),(c) the tile of $e_2$ has its $\gamma$ at the far end of $e_2$, and so on: the tile of $e_u$ has its $\gamma$ at the end shared with $\rho_{i+1}$, which is then stopped at its end towards $E$. So each of the $\nu-1$ gaps gives a stopped (run, end) pair, and different gaps give different pairs.
+
+If no edge precedes $\rho_1$, then $\rho_1$ begins at the corner $E$ and is stopped there by definition. Otherwise the same chain, started at $E$, where no tile has its $\gamma$ because $E$ is a corner, shows that the tile of the last edge before $\rho_1$ has its $\gamma$ at the end shared with $\rho_1$; so $\rho_1$ is stopped at its end towards $E$. Likewise $\rho_\nu$ is stopped at its end towards $E'$. These two pairs differ from each other and from the $\nu-1$ pairs above, so at least $\nu+1$ of the $2\nu$ pairs are stopped, and some run has both of its pairs stopped.
+\end{proof}
+
+\subsection{The run lemma}
+
+\begin{lemma}[Run lemma; Beeson--Ro\c{s}u {\cite[Lemmas~32 and~33]{BR}}]\label{app:run}
+Let $t_1,\dots,t_n$ be a run on a side $S$ of $T$, supported by $[U,V]$, with $1\le n<k$, such that
+\begin{enumerate}
+\item[(R1)] $t_1$ has its $\alpha$ at $U$, and some tile $t_0\ne t_1$ with a vertex at $U$ has its $a$-edge or its $c$-edge on the ray from $U$ along the $b$-edge of $t_1$ \textup{(}a \emph{bad start}\textup{)}; and
+\item[(R2)] the run is stopped at $V$.
+\end{enumerate}
+This is impossible.
+\end{lemma}
+
+This is \cite[Lemma~33]{BR}, whose statement also requires $t_0$ to lie on the side of the line of the $b$-edge of $t_1$ opposite to $t_1$; that holds automatically, as the proof of Claim~0 below shows. The proof is the run-growth argument of \cite[Lemmas~32 and~33]{BR}; Claim~3 is \cite[Lemma~32]{BR}.
+
+\begin{proof}
+\emph{Frame.} Draw $S$ horizontally, with $T$ above $S$ and $U$ west of $V$, after a reflection of the plane if necessary; the hypotheses and the conclusion of the lemma are invariant under congruences, since reflected tiles are allowed, and ``counterclockwise'' below refers to this frame. Let $\hat\imath$ be the unit vector from $U$ towards $V$, and $\hat\jmath$ the unit vector from $U$ along the $b$-edge of $t_1$; since $t_1$ has its $\alpha$ at $U$, its $c$-edge on $S$ and lies above $S$, the vector $\hat\jmath$ makes the angle $\alpha$ with $\hat\imath$ and points upwards. Put
+\[
+x(u,v)=U+uc\,\hat\imath+vb\,\hat\jmath\qquad(u,v\in\R),
+\]
+an orientation-preserving affine bijection from $\R^2$ onto the plane. Then $x(i,0)$, $0\le i\le n$, are the points dividing $[U,V]$, the $c$-edge of $t_i$ is $[x(i-1,0),x(i,0)]$, and $V=x(n,0)$. Let $\ell_j$ be the line through $x(0,j)$ parallel to $S$; \emph{above} $\ell_j$ means in the closed half-plane of $\ell_j$ away from the line of $S$ (for $j\ge1$), \emph{below} in the other. Let $\mu$ be the line through $U$ in the direction $\hat\jmath$; \emph{west} of $\mu$ means in the closed half-plane of $\mu$ not containing $V$, \emph{east} in the other. For integers $i,j$ put
+\[
+\Delta_{i,j}=x(i,j)\,x(i{+}1,j)\,x(i,j{+}1),\qquad
+\nabla_{i,j}=x(i{+}1,j)\,x(i,j{+}1)\,x(i{+}1,j{+}1).
+\]
+The lines $u\in\Z$, $v\in\Z$ and $u+v\in\Z$ cut the $(u,v)$-plane into the triangles $\{u\ge i,\ v\ge j,\ u+v\le i+j+1\}$ and $\{u\le i+1,\ v\le j+1,\ u+v\ge i+j+1\}$, whose images under $x$ are $\Delta_{i,j}$ and $\nabla_{i,j}$. This gives the following three facts.
+\begin{enumerate}
+\item[(Q1)] $\Delta_{0,0}=t_1$, and $\Delta_{i,j}$ is the translate of $t_1$ by $ic\,\hat\imath+jb\,\hat\jmath$: it has $\alpha,\beta,\gamma$ at $x(i,j),x(i{+}1,j),x(i,j{+}1)$, its $c$-edge runs from $x(i,j)$ in the direction $\hat\imath$, its $b$-edge from $x(i,j)$ in the direction $\hat\jmath$, and its $a$-edge is $[x(i{+}1,j),x(i,j{+}1)]$. The triangle $\nabla_{i,j}$ is the image of $\Delta_{i,j}$ under the half-turn about the midpoint of that $a$-edge; it has $\gamma,\beta,\alpha$ at $x(i{+}1,j),x(i,j{+}1),x(i{+}1,j{+}1)$, its $c$-edge is $[x(i,j{+}1),x(i{+}1,j{+}1)]$ and its $b$-edge $[x(i{+}1,j),x(i{+}1,j{+}1)]$. All these triangles are congruent to $R$.
+\item[(Q2)] Around $x(i,j)$, counterclockwise from the direction $\hat\imath$, lie the six triangles $\Delta_{i,j}$, $\nabla_{i-1,j}$, $\Delta_{i-1,j}$, $\nabla_{i-1,j-1}$, $\Delta_{i,j-1}$, $\nabla_{i,j-1}$, with the angles $\alpha$, $\gamma$, $\beta$, $\alpha$, $\gamma$, $\beta$ there; they have disjoint interiors and cover a neighbourhood of $x(i,j)$. In particular $\Delta_{i,j}$ fills the sector at $x(i,j)$ between the directions $\hat\imath$ and $\hat\jmath$.
+\item[(Q3)] For integers $1\le r\le s$ let
+\[
+\mathcal{T}(s,r)=\{\Delta_{i,j}:\ i,j\ge0,\ j<r,\ i+j\le s-1\}\cup\{\nabla_{i,j}:\ i,j\ge0,\ j<r,\ i+j\le s-2\}.
+\]
+These are the cells in $\{u\ge0,\ 0\le v\le r,\ u+v\le s\}$, so the members of $\mathcal{T}(s,r)$ have disjoint interiors and union the trapezoid $U\,x(s,0)\,x(s-r,r)\,x(0,r)$ (a triangle if $r=s$).
+\end{enumerate}
+Let $H(w)$ be the statement that every member of $\mathcal{T}(w,w)$ is a tile. By (Q1), $H(1)$ holds.
+
+\emph{Claim 0. If $H(w)$ holds, $1\le w\le n$, then $x(0,w)$ is an interior point of $T$ lying in the relative interior of an edge, on $\mu$, of a tile west of $\mu$.}
+
+First, $t_0$ lies west of $\mu$. Its edge on the ray from $U$ in the direction $\hat\jmath$ has $U$ as an endpoint, because $U$ is a vertex of $t_0$ on the line of that edge. So the sector of $t_0$ at $U$ is bounded by that ray, and so is the sector of $t_1$, which lies east of $\mu$. Two sectors at $U$ with a common bounding ray, on the same side of its line, have overlapping interiors; so the sector of $t_0$ lies west of $\mu$, and so does $t_0$, a triangle with an edge on $\mu$.
+
+Next, $\mu$ contains no side of $T$. Otherwise, since $T$ lies on one side of that side's line, $T\cap\mu$ would be that side, it would contain $U$, and $U$ would be a corner of $T$ whose angle is the angle $\alpha$ between $S$ and $\mu$. By Lemma~\ref{app:angles}(a) the sector of $t_1$, of opening $\alpha$, would then fill the corner, leaving no room for the sector of $t_0$ at its vertex $U$.
+
+The segment $[U,x(0,w)]$ is the union of the $b$-edges of the tiles $\Delta_{0,j}$, $0\le j<w$, which lie east of $\mu$; it is not contained in a side of $T$, since the line of such a side would be $\mu$. By (F1) the edges on $\mu$ of the tiles west of $\mu$ cover it, and the edge of $t_0$ on $\mu$ is one of them, starting at $U$. None of them contains $U$ in its relative interior, because beyond $U$ the line $\mu$ lies below $S$, outside $T$. If none contained $x(0,w)$ in its relative interior, then by (F1) they would partition $[U,x(0,w)]$, giving an edge decomposition of $wb$ that contains the $a$- or $c$-edge of $t_0$; this contradicts (L2)(B), since $1\le w\le n<k$. So $x(0,w)$ lies in the relative interior of an edge $e$ on $\mu$ of a tile west of $\mu$. As $\mu$ contains no side of $T$, neither does $e$, and $x(0,w)$ is an interior point of $T$ by (F0).
+
+\emph{Claim 1. If $H(w)$ holds, $1\le w\le n$, then $\nabla_{i,w-1-i}$ is a tile for $0\le i\le w-1$; moreover $w<n$ and $t_{w+1}=\Delta_{w,0}$.}
+
+Put $p_i=x(i,w-i)$ for $0\le i\le w$ and $\sigma_w=[p_w,p_0]=[x(w,0),x(0,w)]$. By (Q1), $\sigma_w$ is the union of the $a$-edges of $\Delta_{i,w-1-i}$, $0\le i\le w-1$; that of $\Delta_{i,w-1-i}$ runs from $p_{i+1}$, where this tile has its $\beta$, to $p_i$, where it has its $\gamma$. These tiles lie on the side of the line of $\sigma_w$ that contains $U$, the \emph{near side}; the other closed half-plane is the \emph{far side}. The segment $\sigma_w$ is not contained in a side of $T$, since its endpoint $x(0,w)$ is an interior point of $T$ by Claim~0; in particular $\sigma_w$ does not lie along the side of $T$ through $V$ other than $S$, which would otherwise happen when $w=n$ and $V$ is a corner of angle $\beta$. By (F1), the edges on the line of $\sigma_w$ of the tiles on the far side cover $\sigma_w$. None of them contains $x(0,w)$ in its relative interior, by Claim~0 and (F2), as the line of $\sigma_w$ is not $\mu$. None contains $x(w,0)$ in its relative interior, because the line of $\sigma_w$ crosses the line of $S$ at $x(w,0)\in S$ and beyond $x(w,0)$ lies below $S$, outside $T$. So by (F1) these far edges partition $\sigma_w$, of length $wa$, and by (L2)(A), as $w<k$, they are $w$ $a$-edges; hence their endpoints are $p_0,\dots,p_w$. Let $f_i$ be the far tile whose $a$-edge is $[p_{i+1},p_i]$; it has its $\beta$ and $\gamma$ at the two ends of that edge (F3).
+
+The tile $f_0$ does not have its $\gamma$ at $p_0=x(0,w)$. Indeed, by Claim~0 and (F2), the tiles containing $x(0,w)$, other than the tile west of $\mu$ whose edge contains $x(0,w)$ in its relative interior, lie east of $\mu$ and have angles adding up to $\pi$ there; $\Delta_{0,w-1}$ is one of them, with its $\gamma$ at $x(0,w)$, and $f_0$, which has a vertex at $x(0,w)$ and lies on the other side of $\sigma_w$, is another; Lemma~\ref{app:angles}(c) excludes a second $\gamma$. So $f_0$ has its $\beta$ at $p_0$ and its $\gamma$ at $p_1$.
+
+For $0<i<w$, the point $p_i$ lies in the relative interior of $\sigma_w$ and is interior to $T$ by (F0). By (Q2) the near tiles $\Delta_{i-1,w-i}$, $\nabla_{i-1,w-1-i}$, $\Delta_{i,w-1-i}$, all in $\mathcal{T}(w,w)$, have angles $\beta,\alpha,\gamma$ at $p_i$ and fill the near closed half-plane there; so by Lemma~\ref{app:angles}(a) the far tiles containing $p_i$ fill the far half-plane, with angles adding up to $\pi$, and by Lemma~\ref{app:angles}(c) at most one of them has its $\gamma$ at $p_i$. By induction on $i$: $f_{i-1}$ has its $\gamma$ at $p_i$, so $f_i\neq f_{i-1}$ has its $\beta$ at $p_i$ and its $\gamma$ at $p_{i+1}$. A triangle congruent to $R$ is determined by its $a$-edge, the side of that edge on which it lies, and the ends at which it has its $\beta$ and $\gamma$; by (Q1), $\nabla_{i,w-1-i}$ has $a$-edge $[p_{i+1},p_i]$, lies on the far side, and has its $\beta$ at $p_i$ and its $\gamma$ at $p_{i+1}$. Hence $f_i=\nabla_{i,w-1-i}$ for $0\le i\le w-1$. In particular $\nabla_{w-1,0}$ has its $\gamma$ at $x(w,0)$.
+
+If $w=n$, then $x(w,0)=V$. If $V$ is a corner of $T$, this is a $\gamma$ at a corner, which is excluded. Otherwise the run is stopped at $V$, so the tile of the edge in $S$ beyond $V$ also has its $\gamma$ at $V$; it is not $\nabla_{n-1,0}$, which has no edge on $S$, and two angles $\gamma$ at a point of the relative interior of $S$ contradict Lemma~\ref{app:angles}(a),(c). Hence $w<n$. Then $x(w,0)$ is a point of the relative interior of $S$ strictly between $U$ and $V$. There the tiles $t_w=\Delta_{w-1,0}$, with its $\beta$, and $\nabla_{w-1,0}$, with its $\gamma$, fill the sector from the direction $-\hat\imath$ to the direction $\hat\jmath$ (Q2), so by Lemma~\ref{app:angles}(a),(b) the remaining sector, between $\hat\jmath$ and $\hat\imath$, of opening $\pi-\beta-\gamma=\alpha$, is filled by exactly one tile, with its $\alpha$ at $x(w,0)$. The tile $t_{w+1}$ has a vertex at $x(w,0)$, its $c$-edge running east from it on $S$, and is neither $t_w$ nor $\nabla_{w-1,0}$; so it is that tile, its $b$-edge lies on the ray in the direction $\hat\jmath$, and $t_{w+1}=\Delta_{w,0}$.
+
+\emph{Claim 2. If $H(w)$ holds, $1\le w\le n$, then for each $1\le j\le w$ exactly one tile $G_j$ fills the sector at $y_j=x(w-j,j)$ between the directions $\hat\imath$ and $\hat\jmath$. It has its $\alpha$ at $y_j$, and either $G_j=\Delta_{w-j,j}$, or $G_j$ has its $b$-edge on the ray from $y_j$ in the direction $\hat\imath$ and its $c$-edge on the ray in the direction $\hat\jmath$ \textup{(}a \emph{side branch}; it lies above $\ell_j$ and its $b$-edge lies on $\ell_j$, running east from $y_j$\textup{)}.}
+
+Let $1\le j<w$. By (Q2), the lattice triangles at $y_j$ other than $\Delta_{w-j,j}$ are $\nabla_{w-j-1,j}$ and $\nabla_{w-j,j-1}$, which are tiles by Claim~1, and $\Delta_{w-j-1,j}$, $\nabla_{w-j-1,j-1}$, $\Delta_{w-j,j-1}$, which belong to $\mathcal{T}(w,w)$; their angles at $y_j$ add up to $2\pi-\alpha>\pi$, so $y_j$ is an interior point of $T$ (Lemma~\ref{app:angles}(a)), and the remaining sector, between $\hat\imath$ and $\hat\jmath$, of opening $\alpha$, is filled by exactly one tile, with its $\alpha$ there (Lemma~\ref{app:angles}(a),(b)). For $j=w$, $y_w=x(0,w)$: by Claim~0 and (F2), the tiles containing $x(0,w)$ east of $\mu$ fill the east half-plane there; $\Delta_{0,w-1}$ (from $\mathcal{T}(w,w)$) and $\nabla_{0,w-1}$ (from Claim~1) have angles $\gamma$ and $\beta$ there and fill the sector from $-\hat\jmath$ to $\hat\imath$, so the rest, between $\hat\imath$ and $\hat\jmath$, of opening $\pi-\gamma-\beta=\alpha$, is filled by exactly one tile, with its $\alpha$ there. A tile with its $\alpha$ at $y_j$ filling this sector has its $b$- and $c$-edges on the two bounding rays (F3), in one of two orders; with the $c$-edge in the direction $\hat\imath$ it is $\Delta_{w-j,j}$ by (Q1).
+
+\emph{Claim 3 \textup{(}trapezoid; \cite[Lemma~32]{BR}\textup{)}. There are no integers $1\le r<s\le n$ and $0\le i_0\le s-r-1$ such that every member of $\mathcal{T}(s,r)$ is a tile and some tile $G$ above $\ell_r$ has a vertex at $x(i_0,r)$ and its $b$-edge on $\ell_r$, running east from $x(i_0,r)$.}
+
+Suppose there are; the set of such triples $(s,r,i_0)$ is finite, since $s\le n$, so we may take one with $s$ largest. Put $q_j=x(s-j,j)$ for $0\le j\le r$, so $q_0=x(s,0)$ and $q_r=x(s-r,r)$, and let $\sigma=[q_0,q_r]$. By (Q1), $\sigma$ is the union of the $a$-edges of $\Delta_{s-1-j,j}$, $0\le j<r$, which belong to $\mathcal{T}(s,r)$; that of $\Delta_{s-1-j,j}$ runs from $q_j$, where the tile has its $\beta$, to $q_{j+1}$, where it has its $\gamma$.
+
+(a) \emph{$q_r$ lies in the relative interior of an edge on $\ell_r$ of a tile above $\ell_r$; so $q_r$ is an interior point of $T$, and the angles at $q_r$ of the tiles below $\ell_r$ add up to $\pi$.} Below $\ell_r$, the segment $[x(i_0,r),q_r]$ is the union of the $c$-edges of $\nabla_{i,r-1}$, $i_0\le i\le s-r-1$, which belong to $\mathcal{T}(s,r)$. It is not contained in a side of $T$, since $\ell_r$ is parallel to the side $S$ and different from its line, and no other side of a triangle is parallel to $S$. By (F1), the edges on $\ell_r$ of the tiles above $\ell_r$ cover it. None of them contains $x(i_0,r)$ in its relative interior: the sector at $x(i_0,r)$ of such a tile would be the upper half-disk and would overlap the sector of $G$, which lies above $\ell_r$. The $b$-edge of $G$ is one of these edges and meets the open segment $(x(i_0,r),q_r)$. If none of them contained $q_r$ in its relative interior, they would partition $[x(i_0,r),q_r]$ by (F1), giving an edge decomposition of $(s-r-i_0)c$ that contains a $b$-edge; since $1\le s-r-i_0\le s-r\le n-1<k$, this contradicts (L2)(C). So $q_r$ lies in the relative interior of an edge on $\ell_r$ of a tile above $\ell_r$. That edge is not contained in a side of $T$, so $q_r$ is an interior point of $T$ by (F0), and by (F2) the tiles below $\ell_r$ containing $q_r$ have angles adding up to $\pi$ there.
+
+(b) \emph{The tile $t^\ast$.} Below $\ell_r$ at $q_r$, the tiles $\nabla_{s-r-1,r-1}$ and $\Delta_{s-r,r-1}$ of $\mathcal{T}(s,r)$ have angles $\alpha$ and $\gamma$ there (Q2) and fill the sector from the direction $-\hat\imath$ to the direction of $\sigma$ from $q_r$. By (a) and Lemma~\ref{app:angles}(a),(b), the remaining sector below $\ell_r$, from $\sigma$ to the direction $\hat\imath$, of opening $\pi-\alpha-\gamma=\beta$, is filled by exactly one tile $t^\ast$, with its $\beta$ at $q_r$.
+
+(c) \emph{The far side of $\sigma$.} Call the closed half-plane of the line of $\sigma$ containing $U$ the near side and the other the far side; the tiles $\Delta_{s-1-j,j}$ lie on the near side. Since $q_r$ is interior to $T$, $\sigma$ is not contained in a side of $T$; in particular it does not lie along the side of $T$ through $V$ other than $S$, which would otherwise happen when $s=n$ and $V$ is a corner of angle $\beta$. By (F1), the edges on the line of $\sigma$ of the far tiles cover $\sigma$. None contains $q_r$ in its relative interior, by (F2) and (a). None contains $q_0$ in its relative interior, because the line of $\sigma$ crosses the line of $S$ at $q_0\in S$ and beyond $q_0$ lies outside $T$. So these far edges partition $\sigma$, of length $ra$, and by (L2)(A), as $r<s\le n<k$, they are $r$ $a$-edges with endpoints $q_0,\dots,q_r$. The far tile whose edge is $[q_{r-1},q_r]$ has a vertex at $q_r$ and its sector there is bounded by the ray from $q_r$ along $\sigma$ and lies on the far side; so is the sector of $t^\ast$, and two such sectors have overlapping interiors unless the tiles coincide. So that far tile is $t^\ast$; its edge on $\sigma$ is its $a$-edge, so it has its $\beta$ at $q_r$ and its $\gamma$ at $q_{r-1}$. For $0<j<r$, the point $q_j$ is interior to $T$ by (F0), and by (Q2) the near tiles $\Delta_{s-1-j,j}$, $\nabla_{s-1-j,j-1}$, $\Delta_{s-j,j-1}$ of $\mathcal{T}(s,r)$ have angles $\beta,\alpha,\gamma$ at $q_j$ and fill the near half-plane there; so the far tiles at $q_j$ have angles adding up to $\pi$, and at most one of them has its $\gamma$ at $q_j$ (Lemma~\ref{app:angles}(a),(c)). By downward induction on $j$, from $j=r-1$, the far tile on $[q_j,q_{j+1}]$ has its $\gamma$ at $q_j$ and its $\beta$ at $q_{j+1}$, so by (Q1) it is $\nabla_{s-1-j,j}$. Thus $\nabla_{s-1-j,j}$ is a tile for $0\le j\le r-1$; in particular $\nabla_{s-1,0}$ has its $\gamma$ at $q_0=x(s,0)$.
+
+(d) \emph{$s<n$.} If $s=n$, then $q_0=V$, and $\nabla_{n-1,0}$ has its $\gamma$ at $V$; this is impossible, as in the proof of Claim~1.
+
+(e) \emph{Growth.} As in the proof of Claim~1, at $q_0=x(s,0)$, which lies strictly between $U$ and $V$, the tiles $t_s=\Delta_{s-1,0}\in\mathcal{T}(s,r)$ and $\nabla_{s-1,0}$ leave a sector of opening $\alpha$ filled by $t_{s+1}$, and $t_{s+1}=\Delta_{s,0}$. For $1\le j\le r-1$, the lattice triangles at $x(s-j,j)$ other than $\Delta_{s-j,j}$ are $\Delta_{s-j-1,j}$, $\Delta_{s-j,j-1}$, $\nabla_{s-j-1,j-1}$, which belong to $\mathcal{T}(s,r)$, and $\nabla_{s-j-1,j}$, $\nabla_{s-j,j-1}$, which are tiles by (c). By (Q2) their angles add up to $2\pi-\alpha$, so $x(s-j,j)$ is an interior point of $T$ and the remaining sector, between $\hat\imath$ and $\hat\jmath$, is filled by exactly one tile $G'_j$, with its $\alpha$ there; as in Claim~2, $G'_j=\Delta_{s-j,j}$ or $G'_j$ is a side branch. Note that
+\[
+\mathcal{T}(s+1,r')=\mathcal{T}(s,r')\cup\{\Delta_{s-j,j}:0\le j<r'\}\cup\{\nabla_{s-1-j,j}:0\le j<r'\}\qquad(1\le r'\le r).
+\]
+If $G'_j=\Delta_{s-j,j}$ for every $1\le j\le r-1$, then every member of $\mathcal{T}(s+1,r)$ is a tile, and $G$ is still a witness for $(s+1,r,i_0)$, as $i_0\le s-r-1\le(s+1)-r-1$; and $r<s+1\le n$ by (d). This contradicts the maximality of $s$. Otherwise let $j^\ast$ be the least $j$ for which $G'_j$ is a side branch. Every member of $\mathcal{T}(s+1,j^\ast)$ is a tile, since $\mathcal{T}(s,j^\ast)\subseteq\mathcal{T}(s,r)$; and $G'_{j^\ast}$ lies above $\ell_{j^\ast}$, has a vertex at $x(s-j^\ast,j^\ast)$ and its $b$-edge on $\ell_{j^\ast}$ running east from it, so it is a witness for $(s+1,j^\ast,s-j^\ast)$, with $s-j^\ast=(s+1)-j^\ast-1$ and $1\le j^\ast<r<s+1\le n$. Again $s$ was not largest. This proves Claim~3.
+
+\emph{Conclusion.} We show by induction that $H(w)$ holds for $w=1,\dots,n$. $H(1)$ holds. Suppose $H(w)$ holds for some $1\le w\le n$. By Claim~1, $w<n$, the triangles $\nabla_{i,w-1-i}$, $0\le i\le w-1$, are tiles, and $t_{w+1}=\Delta_{w,0}$; by Claim~2 we have the tiles $G_1,\dots,G_w$. Note that
+\[
+\mathcal{T}(w+1,r')=\bigl(\mathcal{T}(w,w)\cap\mathcal{T}(w+1,r')\bigr)\cup\{\Delta_{w-j,j}:0\le j<r'\}\cup\{\nabla_{w-1-j,j}:0\le j<\min(r',w)\}\qquad(1\le r'\le w+1),
+\]
+where $\Delta_{w,0}=t_{w+1}$, for $j\ge1$ the triangle $\Delta_{w-j,j}$ is a tile if $G_j=\Delta_{w-j,j}$, and the triangles $\nabla_{w-1-j,j}$, $0\le j\le w-1$, are tiles by Claim~1. If every $G_j$ is $\Delta_{w-j,j}$, then $H(w+1)$ holds. Otherwise let $j^\ast$ be the least $j$ for which $G_j$ is a side branch. Then every member of $\mathcal{T}(w+1,j^\ast)$ is a tile, and $G_{j^\ast}$ is a witness at $x(w-j^\ast,j^\ast)$ for the triple $(s,r,i_0)=(w+1,j^\ast,w-j^\ast)$, where $1\le j^\ast\le w<w+1\le n$ and $i_0=(w+1)-j^\ast-1$; Claim~3 excludes this. So $H(w+1)$ holds. By induction $H(n)$ holds, and Claim~1 with $w=n$ gives $n<n$, a contradiction.
+\end{proof}
+
+We say that the \emph{corner condition} holds at an end $E$ of $S$ if, whenever a tile $t$ has its $\alpha$ at $E$ and its $c$-edge in $S$, some other tile with a vertex at $E$ has its $a$- or $c$-edge on the ray from $E$ along the $b$-edge of $t$. It holds vacuously if no tile has its $\alpha$ at $E$.
+
+\begin{lemma}[Doubly stopped runs; {\cite[Lemma~34]{BR}}]\label{app:dsr}
+Suppose the corner condition holds at both ends of $S$. Then every maximal run on $S$ that is stopped at both ends has at least $k$ edges.
+\end{lemma}
+
+\begin{proof}
+Let $t_1,\dots,t_n$ be a maximal run on $S$, stopped at both ends, with $n<k$; let $X_0,\dots,X_n$ be its division points in order, so that the $c$-edge of $t_i$ is $[X_{i-1},X_i]$. By (F3) each $t_i$ has its $\alpha$ at one end of its $c$-edge and its $\beta$ at the other.
+
+\emph{Case 1: $t_1$ has its $\alpha$ at $X_0$.} If $X_0$ is a corner of $T$, it is an end of $S$, and the corner condition gives a bad start. Otherwise there is an edge in $S$ ending at $X_0$ beyond the run, and since the run is stopped at $X_0$, its tile has its $\gamma$ at $X_0$. As $X_0$ lies in the relative interior of $S$, the tiles at $X_0$ fill the upper half-plane there (Lemma~\ref{app:angles}(a)); the sector between the $b$-edge of $t_1$ and that tile, of opening $\pi-\alpha-\gamma=\beta$, is filled by exactly one tile, with its $\beta$ at $X_0$ (Lemma~\ref{app:angles}(b)). Its edges at $X_0$ are its $a$- and $c$-edges (F3), and one of them lies on the ray along the $b$-edge of $t_1$: again a bad start. In both cases Lemma~\ref{app:run}, applied to the run $t_1,\dots,t_n$ with $U=X_0$ and $V=X_n$, gives a contradiction, since the run is stopped at $X_n$.
+
+\emph{Case 2: $t_n$ has its $\alpha$ at $X_n$.} This is Case~1 for the reversed run $t_n,\dots,t_1$, supported by $[X_n,X_0]$.
+
+\emph{Case 3: otherwise.} Then $t_1$ has its $\beta$ at $X_0$ and $t_n$ has its $\beta$ at $X_n$, so $n\ge2$, since $t_1$ has its $\alpha$ at $X_1$. Let $i$ be the largest index such that $t_i$ has its $\alpha$ at $X_i$; then $1\le i\le n-1$, and $t_{i+1}$ has its $\alpha$ at $X_i$. The point $X_i$ lies in the relative interior of $S$; there $t_i$ and $t_{i+1}$ have their angles $\alpha$, and the sector between their $b$-edges has opening $\pi-2\alpha=\alpha+2\beta$. By Lemma~\ref{app:angles}(a),(b) it is filled by three tiles, with angles $\alpha,\beta,\beta$ at $X_i$. One of the two outer ones has its $\beta$ at $X_i$, and its edge on the ray along the $b$-edge of $t_i$, respectively $t_{i+1}$, is its $a$- or its $c$-edge (F3). That is a bad start for the run $t_i,t_{i-1},\dots,t_1$, supported by $[X_i,X_0]$ and stopped at $X_0$, respectively for the run $t_{i+1},\dots,t_n$, supported by $[X_i,X_n]$ and stopped at $X_n$; both have length less than $k$, so Lemma~\ref{app:run} gives a contradiction.
+\end{proof}
+
+\subsection{The two triangles}
+
+\begin{lemma}\label{app:X2}
+The triangle with angles $(2\alpha,\beta,\alpha+\beta)$ and sides $mh$, $kb$, $kc$ opposite them cannot be tiled by $R$.
+\end{lemma}
+
+\begin{proof}
+Suppose $T$ is such a triangle, tiled by $R$, with corners $A$ (angle $2\alpha$), $B$ (angle $\beta$) and $C$ (angle $\alpha+\beta$), so that $|BC|=mh$, $|CA|=kb$ and $|AB|=kc$. By Lemma~\ref{app:angles}(d) no tile has its $\gamma$ at a corner, so Lemmas~\ref{app:C}--\ref{app:dsr} apply.
+
+By Lemma~\ref{app:C} the side $BC$ contains a $c$-edge, so by (F3) and (L3)(ii) its edges form the decomposition $(0,m,m)$: $BC$ carries exactly $m<k$ $c$-edges. The corner condition holds at $B$, where the corner is filled by one tile with its $\beta$ there (Lemma~\ref{app:angles}(b)). It holds at $C$: the corner sector $\alpha+\beta$ is filled by one tile with its $\alpha$ there and one with its $\beta$ there (Lemma~\ref{app:angles}(b)), which share a bounding ray; if the $\alpha$-tile has its $c$-edge on $BC$, then its $b$-edge lies on the shared ray, and the edges of the $\beta$-tile at $C$ are its $a$- and $c$-edges (F3), one of which lies on that ray. By Lemma~\ref{app:PH} some maximal run on $BC$ is stopped at both ends; it has at most $m<k$ edges, contradicting Lemma~\ref{app:dsr}.
+\end{proof}
+
+\begin{lemma}\label{app:X1}
+The isosceles triangle with angles $(\beta,\beta,3\alpha)$, legs $kc$ and base $mg$ cannot be tiled by $R$.
+\end{lemma}
+
+\begin{proof}
+Suppose $T$ is such a triangle, tiled by $R$, with apex $B$ (angle $3\alpha$) and base corners $A$ and $C$ (angle $\beta$), so that $|AB|=|CB|=kc$ and $|AC|=mg$. By Lemma~\ref{app:angles}(d) no tile has its $\gamma$ at a corner, so Lemmas~\ref{app:C}--\ref{app:dsr} apply.
+
+\emph{Step 1: no leg carries a $b$-edge} \textup{(}\cite[Lemma~36]{BR}\textup{)}. Let $(p,q,r)$ be the edge decomposition of a leg given by its edges (F3); $r\ge1$ by Lemma~\ref{app:C}. Suppose $q\ge1$. Then $r<k$, since $r\ge k$ would give $rc\ge kc$ and hence $p=q=0$; so $1\le k-r\le k-1$, and $(p,q,0)$ is an edge decomposition of $(k-r)c$ containing a $b$-edge, which contradicts (L2)(C).
+
+\emph{Step 2: the apex.} The corner sector $3\alpha$ at $B$ is filled by three tiles, each with its $\alpha$ at $B$ (Lemma~\ref{app:angles}(b)); their edges at $B$ are their $b$- and $c$-edges (F3). Each of the two outer tiles has one of these edges on a leg, and by Step~1 it is the $c$-edge; so its $b$-edge lies on the inner ray it shares with the middle tile. The middle tile has its $b$- and $c$-edges on the two inner rays. Reflecting $T$ and the tiling in the axis of $T$ if necessary, we may assume that the $c$-edge of the middle tile lies on the inner ray next to $AB$, that is, on the ray along the $b$-edge of the outer tile at $AB$. The outer tile at $AB$ is the only tile with its $\alpha$ at $B$ and its $c$-edge in $AB$, so the corner condition holds for the side $AB$ at $B$. At $A$ it holds vacuously, since the corner is filled by one tile with its $\beta$ there.
+
+\emph{Step 3: $AB$ consists of $k$ $c$-edges.} Otherwise $AB$ carries an $a$- or $b$-edge and therefore fewer than $k$ $c$-edges, as $|AB|=kc$. By Lemma~\ref{app:PH} some maximal run on $AB$ is stopped at both ends; it has fewer than $k$ edges, and the corner condition holds at both ends of $AB$ by Step~2, so this contradicts Lemma~\ref{app:dsr}.
+
+\emph{Step 4: the base carries an $a$-edge.} The corner at $A$ is filled by one tile with its $\beta$ there (Lemma~\ref{app:angles}(b)); its edges at $A$ are its $a$- and $c$-edges (F3), one in $AB$ and one in $AC$ (Lemma~\ref{lem:bdry}(a)). By Step~3 the one in $AB$ is not the $a$-edge, so the $a$-edge lies in the base $AC$.
+
+\emph{Step 5.} By Step~4 and (L3)(i), the base, of length $mg$, carries fewer than $k$ $c$-edges. By Lemma~\ref{app:PH} some maximal run on $AC$ is stopped at both ends, and it has fewer than $k$ edges. The corner condition holds vacuously at $A$ and at $C$, where only one tile, with its $\beta$, lies. This contradicts Lemma~\ref{app:dsr}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:BR}]
+The two triangles of Theorem~\ref{thm:BR} have sides $(k^3,k^3,m(3k^2-m^2))=(kc,kc,mg)$ and $(m(2k^2-m^2),k(k^2-m^2),k^3)=(mh,kb,kc)$, so they are the triangles of Lemmas~\ref{app:X1} and~\ref{app:X2}, which cannot be tiled by $R$.
+\end{proof}
 
 \begin{thebibliography}{99}
 
@@ -230,17 +832,32 @@ arXiv:1206.2228 (2012); withdrawn by the author in 2024.
 \bibitem{Beeson2229}
 M.~Beeson,
 \emph{Triangle tiling: the case $3\alpha+2\beta=\pi$},
-arXiv:1206.2229v3 (2019).
+arXiv:1206.2229v4 (September 25, 2026). Version~1 of this note cited version~3 (2019).
+
+\bibitem{BeesonIso}
+M.~Beeson,
+\emph{Tilings of an isosceles triangle},
+arXiv:1206.1974v8 (October 21, 2026); version~7 was accepted by \emph{Integers}.
+
+\bibitem{BeesonEqui}
+M.~Beeson,
+\emph{Tiling an equilateral triangle},
+arXiv:1812.07014v3 (2024).
 
 \bibitem{BeesonPrime}
 M.~Beeson,
 \emph{No prime tiling of an isosceles triangle},
-arXiv:2607.19572v1 (2026).
+arXiv:2607.19572v1 (2026); withdrawn by the author on September 24, 2026.
+
+\bibitem{BR}
+M.~Beeson and G.~Ro\c{s}u,
+\emph{Tiling a triangle into a prime number of congruent triangles},
+arXiv:2607.23453v3 (October 21, 2026).
 
 \bibitem{BLZ633}
 M.~Beeson, M.~Laczkovich, and Y.~X.~Zhang,
 \emph{Solution of Erd\H{o}s Problem 633},
-arXiv:2604.03609v2 (2026).
+arXiv:2604.03609v3 (2026).
 
 \bibitem{BZRat}
 M.~Beeson and Y.~X.~Zhang,
@@ -250,7 +867,26 @@ arXiv:2604.01314v1 (2026).
 \bibitem{EP634}
 T.~F.~Bloom,
 \emph{Erd\H{o}s Problem \#634},
-\url{https://www.erdosproblems.com/634}, accessed July 24, 2026.
+\url{https://www.erdosproblems.com/634}, accessed October 25, 2026.
+
+\bibitem{Bonfioli1}
+V.~Bonfioli,
+\emph{A signed-direction invariant for triangle tilings, and the exclusion of primes congruent to $3$ modulo $4$},
+release v3.2 (September 12, 2026), \url{https://github.com/ElVec1o/erdos_634_proof}.
+
+\bibitem{Bonfioli2}
+V.~Bonfioli,
+\emph{Congruent dissections of a triangle: prime counts, the counts up to $200$, and a family of isosceles targets},
+October 2026, \href{https://doi.org/10.5281/zenodo.23400433}{doi:10.5281/zenodo.23400433}; Lean development at \url{https://github.com/ElVec1o/erdos634_primes_and_N200}.
+
+\bibitem{George}
+R.~J.~George,
+proof claim for Erd\H{o}s Problem~634 on \url{https://www.erdosproblems.com/634}, posted July 17, 2026.
+
+\bibitem{Progress634}
+J.~P.~Harries,
+\emph{New constructions, obstructions, and multiplier structure for Erd\H{o}s Problem 634},
+preprint (2026), \url{https://github.com/jphme/math-problems/tree/main/progress634}.
 
 \bibitem{Lacz95}
 M.~Laczkovich,
