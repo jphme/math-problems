@@ -103,8 +103,8 @@ def symbolic_checks() -> None:
         assert_zero_mod_relation(computed - target, relation, c, f"area formula {label}")
 
     # Independent symbolic route for the only non-obviously-composite case.
-    # The complete primitive parametrization (Beeson, arXiv:2607.19572v1,
-    # Theorem 6) has either (a,b)=(s^2-t^2,t(2s+t)) or the swapped pair.
+    # The standard parametrization of primitive Eisenstein triples has
+    # either (a,b)=(s^2-t^2,t(2s+t)) or the swapped pair.
     # In both branches:
     s, t = sp.symbols("s t", integer=True, positive=True)
     param_a = s**2 - t**2
@@ -120,7 +120,9 @@ def symbolic_checks() -> None:
 def primitive_triples(limit: int) -> Iterable[tuple[int, int, int]]:
     """Generate primitive solutions via the two-branch parametrization.
 
-    Branches per Beeson, arXiv:2607.19572v1, Theorem 6, over
+    This is the standard parametrization of primitive Eisenstein triples
+    (a^2 + ab + b^2 = c^2); every generated triple is checked directly
+    below, so the script does not rely on it being complete. Over
     2 <= s <= limit, 1 <= t < s, gcd(s, t) = 1, s != t (mod 3);
     both labelings (a, b) and (b, a) are emitted (they never coincide,
     since a = b would force c^2 = 3a^2).
@@ -218,8 +220,9 @@ def main() -> None:
     gcd_sanity_checks()
     finite_nineteen_check()
     print(
-        "\nARITHMETIC CORE VERIFIED: no remaining 120-degree branch "
-        "can have a prime tile count; in particular N=19 is impossible."
+        "\nALL CHECKS PASSED: the identities and area-ratio formulas of the "
+        "lemma on 2pi/3 tiles hold symbolically, the primitivity claims hold on "
+        "the tested triples, and the N=19 instance of case C is excluded."
     )
 
 
